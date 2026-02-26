@@ -1,0 +1,702 @@
+[
+  {
+    "name": "Tirumala Venkateswara Temple",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Sacred hill temple route with spiritual ambience and scenic ghat roads.",
+    "image": "https://source.unsplash.com/1200x800/?tirumala%20temple,south%20india,india"
+  },
+  {
+    "name": "Araku Valley",
+    "location": "Andhra Pradesh",
+    "duration": "3D / 2N",
+    "description": "Coffee plantations, valley viewpoints, and tribal cultural experiences.",
+    "image": "https://source.unsplash.com/1200x800/?araku%20valley,south%20india,india"
+  },
+  {
+    "name": "Borra Caves",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Limestone caves with dramatic formations and forested surroundings.",
+    "image": "https://source.unsplash.com/1200x800/?borra%20caves,india"
+  },
+  {
+    "name": "Lambasingi",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Misty hill station known for cold weather and early morning views.",
+    "image": "https://source.unsplash.com/1200x800/?lambasingi,hills,india"
+  },
+  {
+    "name": "Rushikonda Beach",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Golden shorelines, water sports, and seaside relaxation.",
+    "image": "https://source.unsplash.com/1200x800/?rushikonda%20beach,india"
+  },
+  {
+    "name": "Kailasagiri",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Hilltop park with ocean views and city panorama.",
+    "image": "https://source.unsplash.com/1200x800/?kailasagiri,visakhapatnam"
+  },
+  {
+    "name": "Belum Caves",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Longest cave systems in the region with unique underground passages.",
+    "image": "https://source.unsplash.com/1200x800/?belum%20caves,india"
+  },
+  {
+    "name": "Gandikota",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Dramatic canyon views, historic fort walls, and rocky cliffs.",
+    "image": "https://source.unsplash.com/1200x800/?gandikota,canyon,india"
+  },
+  {
+    "name": "Horsley Hills",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Cool-weather hill escape with viewpoints and forest drives.",
+    "image": "https://source.unsplash.com/1200x800/?horsley%20hills,india"
+  },
+  {
+    "name": "Srisailam",
+    "location": "Andhra Pradesh",
+    "duration": "3D / 2N",
+    "description": "Temple town, dam views, and river valley landscapes.",
+    "image": "https://source.unsplash.com/1200x800/?srisailam,temple,india"
+  },
+  {
+    "name": "Ahobilam",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Ancient shrine circuit with trekking paths through the hills.",
+    "image": "https://source.unsplash.com/1200x800/?ahobilam,temple,india"
+  },
+  {
+    "name": "Simhachalam Temple",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Historic temple architecture on a serene hill setting.",
+    "image": "https://source.unsplash.com/1200x800/?simhachalam%20temple,india"
+  },
+  {
+    "name": "Papikondalu",
+    "location": "Andhra Pradesh",
+    "duration": "3D / 2N",
+    "description": "Scenic river cruise through lush hills and tribal belts.",
+    "image": "https://source.unsplash.com/1200x800/?papikondalu,river,india"
+  },
+  {
+    "name": "Rajahmundry",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Godavari riverfront, heritage bridges, and cultural charm.",
+    "image": "https://source.unsplash.com/1200x800/?rajahmundry,godavari"
+  },
+  {
+    "name": "Talakona Waterfalls",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Dense forest trails leading to one of the tallest regional falls.",
+    "image": "https://source.unsplash.com/1200x800/?waterfall,forest,south%20india"
+  },
+  {
+    "name": "Yarada Beach",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Quiet beachside retreat with scenic coastal hills.",
+    "image": "https://source.unsplash.com/1200x800/?yarada%20beach,india"
+  },
+  {
+    "name": "Kondapalli Fort",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Historic hill fort with panoramic views and old ramparts.",
+    "image": "https://source.unsplash.com/1200x800/?kondapalli%20fort,india"
+  },
+  {
+    "name": "Amaravati",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Ancient Buddhist heritage and riverside landscapes.",
+    "image": "https://source.unsplash.com/1200x800/?amaravati,temple,india"
+  },
+  {
+    "name": "Maredumilli",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Eco-tourism spot with bamboo huts, streams, and forest trails.",
+    "image": "https://source.unsplash.com/1200x800/?maredumilli,forest,india"
+  },
+  {
+    "name": "Pulicat Lake",
+    "location": "Andhra Pradesh",
+    "duration": "2D / 1N",
+    "description": "Birding destination with wetlands and scenic backwaters.",
+    "image": "https://source.unsplash.com/1200x800/?pulicat%20lake,india"
+  },
+  {
+    "name": "Charminar",
+    "location": "Hyderabad, Telangana",
+    "duration": "2D / 1N",
+    "description": "Iconic old-city monument with bustling markets and food streets.",
+    "image": "https://source.unsplash.com/1200x800/?charminar,hyderabad"
+  },
+  {
+    "name": "Golconda Fort",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Massive fort complex with acoustics points and sunset views.",
+    "image": "https://source.unsplash.com/1200x800/?golconda%20fort,india"
+  },
+  {
+    "name": "Ramoji Film City",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Entertainment zone with studio tours and themed attractions.",
+    "image": "https://source.unsplash.com/1200x800/?film%20city,india"
+  },
+  {
+    "name": "Hussain Sagar",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Urban lakefront with boating and city skyline views.",
+    "image": "https://source.unsplash.com/1200x800/?hussain%20sagar,hyderabad"
+  },
+  {
+    "name": "Warangal Fort",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Kakatiya-era gateways and fascinating stone architecture.",
+    "image": "https://source.unsplash.com/1200x800/?warangal%20fort,india"
+  },
+  {
+    "name": "Ramappa Temple",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "UNESCO heritage temple known for exquisite carvings.",
+    "image": "https://source.unsplash.com/1200x800/?ramappa%20temple,india"
+  },
+  {
+    "name": "Bhadrakali Temple",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Historic lakeside temple with peaceful surroundings.",
+    "image": "https://source.unsplash.com/1200x800/?bhadrakali%20temple,india"
+  },
+  {
+    "name": "Kuntala Waterfalls",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Tall cascading waterfall amid forested terrain.",
+    "image": "https://source.unsplash.com/1200x800/?kuntala%20waterfalls,india"
+  },
+  {
+    "name": "Nagarjuna Sagar",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Dam reservoir landscapes and boat rides around island museum.",
+    "image": "https://source.unsplash.com/1200x800/?nagarjuna%20sagar,india"
+  },
+  {
+    "name": "Yadadri Temple",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Renovated hill shrine with grand stone detailing.",
+    "image": "https://source.unsplash.com/1200x800/?yadadri%20temple,india"
+  },
+  {
+    "name": "Medak Fort",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Ancient fort trail with valley views from the top.",
+    "image": "https://source.unsplash.com/1200x800/?medak%20fort,india"
+  },
+  {
+    "name": "Ananthagiri Hills",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Weekend hill escape with forest paths and viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?ananthagiri%20hills,india"
+  },
+  {
+    "name": "Basara Temple",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Popular Saraswati temple on the banks of Godavari.",
+    "image": "https://source.unsplash.com/1200x800/?basara%20temple,india"
+  },
+  {
+    "name": "Laknavaram Lake",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Hanging bridge views across a picturesque lake setting.",
+    "image": "https://source.unsplash.com/1200x800/?laknavaram%20lake,india"
+  },
+  {
+    "name": "Bogatha Waterfalls",
+    "location": "Telangana",
+    "duration": "2D / 1N",
+    "description": "Wide waterfall belt surrounded by lush greenery.",
+    "image": "https://source.unsplash.com/1200x800/?bogatha%20waterfalls,india"
+  },
+  {
+    "name": "Meenakshi Amman Temple",
+    "location": "Madurai, Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Colorful gopurams and iconic Dravidian temple architecture.",
+    "image": "https://source.unsplash.com/1200x800/?meenakshi%20temple,madurai"
+  },
+  {
+    "name": "Ooty",
+    "location": "Tamil Nadu",
+    "duration": "3D / 2N",
+    "description": "Toy train, tea estates, and cool-weather hill retreats.",
+    "image": "https://source.unsplash.com/1200x800/?ooty,tea%20estate"
+  },
+  {
+    "name": "Kodaikanal",
+    "location": "Tamil Nadu",
+    "duration": "3D / 2N",
+    "description": "Pine forests, lake boating, and serene viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?kodaikanal,hills,india"
+  },
+  {
+    "name": "Rameswaram",
+    "location": "Tamil Nadu",
+    "duration": "3D / 2N",
+    "description": "Pilgrimage town with seascapes and iconic bridges.",
+    "image": "https://source.unsplash.com/1200x800/?rameswaram,temple,india"
+  },
+  {
+    "name": "Marina Beach",
+    "location": "Chennai, Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "One of the longest urban beaches with vibrant evening scenes.",
+    "image": "https://source.unsplash.com/1200x800/?marina%20beach,chennai"
+  },
+  {
+    "name": "Mahabalipuram",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Shore Temple, rock carvings, and heritage monuments.",
+    "image": "https://source.unsplash.com/1200x800/?mahabalipuram,shore%20temple"
+  },
+  {
+    "name": "Kanyakumari",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Sunrise and sunset viewpoints at the southern tip of India.",
+    "image": "https://source.unsplash.com/1200x800/?kanyakumari,india"
+  },
+  {
+    "name": "Brihadeeswarar Temple",
+    "location": "Thanjavur, Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "UNESCO Chola-era temple with grand stone craftsmanship.",
+    "image": "https://source.unsplash.com/1200x800/?brihadeeswarar%20temple,india"
+  },
+  {
+    "name": "Yercaud",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Compact hill station with calm roads and viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?yercaud,hills,india"
+  },
+  {
+    "name": "Coimbatore",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "City gateway to hills, temples, and regional cuisine trails.",
+    "image": "https://source.unsplash.com/1200x800/?coimbatore,india"
+  },
+  {
+    "name": "Chidambaram Temple",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Sacred Nataraja temple known for rich spiritual history.",
+    "image": "https://source.unsplash.com/1200x800/?chidambaram%20temple,india"
+  },
+  {
+    "name": "Velankanni Church",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Major pilgrimage church near the coast.",
+    "image": "https://source.unsplash.com/1200x800/?velankanni%20church,india"
+  },
+  {
+    "name": "Coonoor",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Tea-covered slopes and peaceful hill station charm.",
+    "image": "https://source.unsplash.com/1200x800/?coonoor,tea%20garden"
+  },
+  {
+    "name": "Dhanushkodi",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Ghost town coastline with striking sea-road views.",
+    "image": "https://source.unsplash.com/1200x800/?dhanushkodi,beach,india"
+  },
+  {
+    "name": "Tiruchendur Temple",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Seaside Murugan temple with cultural significance.",
+    "image": "https://source.unsplash.com/1200x800/?tiruchendur%20temple,india"
+  },
+  {
+    "name": "Courtallam Falls",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Popular monsoon falls known for natural herbal waters.",
+    "image": "https://source.unsplash.com/1200x800/?courtallam%20falls,india"
+  },
+  {
+    "name": "Mudumalai National Park",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Wildlife safaris through forests rich in biodiversity.",
+    "image": "https://source.unsplash.com/1200x800/?mudumalai%20national%20park,india"
+  },
+  {
+    "name": "Hogenakkal Falls",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Powerful river falls and traditional coracle boat rides.",
+    "image": "https://source.unsplash.com/1200x800/?hogenakkal%20falls,india"
+  },
+  {
+    "name": "Kotagiri",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Less-crowded hill station with tea estates and trekking routes.",
+    "image": "https://source.unsplash.com/1200x800/?kotagiri,hills,india"
+  },
+  {
+    "name": "Valparai",
+    "location": "Tamil Nadu",
+    "duration": "2D / 1N",
+    "description": "Scenic ghats, tea plantations, and wildlife corridors.",
+    "image": "https://source.unsplash.com/1200x800/?valparai,tea%20estate"
+  },
+  {
+    "name": "Mysore Palace",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Royal architecture and illuminated palace evenings.",
+    "image": "https://source.unsplash.com/1200x800/?mysore%20palace,india"
+  },
+  {
+    "name": "Hampi",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "UNESCO ruins with giant boulders and temple history.",
+    "image": "https://source.unsplash.com/1200x800/?hampi,ruins,india"
+  },
+  {
+    "name": "Coorg",
+    "location": "Karnataka",
+    "duration": "3D / 2N",
+    "description": "Coffee estates, misty hills, and nature retreats.",
+    "image": "https://source.unsplash.com/1200x800/?coorg,coffee%20estate"
+  },
+  {
+    "name": "Chikmagalur",
+    "location": "Karnataka",
+    "duration": "3D / 2N",
+    "description": "Trek-friendly mountain region with plantation views.",
+    "image": "https://source.unsplash.com/1200x800/?chikmagalur,hills,india"
+  },
+  {
+    "name": "Jog Falls",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "One of India most spectacular segmented waterfalls.",
+    "image": "https://source.unsplash.com/1200x800/?jog%20falls,karnataka"
+  },
+  {
+    "name": "Gokarna",
+    "location": "Karnataka",
+    "duration": "3D / 2N",
+    "description": "Beach trekking routes and laid-back coastal stays.",
+    "image": "https://source.unsplash.com/1200x800/?gokarna%20beach,india"
+  },
+  {
+    "name": "Badami",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Cave temples and sandstone cliffs overlooking a lake.",
+    "image": "https://source.unsplash.com/1200x800/?badami,cave%20temple"
+  },
+  {
+    "name": "Pattadakal",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "UNESCO temple complex of Chalukyan architecture.",
+    "image": "https://source.unsplash.com/1200x800/?pattadakal,temple,india"
+  },
+  {
+    "name": "Aihole",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Historic temple town showcasing early stone architecture.",
+    "image": "https://source.unsplash.com/1200x800/?aihole,temple,india"
+  },
+  {
+    "name": "Udupi",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Temple town with nearby beaches and coastal cuisine.",
+    "image": "https://source.unsplash.com/1200x800/?udupi,beach,temple"
+  },
+  {
+    "name": "Murudeshwar",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Coastal temple town with giant Shiva statue and sea views.",
+    "image": "https://source.unsplash.com/1200x800/?murudeshwar,india"
+  },
+  {
+    "name": "Nandi Hills",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Sunrise destination near Bengaluru with winding hill roads.",
+    "image": "https://source.unsplash.com/1200x800/?nandi%20hills,india"
+  },
+  {
+    "name": "Bandipur National Park",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Wildlife safaris through one of South India key reserves.",
+    "image": "https://source.unsplash.com/1200x800/?bandipur%20national%20park,india"
+  },
+  {
+    "name": "Bannerghatta National Park",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Urban-proximate reserve with safari and butterfly zones.",
+    "image": "https://source.unsplash.com/1200x800/?bannerghatta%20national%20park,india"
+  },
+  {
+    "name": "Sakleshpur",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Green hill station with coffee estates and trekking routes.",
+    "image": "https://source.unsplash.com/1200x800/?sakleshpur,coffee%20estate"
+  },
+  {
+    "name": "Kabini",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Riverside wildlife lodges and safari experiences.",
+    "image": "https://source.unsplash.com/1200x800/?kabini,wildlife,india"
+  },
+  {
+    "name": "Kudremukh",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Grassland mountain treks and rolling cloud landscapes.",
+    "image": "https://source.unsplash.com/1200x800/?kudremukh,trekking,india"
+  },
+  {
+    "name": "Shravanabelagola",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Monolithic statue site with heritage hill climb.",
+    "image": "https://source.unsplash.com/1200x800/?shravanabelagola,india"
+  },
+  {
+    "name": "Agumbe",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Rainforest belt famous for sunsets and biodiversity.",
+    "image": "https://source.unsplash.com/1200x800/?agumbe,rainforest,india"
+  },
+  {
+    "name": "Dandeli",
+    "location": "Karnataka",
+    "duration": "2D / 1N",
+    "description": "Adventure hub for rafting, forest camps, and birding.",
+    "image": "https://source.unsplash.com/1200x800/?dandeli,rafting,india"
+  },
+  {
+    "name": "Kerala Backwaters",
+    "location": "Kerala",
+    "duration": "3D / 2N",
+    "description": "Houseboat experiences through palm-lined waterways.",
+    "image": "https://source.unsplash.com/1200x800/?kerala%20backwaters,houseboat"
+  },
+  {
+    "name": "Munnar",
+    "location": "Kerala",
+    "duration": "3D / 2N",
+    "description": "Rolling tea plantations and misty mountain weather.",
+    "image": "https://source.unsplash.com/1200x800/?munnar,tea%20estate"
+  },
+  {
+    "name": "Alleppey",
+    "location": "Kerala",
+    "duration": "3D / 2N",
+    "description": "Canal-side villages and classic Kerala houseboat stays.",
+    "image": "https://source.unsplash.com/1200x800/?alleppey,backwaters"
+  },
+  {
+    "name": "Wayanad",
+    "location": "Kerala",
+    "duration": "3D / 2N",
+    "description": "Waterfalls, caves, and spice plantations in hill terrain.",
+    "image": "https://source.unsplash.com/1200x800/?wayanad,kerala"
+  },
+  {
+    "name": "Kovalam Beach",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Curving beaches, lighthouse views, and coastal resorts.",
+    "image": "https://source.unsplash.com/1200x800/?kovalam%20beach,kerala"
+  },
+  {
+    "name": "Varkala Beach",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Cliffside beaches with cafes and sunset viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?varkala%20beach,kerala"
+  },
+  {
+    "name": "Thekkady",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Periyar lake boating and spice plantation tours.",
+    "image": "https://source.unsplash.com/1200x800/?thekkady,kerala"
+  },
+  {
+    "name": "Athirapally Falls",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Wide rainforest waterfall often called Kerala Niagara.",
+    "image": "https://source.unsplash.com/1200x800/?athirapally%20waterfalls"
+  },
+  {
+    "name": "Kochi",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Fort Kochi lanes, Chinese nets, and colonial heritage.",
+    "image": "https://source.unsplash.com/1200x800/?kochi,fort%20kochi"
+  },
+  {
+    "name": "Kumarakom",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Backwater village experience with bird sanctuary visits.",
+    "image": "https://source.unsplash.com/1200x800/?kumarakom,kerala"
+  },
+  {
+    "name": "Vagamon",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Rolling meadows, pine forests, and calm hill weather.",
+    "image": "https://source.unsplash.com/1200x800/?vagamon,kerala"
+  },
+  {
+    "name": "Bekal Fort",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Sea-facing fort walls with dramatic sunset views.",
+    "image": "https://source.unsplash.com/1200x800/?bekal%20fort,kerala"
+  },
+  {
+    "name": "Ponmudi",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Winding mountain roads and valley viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?ponmudi,kerala"
+  },
+  {
+    "name": "Marari Beach",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Quiet shoreline for relaxed coastal stays.",
+    "image": "https://source.unsplash.com/1200x800/?marari%20beach,kerala"
+  },
+  {
+    "name": "Silent Valley National Park",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Protected rainforest ecosystem with rich biodiversity.",
+    "image": "https://source.unsplash.com/1200x800/?silent%20valley%20national%20park,kerala"
+  },
+  {
+    "name": "Periyar Wildlife Sanctuary",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Lake-centered wildlife reserve with guided safaris.",
+    "image": "https://source.unsplash.com/1200x800/?periyar%20wildlife%20sanctuary"
+  },
+  {
+    "name": "Poovar Island",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Unique estuary zone where river, lake, and sea meet.",
+    "image": "https://source.unsplash.com/1200x800/?poovar%20island,kerala"
+  },
+  {
+    "name": "Chembra Peak",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Popular trekking peak with panoramic hill scenery.",
+    "image": "https://source.unsplash.com/1200x800/?chembra%20peak,wayanad"
+  },
+  {
+    "name": "Nelliyampathy",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Lesser-known hill station with forest drives and viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?nelliyampathy,kerala"
+  },
+  {
+    "name": "Parunthumpara",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Grassland ridges and beautiful valley lookout points.",
+    "image": "https://source.unsplash.com/1200x800/?parunthumpara,kerala"
+  },
+  {
+    "name": "Thrissur",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Cultural capital known for temples, festivals, and art.",
+    "image": "https://source.unsplash.com/1200x800/?thrissur,kerala"
+  },
+  {
+    "name": "Kollam",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Backwater routes and serene lakeside experiences.",
+    "image": "https://source.unsplash.com/1200x800/?kollam,kerala"
+  },
+  {
+    "name": "Malampuzha Dam",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Dam gardens, ropeway views, and family-friendly attractions.",
+    "image": "https://source.unsplash.com/1200x800/?malampuzha%20dam,kerala"
+  },
+  {
+    "name": "Guruvayur Temple",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Prominent pilgrimage destination with rich traditions.",
+    "image": "https://source.unsplash.com/1200x800/?guruvayur%20temple,kerala"
+  },
+  {
+    "name": "Kalpetta",
+    "location": "Kerala",
+    "duration": "2D / 1N",
+    "description": "Wayanad town base for waterfalls, treks, and viewpoints.",
+    "image": "https://source.unsplash.com/1200x800/?kalpetta,wayanad"
+  }
+]

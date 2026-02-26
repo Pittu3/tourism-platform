@@ -1,0 +1,242 @@
+.home-page {
+  background: linear-gradient(180deg, #ffffff 0%, #f5faff 40%, #ffffff 100%);
+}
+
+.theme-categories {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 20px 10px;
+}
+
+.section-head {
+  text-align: center;
+}
+
+.section-head p {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  color: #0b4a93;
+  font-weight: 700;
+}
+
+.section-head h2 {
+  margin: 8px 0 0;
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+}
+
+.theme-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  perspective: 1200px;
+}
+
+.theme-card {
+  min-height: 190px;
+  border-radius: 16px;
+  padding: 16px;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  animation: card-rise 0.6s ease both;
+}
+
+.theme-card:hover {
+  transform: translateY(-7px) rotateX(2deg);
+  box-shadow: 0 16px 30px rgba(12, 42, 73, 0.32);
+  filter: saturate(1.08);
+}
+
+.theme-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.theme-card span {
+  margin-top: 6px;
+  font-size: 0.82rem;
+}
+
+.theme-card.temples {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6)), url('https://hblimg.mmtcdn.com/content/hubble/img/ttd_images_march/mmt/activities/m_Chidambaram_the_nataraja_temple_1_l_667_1000.jpg');
+}
+
+.theme-card.backwaters {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6)), url('https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/cc/95/14/alleppey-backwater-tour.jpg?w=1200&h=900&s=1');
+}
+
+.theme-card.forests {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6)), url('https://www.wayanad.com/files/slides/2064569462.jpg');
+}
+
+.theme-card.hills {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6)), url('https://1.bp.blogspot.com/-LMFUp83_LHk/T9b3uHBwB8I/AAAAAAAABZQ/5c1Nqo4Ix1E/s1600/Kodaikanal_Tourism+01.jpg');
+}
+
+.theme-card.heritage {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6)), url('https://wallpaperaccess.com/full/5515777.jpg');
+}
+
+.plan-strip {
+  padding: 44px 20px 90px;
+}
+
+.plan-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  background:
+    radial-gradient(circle at 14% 22%, rgba(255, 255, 255, 0.2), transparent 36%),
+    linear-gradient(135deg, #0f766e 0%, #0ea5a4 55%, #22c55e 100%);
+  color: #ffffff;
+  border-radius: 24px;
+  padding: 42px 28px;
+  box-shadow: 0 22px 36px rgba(13, 90, 86, 0.22);
+  position: relative;
+  overflow: hidden;
+  animation: float-in 0.85s ease both;
+}
+
+.plan-label {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #d8ecff;
+}
+
+.plan-content h2 {
+  margin: 10px 0 12px;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+}
+
+.plan-content p {
+  margin: 0 auto;
+  max-width: 680px;
+  color: #f4f8ff;
+}
+
+.plan-actions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: #ffc24b;
+  color: #112941;
+}
+
+.btn-outline {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.feature-points {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #ebf6ff;
+  font-weight: 600;
+}
+
+.feature-points div {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.feature-points .material-symbols-outlined {
+  font-size: 1.15rem;
+  color: #fff7cc;
+}
+
+.theme-card:nth-child(1) { animation-delay: 0.04s; }
+.theme-card:nth-child(2) { animation-delay: 0.1s; }
+.theme-card:nth-child(3) { animation-delay: 0.16s; }
+.theme-card:nth-child(4) { animation-delay: 0.22s; }
+.theme-card:nth-child(5) { animation-delay: 0.28s; }
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .theme-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .theme-card {
+    min-height: 170px;
+  }
+
+  .theme-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .plan-strip {
+    padding: 34px 14px 70px;
+  }
+
+  .plan-content {
+    border-radius: 18px;
+    padding: 34px 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-card,
+  .plan-content {
+    animation: none;
+  }
+
+  .theme-card:hover,
+  .btn:hover {
+    transform: none;
+  }
+}

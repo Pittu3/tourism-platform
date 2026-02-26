@@ -1,0 +1,80 @@
+<section class="destinations">
+  <h2>Top Destinations in South India</h2>
+
+  <div class="controls-wrap">
+    <div class="filters">
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <path d="M10 2a8 8 0 105.3 14l4.8 4.8 1.4-1.4-4.8-4.8A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" fill="currentColor"/>
+          </svg>
+        </span>
+        <input
+          type="text"
+          placeholder="Search destinations, temples, or states..."
+          [(ngModel)]="searchTerm"
+        >
+      </div>
+      <div class="sort-wrap">
+        <select class="filter-select sort-select" [(ngModel)]="sortBy" aria-label="Sort destinations">
+          <option value="recommended">Sort: Recommended</option>
+          <option value="price">Sort: Price (Low to High)</option>
+          <option value="distance">Sort: Distance (Nearest)</option>
+          <option value="rating">Sort: Ratings (Highest)</option>
+          <option value="time">Sort: Time (Shortest)</option>
+          <option value="state">Sort: State (A-Z)</option>
+        </select>
+      </div>
+      <select class="filter-select" [(ngModel)]="selectedCategory" aria-label="Filter by category">
+        <option value="all">Category: All</option>
+        <option value="temples">Temples</option>
+        <option value="backwaters">Backwaters</option>
+        <option value="forests">Forests</option>
+        <option value="hill-stations">Hill Stations</option>
+        <option value="heritage">Heritage & Cities</option>
+      </select>
+    </div>
+
+    <div class="active-chips">
+      <span class="chip sort-chip">Sort: {{ activeSortLabel }}</span>
+      <span class="chip category-chip">Category: {{ selectedCategory }}</span>
+      <span class="chip search-chip" *ngIf="searchTerm">Search: {{ searchTerm }}</span>
+      <span class="chip location-chip" *ngIf="userCoords">From: {{ distanceSource }}</span>
+      <button type="button" class="chip reset" (click)="resetFilters()">Reset Filters</button>
+    </div>
+
+    <div class="location-tools quick-location">
+      <select [(ngModel)]="selectedCity" [disabled]="resolvingLocation">
+        <option value="">Quick city select</option>
+        <option *ngFor="let city of cityOptions" [value]="city.name">{{ city.name }}</option>
+      </select>
+      <button type="button" (click)="applyQuickCity()" [disabled]="resolvingLocation">
+        Apply City
+      </button>
+    </div>
+    <p class="status">{{ locationStatus }}</p>
+  </div>
+
+  <div class="destination-grid">
+    <div class="card" *ngFor="let place of visibleDestinations; trackBy: trackByDestination">
+      <img [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event, place.name)">
+      <div class="card-top">
+        <h3>{{place.name}}</h3>
+        <span class="duration">{{place.duration}}</span>
+      </div>
+      <p class="location">{{place.location}}</p>
+      <div class="meta-row">
+        <span>&#8377; {{ getPrice(place) }}</span>
+        <span>{{ userCoords ? (getDistanceKm(place) + ' km') : 'Distance: set city' }}</span>
+        <span>&#9733; {{ getRating(place) }}</span>
+        <span>{{ getState(place) }}</span>
+      </div>
+      <p class="desc-line" [title]="place.description">{{place.description}}</p>
+      <button routerLink="/booking">Book Now</button>
+    </div>
+  </div>
+
+  <p class="empty-state" *ngIf="visibleDestinations.length === 0">
+    No destinations match your search.
+  </p>
+</section>

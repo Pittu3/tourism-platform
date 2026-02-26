@@ -1,0 +1,18 @@
+<nav class="navbar">
+  <div class="logo">
+    <span class="material-symbols-outlined logo-icon" aria-hidden="true">travel_explore</span>
+    <span>Travel Explorer</span>
+  </div>
+
+  <ul class="nav-links" [class.active]="menuOpen">
+    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuOpen=false">Home</a></li>
+    <li><a routerLink="/destinations" routerLinkActive="active" (click)="menuOpen=false">Destinations</a></li>
+    <li><a routerLink="/activities" routerLinkActive="active" (click)="menuOpen=false">Activities</a></li>
+    <li><a routerLink="/booking" routerLinkActive="active" (click)="menuOpen=false">Book a Tour</a></li>
+    <li><a routerLink="/contact" routerLinkActive="active" (click)="menuOpen=false">Contact</a></li>
+  </ul>
+
+  <button class="hamburger" type="button" (click)="toggleMenu()" aria-label="Toggle navigation menu">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+</nav>
