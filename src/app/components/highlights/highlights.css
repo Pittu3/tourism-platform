@@ -29,8 +29,35 @@
   color: #5b6b7f;
 }
 
+.value-strip {
+  margin-top: 20px;
+  background: #ffffff;
+  border: 1px solid #d9e6f2;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(16, 37, 63, 0.08);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px;
+}
+
+.value-item {
+  text-align: center;
+}
+
+.value-item strong {
+  display: block;
+  color: #0e4c98;
+  font-size: 1.28rem;
+}
+
+.value-item span {
+  color: #64748a;
+  font-size: 0.88rem;
+}
+
 .card-grid {
-  margin-top: 30px;
+  margin-top: 24px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
@@ -88,18 +115,23 @@
 
 .book-link {
   display: inline-block;
-  color: #0f6ddd;
-  font-weight: 700;
   text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: #0f6ddd;
+  color: #ffffff;
 }
 
 @media (max-width: 980px) {
+  .value-strip,
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 680px) {
+  .value-strip,
   .card-grid {
     grid-template-columns: 1fr;
   }

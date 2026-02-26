@@ -59,7 +59,7 @@ const FALLBACK_DESTINATIONS: Destination[] = [
     name: 'Chidambaram Nataraja Temple',
     location: 'Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://hblimg.mmtcdn.com/content/hubble/img/ttd_images_march/mmt/activities/m_Chidambaram_the_nataraja_temple_1_l_667_1000.jpg',
+    image: 'https://hblimg.mmtcdn.com/content/hubble/img/dest_images/mmt/activities/m_Chidambaram_landscape_1_l_634_950.jpg',
     description: 'Cosmic dance and devotion.',
     coords: { lat: 11.3996, lng: 79.6936 }
   },
@@ -246,6 +246,62 @@ const FALLBACK_DESTINATIONS: Destination[] = [
     image: 'https://karnatakatourism.org/_next/image/?url=https%3A%2F%2Fweb-cms.karnatakatourism.org%2Fwp-content%2Fuploads%2F2025%2F06%2Fdji_0053.webp&w=3840&q=75',
     description: 'Temples, beaches, coastal flavors.',
     coords: { lat: 13.3409, lng: 74.7421 }
+  },
+  {
+    name: 'Nandi Hills',
+    location: 'Karnataka',
+    duration: '2D / 1N',
+    image: 'https://www.holidify.com/images/cmsuploads/compressed/Nandi-One-Trail-Nandi-One-Trek-Indiahikes-e1478063555995_20200412091530.jpg',
+    description: 'Sunrise peaks and viewpoints.',
+    coords: { lat: 13.3702, lng: 77.6835 }
+  },
+  {
+    name: 'Hogenakkal Falls',
+    location: 'Tamil Nadu',
+    duration: '2D / 1N',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Hogenakkal_Falls_Close.jpg/250px-Hogenakkal_Falls_Close.jpg',
+    description: 'Roaring cascades and coracle rides.',
+    coords: { lat: 12.1176, lng: 77.7752 }
+  },
+  {
+    name: 'Pollachi',
+    location: 'Tamil Nadu',
+    duration: '2D / 1N',
+    image: 'https://tse4.mm.bing.net/th/id/OIP.5PR8IhLcvjZck_b848k3jwHaE8?pid=Api&h=220&P=0',
+    description: 'Green fields and breezy drives.',
+    coords: { lat: 10.6583, lng: 77.0087 }
+  },
+  {
+    name: 'Dhanushkodi',
+    location: 'Tamil Nadu',
+    duration: '2D / 1N',
+    image: 'https://tse1.mm.bing.net/th/id/OIP.cw1pl0ZEwPpfIFxjDSZk4AHaFj?pid=Api&h=220&P=0',
+    description: 'Ghost town, dramatic shorelines.',
+    coords: { lat: 9.1748, lng: 79.4322 }
+  },
+  {
+    name: 'Courtallam',
+    location: 'Tamil Nadu',
+    duration: '2D / 1N',
+    image: 'https://banasri.in/wp-content/uploads/2024/07/Courtallam-Falls-Tamil-Nadu.jpg',
+    description: 'Healing falls and greenery.',
+    coords: { lat: 8.9342, lng: 77.2731 }
+  },
+  {
+    name: 'Pathanamthitta',
+    location: 'Kerala',
+    duration: '2D / 1N',
+    image: 'https://keralatravels.com/userfiles/1477897523_nilackal_siva_temple.jpg',
+    description: 'Pilgrim routes and forested hills.',
+    coords: { lat: 9.2648, lng: 76.7870 }
+  },
+  {
+    name: 'Jog Falls',
+    location: 'Karnataka',
+    duration: '2D / 1N',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Jog_Falls_05092016.jpg/960px-Jog_Falls_05092016.jpg',
+    description: 'Monsoon cascades, valley views.',
+    coords: { lat: 14.2294, lng: 74.8087 }
   }
 ];
 
@@ -556,3 +612,11 @@ export class Destinations implements OnInit {
     return place.name;
   }
 }
+
+
+
+
+
+
+
+

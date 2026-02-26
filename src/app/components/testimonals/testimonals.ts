@@ -11,21 +11,21 @@ import { Component } from '@angular/core';
 export class Testimonals {
   reviews = [
     {
-      name: 'Aarav Shah',
+      name: 'Sai Charan',
+      trip: 'Temple + Heritage Circuit',
+      feedback: 'Excellent planning, clean stays, and smooth transfers throughout the trip.',
+      rating: 5
+    },
+    {
+      name: 'Ananya Reddy',
       trip: 'Kerala Backwaters',
-      feedback: 'The itinerary was smooth, hotels were clean, and local guides were excellent.',
+      feedback: 'Houseboat experience and local support were outstanding from start to finish.',
       rating: 5
     },
     {
-      name: 'Naina Verma',
-      trip: 'Leh-Ladakh Explorer',
-      feedback: 'Super organized trip with amazing support during altitude changes.',
-      rating: 5
-    },
-    {
-      name: 'Rohan Mehta',
-      trip: 'Ooty + Coonoor',
-      feedback: 'Great value package and flexible schedule. Perfect for our family vacation.',
+      name: 'Rahul Kumar',
+      trip: 'Munnar + Thekkady',
+      feedback: 'Great value itinerary with flexible timings and responsive support team.',
       rating: 4
     }
   ];

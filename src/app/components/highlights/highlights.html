@@ -5,6 +5,13 @@
     <p class="subtitle">Curated itineraries inspired by the most-booked southern circuits.</p>
   </div>
 
+  <div class="value-strip">
+    <div class="value-item" *ngFor="let point of valuePoints">
+      <strong>{{ point.metric }}</strong>
+      <span>{{ point.label }}</span>
+    </div>
+  </div>
+
   <div class="card-grid">
     <article class="card" *ngFor="let destination of featuredDestinations">
       <img [src]="destination.image" [alt]="destination.name" loading="lazy">
