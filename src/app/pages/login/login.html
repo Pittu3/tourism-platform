@@ -1,0 +1,45 @@
+<main class="login-page">
+  <section class="login-card">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Login to Travel Explorer</h1>
+    <p class="subtitle">Access your bookings, saved itineraries, and trip updates.</p>
+
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        #emailField="ngModel"
+        required
+        email
+        placeholder="you@example.com"
+      >
+      <small class="error" *ngIf="submitted && emailField.invalid">Enter a valid email address.</small>
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        #passwordField="ngModel"
+        required
+        minlength="6"
+        placeholder="Minimum 6 characters"
+      >
+      <small class="error" *ngIf="submitted && passwordField.invalid">Password must be at least 6 characters.</small>
+
+      <label class="checkbox">
+        <input type="checkbox" name="rememberMe" [(ngModel)]="rememberMe">
+        <span>Remember me</span>
+      </label>
+
+      <button type="submit">Sign In</button>
+    </form>
+
+    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="support">Need help? <a routerLink="/contact">Contact support</a></p>
+  </section>
+</main>

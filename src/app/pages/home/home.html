@@ -1,0 +1,53 @@
+<main class="home-page">
+  <app-hero></app-hero>
+  <app-highlights></app-highlights>
+  <app-testimonials></app-testimonials>
+
+  <section class="theme-categories container-xl px-3 px-md-4">
+    <div class="section-head">
+      <p>Curated Experiences</p>
+      <h2>Pick Your South India Travel Style</h2>
+    </div>
+    <div class="theme-grid">
+      <a class="theme-card temples" routerLink="/destinations" [queryParams]="{ category: 'temples' }">
+        <h3>Temples</h3>
+        <span>Heritage circuits and sacred architecture</span>
+      </a>
+      <a class="theme-card backwaters" routerLink="/destinations" [queryParams]="{ category: 'backwaters' }">
+        <h3>Backwaters</h3>
+        <span>Houseboats, canals, and calm waterside stays</span>
+      </a>
+      <a class="theme-card forests" routerLink="/destinations" [queryParams]="{ category: 'forests' }">
+        <h3>Forests</h3>
+        <span>Waterfalls, wildlife, and lush green escapes</span>
+      </a>
+      <a class="theme-card hills" routerLink="/destinations" [queryParams]="{ category: 'hill-stations' }">
+        <h3>Hill Stations</h3>
+        <span>Misty weather, tea valleys, and viewpoints</span>
+      </a>
+      <a class="theme-card heritage" routerLink="/destinations" [queryParams]="{ category: 'heritage' }">
+        <h3>Heritage & Cities</h3>
+        <span>Palaces, forts, and iconic city landmarks</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="plan-strip">
+    <div class="plan-content shadow-lg">
+      <p class="plan-label">Ready to travel?</p>
+      <h2>Build Your South India Itinerary in Minutes</h2>
+      <p>
+        Tell us your budget, travel style, and dates. We will suggest the best southern route, stays, and experiences.
+      </p>
+      <div class="plan-actions">
+        <a routerLink="/booking" class="btn btn-primary fw-semibold">Start Planning</a>
+        <a routerLink="/contact" class="btn btn-outline fw-semibold">Talk to an Expert</a>
+      </div>
+      <div class="feature-points">
+        <div><span class="material-symbols-outlined">verified</span>Verified local partners</div>
+        <div><span class="material-symbols-outlined">calendar_month</span>Flexible departures</div>
+        <div><span class="material-symbols-outlined">support_agent</span>24/7 trip assistance</div>
+      </div>
+    </div>
+  </section>
+</main>

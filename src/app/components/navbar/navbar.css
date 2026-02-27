@@ -1,0 +1,123 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 40px;
+  background: linear-gradient(120deg, rgba(8, 24, 39, 0.88), rgba(15, 58, 82, 0.82));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(7px);
+  position: -webkit-sticky;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.logo {
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  font-weight: 800;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+  color: #d4f4ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.logo span:last-child {
+  font-weight: 900;
+}
+
+.logo-icon {
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  color: #ffd27d;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #f3fbff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 11px 16px;
+  font-size: 1.03rem;
+  border-radius: 999px;
+  transition: all 0.24s ease;
+}
+
+.nav-links li a.active,
+.nav-links li a:hover {
+  background: linear-gradient(90deg, #ffa24b, #ffd18c);
+  color: #17283d;
+  box-shadow: 0 6px 14px rgba(255, 174, 87, 0.3);
+}
+
+.hamburger {
+  display: none;
+  font-size: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  line-height: 1;
+  padding: 4px;
+  z-index: 101;
+}
+
+.hamburger .material-symbols-outlined {
+  font-size: 38px;
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    padding: 14px 16px;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 12px;
+    left: auto;
+    background: rgba(11, 33, 51, 0.96);
+    flex-direction: column;
+    width: min(260px, 78vw);
+    max-width: calc(100vw - 24px);
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.24s ease, opacity 0.24s ease;
+    padding: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 8px;
+  }
+
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-links li a {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}

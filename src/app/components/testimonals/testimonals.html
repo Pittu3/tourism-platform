@@ -1,0 +1,17 @@
+<section class="testimonials">
+  <div class="section-head">
+    <p class="label">Traveler Reviews</p>
+    <h2>What Our Travelers Say</h2>
+  </div>
+
+  <div class="review-grid">
+    <article class="review-card" *ngFor="let review of reviews">
+      <div class="stars" [attr.aria-label]="'Rating: ' + review.rating + ' out of 5'">
+        <span *ngFor="let star of [1,2,3,4,5]">{{ star <= review.rating ? '&#9733;' : '&#9734;' }}</span>
+      </div>
+      <p class="feedback">"{{ review.feedback }}"</p>
+      <h3>{{ review.name }}</h3>
+      <p class="trip">{{ review.trip }}</p>
+    </article>
+  </div>
+</section>

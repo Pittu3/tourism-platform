@@ -1,0 +1,28 @@
+<section class="highlights">
+  <div class="section-head">
+    <p class="label">Top Destinations</p>
+    <h2>Most Loved South India Tour Packages</h2>
+    <p class="subtitle">Curated itineraries inspired by the most-booked southern circuits.</p>
+  </div>
+
+  <div class="value-strip">
+    <div class="value-item" *ngFor="let point of valuePoints">
+      <strong>{{ point.metric }}</strong>
+      <span>{{ point.label }}</span>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <article class="card" *ngFor="let destination of featuredDestinations">
+      <img [src]="destination.image" [alt]="destination.name" loading="lazy">
+      <div class="card-content">
+        <div class="card-top">
+          <h3>{{ destination.name }}</h3>
+          <span>{{ destination.duration }}</span>
+        </div>
+        <p>{{ destination.description }}</p>
+        <a class="book-link" routerLink="/booking">Book this package</a>
+      </div>
+    </article>
+  </div>
+</section>

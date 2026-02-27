@@ -1,0 +1,26 @@
+<section class="hero">
+  <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="3000" data-bs-wrap="true" data-bs-pause="false">
+    <div class="carousel-inner">
+      <div class="carousel-item" *ngFor="let slide of heroSlides; let i = index" [class.active]="i === 0">
+        <img [src]="slide.image" [alt]="slide.title" loading="lazy">
+      </div>
+    </div>
+  </div>
+
+  <canvas #heroCanvas class="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-tag">Trusted by 10,000+ travelers</p>
+    <h1>South India, Beyond the Usual</h1>
+    <p class="hero-subtitle">
+      Discover hidden gems, cultural experiences, and journeys tailored to your pace.
+    </p>
+    <div class="hero-pills" aria-label="Popular categories">
+      <span>Kerala Backwaters</span>
+      <span>Tamil Nadu Temples</span>
+      <span>Karnataka Hills</span>
+      <span>Coastal Getaway</span>
+    </div>
+  </div>
+</section>
+
