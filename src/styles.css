@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #13263a;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-feature-settings: 'lnum' 1, 'onum' 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+p,
+a,
+button,
+input,
+select,
+textarea,
+label,
+li,
+span {
+  font-weight: 400;
+}

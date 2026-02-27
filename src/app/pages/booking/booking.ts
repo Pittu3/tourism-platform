@@ -17,9 +17,7 @@ export class Booking {
   date = '';
 
   submit() {
-
     alert('Booking Successful');
-
   }
 
 }

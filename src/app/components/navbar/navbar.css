@@ -10,19 +10,28 @@
   top: 0;
   z-index: 100;
   backdrop-filter: blur(7px);
+  position: -webkit-sticky;
+  isolation: isolate;
+  overflow: visible;
 }
 
 .logo {
-  font-size: 1.7rem;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
   font-weight: 800;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif;
   color: #d4f4ff;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+}
+
+.logo span:last-child {
+  font-weight: 900;
 }
 
 .logo-icon {
-  font-size: 1.9rem;
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
   color: #ffd27d;
 }
 
@@ -30,6 +39,8 @@
   display: flex;
   list-style: none;
   gap: 30px;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li a {
@@ -45,7 +56,6 @@
 .nav-links li a.active,
 .nav-links li a:hover {
   background: linear-gradient(90deg, #ffa24b, #ffd18c);
-  color: white;
   color: #17283d;
   box-shadow: 0 6px 14px rgba(255, 174, 87, 0.3);
 }
@@ -57,36 +67,57 @@
   background: transparent;
   border: 0;
   color: #ffffff;
+  line-height: 1;
+  padding: 4px;
+  z-index: 101;
 }
 
 .hamburger .material-symbols-outlined {
   font-size: 38px;
+  display: block;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .navbar {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 
   .nav-links {
     position: absolute;
-    top: 88px;
-    right: 0;
+    top: calc(100% + 8px);
+    right: 12px;
+    left: auto;
     background: rgba(11, 33, 51, 0.96);
     flex-direction: column;
-    width: min(250px, 80vw);
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    padding: 20px;
+    width: min(260px, 78vw);
+    max-width: calc(100vw - 24px);
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.24s ease, opacity 0.24s ease;
+    padding: 14px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    border-bottom-left-radius: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 8px;
   }
 
   .nav-links.active {
-    transform: translateX(0);
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-links li a {
+    display: block;
+    width: 100%;
+    text-align: left;
   }
 
   .hamburger {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
+
 }
