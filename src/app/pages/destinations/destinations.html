@@ -1,8 +1,16 @@
 <section class="destinations">
-  <h2>Top Destinations in South India</h2>
+  <div class="destinations-hero">
+    <div class="hero-copy">
+      <p class="hero-kicker">South India travel</p>
+      <h2>Top Destinations for Soulful Journeys</h2>
+      <p class="hero-sub">
+        Temple towns, royal cities, misty hills, and backwater escapes.
+      </p>
+    </div>
+  </div>
 
   <div class="controls-wrap">
-    <div class="filters">
+    <div class="results-toolbar">
       <div class="search-box">
         <span class="search-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="18" height="18">
@@ -13,68 +21,192 @@
           type="text"
           placeholder="Search destinations, temples, or states..."
           [(ngModel)]="searchTerm"
+          (ngModelChange)="onFiltersChanged()"
         >
       </div>
-      <div class="sort-wrap">
-        <select class="filter-select sort-select" [(ngModel)]="sortBy" aria-label="Sort destinations">
-          <option value="recommended">Sort: Recommended</option>
-          <option value="price">Sort: Price (Low to High)</option>
-          <option value="distance">Sort: Distance (Nearest)</option>
-          <option value="rating">Sort: Ratings (Highest)</option>
-          <option value="time">Sort: Time (Shortest)</option>
-          <option value="state">Sort: State (A-Z)</option>
-        </select>
-      </div>
-      <select class="filter-select" [(ngModel)]="selectedCategory" aria-label="Filter by category">
-        <option value="all">Category: All</option>
-        <option value="temples">Temples</option>
-        <option value="backwaters">Backwaters</option>
-        <option value="forests">Forests</option>
-        <option value="hill-stations">Hill Stations</option>
-        <option value="heritage">Heritage & Cities</option>
-      </select>
     </div>
 
     <div class="active-chips">
-      <span class="chip sort-chip">Sort: {{ activeSortLabel }}</span>
-      <span class="chip category-chip">Category: {{ selectedCategory }}</span>
-      <span class="chip search-chip" *ngIf="searchTerm">Search: {{ searchTerm }}</span>
-      <span class="chip location-chip" *ngIf="userCoords">From: {{ distanceSource }}</span>
+      <span class="chip-label">Applied filters:</span>
+      <ng-container *ngIf="selectedSorts.length > 0; else recommendedSortChip">
+        <span class="chip sort-chip" *ngFor="let sort of selectedSorts">
+          Sort: {{ sortLabel(sort) }}
+          <button
+            type="button"
+            class="chip-clear"
+            (click)="removeSort(sort)"
+            aria-label="Remove sort filter"
+          >
+            &#215;
+          </button>
+        </span>
+      </ng-container>
+      <ng-template #recommendedSortChip>
+        <span class="chip sort-chip">
+          Sort: Recommended
+          <button type="button" class="chip-clear" disabled aria-label="No sort filter to clear">
+            &#215;
+          </button>
+        </span>
+      </ng-template>
+      <span class="chip search-chip">
+        Search: {{ searchTerm || 'Any' }}
+        <button
+          type="button"
+          class="chip-clear"
+          (click)="clearSearch()"
+          [disabled]="!searchTerm"
+          aria-label="Clear search filter"
+        >
+          &#215;
+        </button>
+      </span>
+      <ng-container *ngIf="selectedCategories.length > 0; else allCategoriesChip">
+        <span class="chip category-chip" *ngFor="let category of selectedCategories">
+          Category: {{ categoryLabel(category) }}
+          <button
+            type="button"
+            class="chip-clear"
+            (click)="removeCategory(category)"
+            aria-label="Remove category filter"
+          >
+            &#215;
+          </button>
+        </span>
+      </ng-container>
+      <ng-template #allCategoriesChip>
+        <span class="chip category-chip">
+          Category: All
+          <button type="button" class="chip-clear" disabled aria-label="No category filter to clear">
+            &#215;
+          </button>
+        </span>
+      </ng-template>
+      <span class="chip location-chip">
+        From: {{ distanceSource || 'Not set' }}
+        <button
+          type="button"
+          class="chip-clear"
+          (click)="clearLocation()"
+          [disabled]="!userCoords"
+          aria-label="Clear location filter"
+        >
+          &#215;
+        </button>
+      </span>
       <button type="button" class="chip reset" (click)="resetFilters()">Reset Filters</button>
     </div>
-
-    <div class="location-tools quick-location">
-      <select [(ngModel)]="selectedCity" [disabled]="resolvingLocation">
-        <option value="">Quick city select</option>
-        <option *ngFor="let city of cityOptions" [value]="city.name">{{ city.name }}</option>
-      </select>
-      <button type="button" (click)="applyQuickCity()" [disabled]="resolvingLocation">
-        Apply City
-      </button>
-    </div>
-    <p class="status">{{ locationStatus }}</p>
   </div>
 
-  <div class="destination-grid">
-    <div class="card" *ngFor="let place of visibleDestinations; trackBy: trackByDestination">
-      <img [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event, place.name)">
-      <div class="card-top">
-        <h3>{{place.name}}</h3>
-        <span class="duration">{{place.duration}}</span>
+  <div class="results-layout">
+    <aside class="filters-panel">
+      <h3>Refine results</h3>
+
+      <div class="filter-section">
+        <div class="filter-title">Location</div>
+        <div class="location-tools quick-location">
+          <select [(ngModel)]="selectedCity" [disabled]="resolvingLocation">
+            <option value="">Quick city select</option>
+            <option *ngFor="let city of cityOptions" [value]="city.name">{{ city.name }}</option>
+          </select>
+          <button type="button" (click)="applyQuickCity()" [disabled]="resolvingLocation">
+            Apply City
+          </button>
+        </div>
+        <p class="status">{{ locationStatus }}</p>
       </div>
-      <p class="location">{{place.location}}</p>
-      <div class="meta-row">
-        <span>&#8377; {{ getPrice(place) }}</span>
-        <span>{{ userCoords ? (getDistanceKm(place) + ' km') : 'Distance: set city' }}</span>
-        <span>&#9733; {{ getRating(place) }}</span>
-        <span>{{ getState(place) }}</span>
+
+      <div class="filter-section">
+        <div class="filter-title">Sort by</div>
+        <label class="filter-option" *ngFor="let sort of sortOptions">
+          <input
+            type="checkbox"
+            [checked]="isSortSelected(sort.key)"
+            (change)="toggleSort(sort.key)"
+          >
+          <span class="filter-text">{{ sort.label }}</span>
+        </label>
+        <button type="button" class="filter-clear" (click)="clearSorts()" [disabled]="selectedSorts.length === 0">
+          Clear sort
+        </button>
       </div>
-      <p class="desc-line" [title]="place.description">{{place.description}}</p>
-      <button routerLink="/booking">Book Now</button>
+
+      <div class="filter-section">
+        <div class="filter-title">Categories</div>
+        <label class="filter-option" *ngFor="let category of categoryOptions">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(category.key)"
+            (change)="toggleCategory(category.key)"
+          >
+          <span class="filter-text">{{ category.label }}</span>
+        </label>
+        <button type="button" class="filter-clear" (click)="clearCategories()" [disabled]="selectedCategories.length === 0">
+          Clear categories
+        </button>
+      </div>
+
+    </aside>
+
+    <div class="results-content">
+      <div class="destination-grid">
+        <div class="card" *ngFor="let place of paginatedDestinations; trackBy: trackByDestination">
+          <div class="card-media">
+            <a
+              class="image-link"
+              [routerLink]="['/destinations', toSlug(place.name)]"
+              aria-label="View details for {{ place.name }}"
+            >
+              <img [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event, place.name, place.location)">
+            </a>
+          </div>
+          <div class="card-top">
+            <h3>
+              <a class="title-link" [routerLink]="['/destinations', toSlug(place.name)]">
+                {{place.name}}
+              </a>
+            </h3>
+            <span class="duration">{{place.duration}}</span>
+          </div>
+          <p class="location">{{place.location}}</p>
+          <div class="meta-row">
+            <span>&#8377; {{ getPrice(place) }}</span>
+            <span>&#9733; {{ getRating(place) }}</span>
+            <span>{{ categoryLabel(getCategory(place)) }}</span>
+          </div>
+          <button routerLink="/booking">Book Now</button>
+        </div>
+      </div>
+
+      <div class="pagination" *ngIf="visibleDestinations.length > 0">
+        <button type="button" class="page-btn nav-btn" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+          Previous
+        </button>
+
+        <button
+          type="button"
+          class="page-btn"
+          *ngFor="let page of pageNumbers"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          type="button"
+          class="page-btn nav-btn"
+          (click)="goToNextPage()"
+          [disabled]="currentPage === totalPages"
+        >
+          Next
+        </button>
+      </div>
+
+      <p class="empty-state" *ngIf="visibleDestinations.length === 0">
+        No destinations match your search.
+      </p>
     </div>
   </div>
 
-  <p class="empty-state" *ngIf="visibleDestinations.length === 0">
-    No destinations match your search.
-  </p>
 </section>

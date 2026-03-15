@@ -1,20 +1,10 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
-
-interface Destination {
-  name: string;
-  location: string;
-  duration: string;
-  image: string;
-  description: string;
-  coords: {
-    lat: number;
-    lng: number;
-  };
-}
+import { Destination, FALLBACK_DESTINATIONS } from '../../data/destinations-data';
 
 interface CityOption {
   name: string;
@@ -22,301 +12,29 @@ interface CityOption {
   lng: number;
 }
 
-const FALLBACK_DESTINATIONS: Destination[] = [
-  {
-    name: 'Tirumala Tirupathi',
-    location: 'Andhra Pradesh',
-    duration: '2D / 1N',
-    image: 'https://3.bp.blogspot.com/-eKlAydd6GDw/U9DtLeczIzI/AAAAAAAAFmo/6RMDHTcIH4Q/s1600/Tirupati+Balaji+Temple.jpg',
-    description: 'Sacred hills and blessings.',
-    coords: { lat: 13.6833, lng: 79.3470 }
-  },
-  {
-    name: 'Meenakshi Amman Temple',
-    location: 'Madurai, Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://static.toiimg.com/thumb/msid-59381768,width=1200,height=900/59381768.jpg',
-    description: 'Colorful towers, divine heritage.',
-    coords: { lat: 9.9195, lng: 78.1193 }
-  },
-  {
-    name: 'Ramanathaswamy Temple',
-    location: 'Rameswaram, Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://tse1.mm.bing.net/th/id/OIP.dhWy2r5QUmisr1derQSL8AHaEK?pid=Api&P=0&h=220',
-    description: 'Legendary corridors, sacred rituals.',
-    coords: { lat: 9.2881, lng: 79.3174 }
-  },
-  {
-    name: 'Brihadeeswarar Temple',
-    location: 'Thanjavur, Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://i.ytimg.com/vi/KC3GAmjn1mg/maxresdefault.jpg',
-    description: 'Majestic Chola stone masterpiece.',
-    coords: { lat: 10.7828, lng: 79.1317 }
-  },
-  {
-    name: 'Chidambaram Nataraja Temple',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://hblimg.mmtcdn.com/content/hubble/img/dest_images/mmt/activities/m_Chidambaram_landscape_1_l_634_950.jpg',
-    description: 'Cosmic dance and devotion.',
-    coords: { lat: 11.3996, lng: 79.6936 }
-  },
-  {
-    name: 'Simhachalam Temple',
-    location: 'Andhra Pradesh',
-    duration: '2D / 1N',
-    image: 'https://media.tripinvites.com/places/visakhapatnam/simhachalam-temple/the-simhachalam-temple-featured.jpg',
-    description: 'Hill shrine, serene views.',
-    coords: { lat: 17.7669, lng: 83.2506 }
-  },
-  {
-    name: 'Lepakshi Veerabhadra Temple',
-    location: 'Andhra Pradesh',
-    duration: '2D / 1N',
-    image: 'https://www.templepurohit.com/wp-content/uploads/2015/08/Lepakshi-Temple.jpg',
-    description: 'Murals and hanging pillar.',
-    coords: { lat: 13.8006, lng: 77.6050 }
-  },
-  {
-    name: 'Yadadri Temple',
-    location: 'Telangana',
-    duration: '2D / 1N',
-    image: 'https://tse2.mm.bing.net/th/id/OIP.2whmNXvGTGhi5rUFcgeWNQHaEK?pid=Api&P=0&h=220',
-    description: 'Grand shrine on hilltop.',
-    coords: { lat: 17.5866, lng: 78.9433 }
-  },
-  {
-    name: 'Guruvayur Temple',
-    location: 'Kerala',
-    duration: '2D / 1N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP.3BqTD9ZWWyxjPXPsM0Xz8QHaEH?pid=Api&P=0&h=220',
-    description: 'Kerala’s famed Krishna temple.',
-    coords: { lat: 10.5943, lng: 76.0413 }
-  },
-  {
-    name: 'Tiruchendur Murugan Temple',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://kandhan.org/wp-content/uploads/2024/01/Tiruchendur_koil.jpeg',
-    description: 'Seaside shrine of Murugan.',
-    coords: { lat: 8.4971, lng: 78.1193 }
-  },
-  {
-    name: 'Hampi',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://karnatakatourism.org/wp-content/uploads/2020/05/Hampi.jpg',
-    description: 'Ruins, boulders, timeless glory.',
-    coords: { lat: 15.3350, lng: 76.4600 }
-  },
-  {
-    name: 'Charminar',
-    location: 'Hyderabad, Telangana',
-    duration: '2D / 1N',
-    image: 'https://wallpaperaccess.com/full/4495586.jpg',
-    description: 'Iconic arches and bazaars.',
-    coords: { lat: 17.3616, lng: 78.4747 }
-  },
-  {
-    name: 'Mysore Palace',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://wallpaperaccess.com/full/5515777.jpg',
-    description: 'Royal grandeur and lights.',
-    coords: { lat: 12.3052, lng: 76.6552 }
-  },
-  {
-    name: 'Murudeshwar',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://www.holidify.com/images/bgImages/MURUDESHWAR.jpg',
-    description: 'Giant Shiva by sea.',
-    coords: { lat: 14.0943, lng: 74.4845 }
-  },
-  {
-    name: 'Ooty',
-    location: 'Tamil Nadu',
-    duration: '3D / 2N',
-    image: 'https://res.cloudinary.com/voyehomes/image/upload/v1657619197/Blogs/ooty/rose_lcgkdk.jpg',
-    description: 'Cool climate, scenic charm.',
-    coords: { lat: 11.4102, lng: 76.6950 }
-  },
-  {
-    name: 'Kodaikanal',
-    location: 'Tamil Nadu',
-    duration: '3D / 2N',
-    image: 'https://1.bp.blogspot.com/-LMFUp83_LHk/T9b3uHBwB8I/AAAAAAAABZQ/5c1Nqo4Ix1E/s1600/Kodaikanal_Tourism+01.jpg',
-    description: 'Lake views, pine trails.',
-    coords: { lat: 10.2381, lng: 77.4892 }
-  },
-  {
-    name: 'Munnar',
-    location: 'Kerala',
-    duration: '3D / 2N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP._7CACN4ODs7EPPBdb0DA_wHaEK?pid=Api&P=0&h=220',
-    description: 'Tea valleys and mist.',
-    coords: { lat: 10.0889, lng: 77.0595 }
-  },
-  {
-    name: 'Alleppey Backwaters',
-    location: 'Kerala',
-    duration: '3D / 2N',
-    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/cc/95/14/alleppey-backwater-tour.jpg?w=1200&h=900&s=1',
-    description: 'Houseboats through calm canals.',
-    coords: { lat: 9.4981, lng: 76.3388 }
-  },
-  {
-    name: 'Wayanad',
-    location: 'Kerala',
-    duration: '3D / 2N',
-    image: 'https://www.wayanad.com/files/slides/2064569462.jpg',
-    description: 'Forests, falls, wild beauty.',
-    coords: { lat: 11.6854, lng: 76.1320 }
-  },
-  {
-    name: 'Coorg',
-    location: 'Karnataka',
-    duration: '3D / 2N',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.ChLtVZWDJzaz9GUXHtQhmQHaEK?pid=Api&P=0&h=220',
-    description: 'Coffee estates and hills.',
-    coords: { lat: 12.4244, lng: 75.7382 }
-  },
-  {
-    name: 'Kanyakumari',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.bybdbFLeV3aFNuyt7pkcOAHaEK?pid=Api&P=0&h=220',
-    description: 'Sunrise, sunset, ocean confluence.',
-    coords: { lat: 8.0883, lng: 77.5385 }
-  },
-  {
-    name: 'Kochi',
-    location: 'Kerala',
-    duration: '2D / 1N',
-    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/de/f0/eb/backwater-tourism.jpg?w=700&h=-1&s=1',
-    description: 'Harbor charm, heritage lanes.',
-    coords: { lat: 9.9312, lng: 76.2673 }
-  },
-  {
-    name: 'Thekkady',
-    location: 'Kerala',
-    duration: '2D / 1N',
-    image: 'https://www.soil2soulexpeditions.com/admin/public/images/cities/image_file/48334/Thekkady.jpg',
-    description: 'Wildlife safaris, spice trails.',
-    coords: { lat: 9.6031, lng: 77.1615 }
-  },
-  {
-    name: 'Bhuvanagiri Fort',
-    location: 'Telangana',
-    duration: '2D / 1N',
-    image: 'https://media.assettype.com/outlooktraveller%2F2024-08-17%2Fny2v7uto%2F2020031977.jpg?w=640&auto=format%2Ccompress',
-    description: 'Monolith fort, panoramic views.',
-    coords: { lat: 17.5151, lng: 78.8850 }
-  },
-  {
-    name: 'Warangal',
-    location: 'Telangana',
-    duration: '2D / 1N',
-    image: 'https://tourism.telangana.gov.in/storage/app/media/WARANGAL-IMAGE.jpg',
-    description: 'Kakatiya heritage, stone gateways.',
-    coords: { lat: 17.9689, lng: 79.5941 }
-  },
-  {
-    name: 'Araku Valley',
-    location: 'Andhra Pradesh',
-    duration: '3D / 2N',
-    image: 'https://luxoticholidays.com/blog/wp-content/uploads/2025/02/visakhapatnam-araku-valley.jpg',
-    description: 'Coffee hills, misty valleys.',
-    coords: { lat: 18.3270, lng: 82.8795 }
-  },
-  {
-    name: 'Pulicat Lake',
-    location: 'Andhra Pradesh',
-    duration: '2D / 1N',
-    image: 'https://hblimg.mmtcdn.com/content/hubble/img/ttd_images/mmt/activities/m_Nellore_Pulicat_lake-1_l_427_640.jpg',
-    description: 'Birdlife, lagoons, serene sunsets.',
-    coords: { lat: 13.4269, lng: 80.3189 }
-  },
-  {
-    name: 'Udupi',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://karnatakatourism.org/_next/image/?url=https%3A%2F%2Fweb-cms.karnatakatourism.org%2Fwp-content%2Fuploads%2F2025%2F06%2Fdji_0053.webp&w=3840&q=75',
-    description: 'Temples, beaches, coastal flavors.',
-    coords: { lat: 13.3409, lng: 74.7421 }
-  },
-  {
-    name: 'Nandi Hills',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://www.holidify.com/images/cmsuploads/compressed/Nandi-One-Trail-Nandi-One-Trek-Indiahikes-e1478063555995_20200412091530.jpg',
-    description: 'Sunrise peaks and viewpoints.',
-    coords: { lat: 13.3702, lng: 77.6835 }
-  },
-  {
-    name: 'Hogenakkal Falls',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Hogenakkal_Falls_Close.jpg/250px-Hogenakkal_Falls_Close.jpg',
-    description: 'Roaring cascades and coracle rides.',
-    coords: { lat: 12.1176, lng: 77.7752 }
-  },
-  {
-    name: 'Pollachi',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP.5PR8IhLcvjZck_b848k3jwHaE8?pid=Api&h=220&P=0',
-    description: 'Green fields and breezy drives.',
-    coords: { lat: 10.6583, lng: 77.0087 }
-  },
-  {
-    name: 'Dhanushkodi',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://tse1.mm.bing.net/th/id/OIP.cw1pl0ZEwPpfIFxjDSZk4AHaFj?pid=Api&h=220&P=0',
-    description: 'Ghost town, dramatic shorelines.',
-    coords: { lat: 9.1748, lng: 79.4322 }
-  },
-  {
-    name: 'Courtallam',
-    location: 'Tamil Nadu',
-    duration: '2D / 1N',
-    image: 'https://banasri.in/wp-content/uploads/2024/07/Courtallam-Falls-Tamil-Nadu.jpg',
-    description: 'Healing falls and greenery.',
-    coords: { lat: 8.9342, lng: 77.2731 }
-  },
-  {
-    name: 'Pathanamthitta',
-    location: 'Kerala',
-    duration: '2D / 1N',
-    image: 'https://keralatravels.com/userfiles/1477897523_nilackal_siva_temple.jpg',
-    description: 'Pilgrim routes and forested hills.',
-    coords: { lat: 9.2648, lng: 76.7870 }
-  },
-  {
-    name: 'Jog Falls',
-    location: 'Karnataka',
-    duration: '2D / 1N',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Jog_Falls_05092016.jpg/960px-Jog_Falls_05092016.jpg',
-    description: 'Monsoon cascades, valley views.',
-    coords: { lat: 14.2294, lng: 74.8087 }
-  }
-];
+type SortKey =
+  | 'price-low'
+  | 'price-high'
+  | 'distance-nearest'
+  | 'rating-highest'
+  | 'time-shortest'
+  | 'alpha-az'
+  | 'alpha-za';
 
 @Component({
   selector: 'app-destinations',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
   templateUrl: './destinations.html',
   styleUrl: './destinations.css'
 })
 export class Destinations implements OnInit {
   destinations: Destination[] = [...FALLBACK_DESTINATIONS];
   searchTerm = '';
-  sortBy: 'recommended' | 'price' | 'distance' | 'rating' | 'time' | 'state' = 'recommended';
-  selectedCategory = 'all';
+  selectedSorts: SortKey[] = [];
+  selectedCategories: string[] = [];
+  currentPage = 1;
+  readonly itemsPerPage = 9;
   selectedCity = '';
   userCoords: { lat: number; lng: number } | null = null;
   locationStatus = 'Select a city to sort by nearest distance.';
@@ -388,20 +106,59 @@ export class Destinations implements OnInit {
     { name: 'Indore', lat: 22.7196, lng: 75.8577 }
   ];
 
+  readonly categoryOptions = [
+    { key: 'temples', label: 'Temples' },
+    { key: 'backwaters', label: 'Backwaters' },
+    { key: 'forests', label: 'Forests' },
+    { key: 'hill-stations', label: 'Hill Stations' },
+    { key: 'heritage', label: 'Heritage & Cities' }
+  ];
+
+  readonly sortOptions: { key: SortKey; label: string }[] = [
+    { key: 'distance-nearest', label: 'Distance: Nearest' },
+    { key: 'alpha-az', label: 'Alphabetical: A to Z' },
+    { key: 'alpha-za', label: 'Alphabetical: Z to A' },
+    { key: 'price-low', label: 'Price: Low to High' },
+    { key: 'price-high', label: 'Price: High to Low' },
+    { key: 'rating-highest', label: 'Ratings: Highest Rated' },
+    { key: 'time-shortest', label: 'Travel Time: Shortest' }
+  ];
+
   private readonly fallbackImage =
     'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80';
 
-  constructor(private readonly route: ActivatedRoute) {}
+  constructor(private readonly route: ActivatedRoute, private readonly http: HttpClient) {}
 
   ngOnInit(): void {
     this.destinations = [...FALLBACK_DESTINATIONS];
-    const raw = this.route.snapshot.queryParamMap.get('category') ?? 'all';
-    this.selectedCategory = this.normalizeCategory(raw);
+    const raw = this.route.snapshot.queryParamMap.get('category') ?? '';
+    const parts = raw.split(',').map((value) => value.trim()).filter(Boolean);
+    this.selectedCategories = this.normalizeCategorySelection(parts);
+
+    this.http
+      .get<Record<string, string>>('/assets/destination-descriptions.json')
+      .subscribe({
+        next: (data) => {
+          this.destinations = this.destinations.map((place) => ({
+            ...place,
+            description: data[place.name] ?? ''
+          }));
+        },
+        error: () => {
+          // Keep fallback descriptions empty if the endpoint fails.
+        }
+      });
   }
 
-  onImageError(event: Event, placeName: string): void {
+  onImageError(event: Event, placeName: string, placeLocation?: string): void {
     const img = event.target as HTMLImageElement | null;
     if (!img) {
+      return;
+    }
+
+    const queryFallback = this.buildFallbackImage(placeName, placeLocation);
+    if (img.src !== queryFallback && img.src !== this.fallbackImage) {
+      img.src = queryFallback;
       return;
     }
 
@@ -411,48 +168,67 @@ export class Destinations implements OnInit {
   }
 
   get visibleDestinations(): Destination[] {
-    const term = this.searchTerm.trim().toLowerCase();
+    const term = this.normalizeText(this.searchTerm);
+    const selectedCategories = this.selectedCategories;
+    const selectedSorts = this.selectedSorts;
     let items = [...this.destinations];
 
-    if (term) {
-      items = items.filter((d) => {
-        const state = this.getState(d).toLowerCase();
-        return (
-          d.name.toLowerCase().includes(term) ||
-          d.location.toLowerCase().includes(term) ||
-          state.includes(term)
-        );
+    const matchesSearch = (place: Destination): boolean => {
+      if (!term) {
+        return true;
+      }
+      const name = this.normalizeText(place.name);
+      const location = this.normalizeText(place.location);
+      const state = this.normalizeText(this.getState(place));
+      return name.includes(term) || location.includes(term) || state.includes(term);
+    };
+
+    const matchesCategory = (place: Destination): boolean =>
+      selectedCategories.length === 0 || selectedCategories.includes(this.getCategory(place));
+
+    items = items.filter((place) => matchesSearch(place) && matchesCategory(place));
+
+    // Apply sorting with proper multi-criteria handling
+    if (selectedSorts.length === 0) {
+      // Default sorting when no sorts selected
+      items.sort((a, b) => {
+        // Primary: alphabetical by name
+        const nameDiff = a.name.localeCompare(b.name);
+        if (nameDiff !== 0) return nameDiff;
+        
+        // Secondary: by rating (highest first)
+        const ratingDiff = this.getRating(b) - this.getRating(a);
+        if (ratingDiff !== 0) return ratingDiff;
+        
+        // Tertiary: by price (lowest first)
+        return this.getPrice(a) - this.getPrice(b);
       });
-    }
-
-    if (this.selectedCategory !== 'all') {
-      items = items.filter((d) => this.getCategory(d) === this.selectedCategory);
-    }
-
-    switch (this.sortBy) {
-      case 'price':
-        items.sort((a, b) => this.getPrice(a) - this.getPrice(b));
-        break;
-      case 'distance':
-        if (this.userCoords) {
-          items.sort((a, b) => this.getDistanceKm(a) - this.getDistanceKm(b));
-        }
-        break;
-      case 'rating':
-        items.sort((a, b) => this.getRating(b) - this.getRating(a));
-        break;
-      case 'time':
-        items.sort((a, b) => this.getDays(a) - this.getDays(b));
-        break;
-      case 'state':
-        items.sort((a, b) => this.getState(a).localeCompare(this.getState(b)));
-        break;
-      default:
-        items.sort((a, b) => this.hashName(a.name) - this.hashName(b.name));
-        break;
+    } else {
+      // Apply user-selected sorts with proper tie-breaking
+      items.sort((a, b) => this.compareBySorts(a, b, selectedSorts));
     }
 
     return items;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.visibleDestinations.length / this.itemsPerPage);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get paginatedDestinations(): Destination[] {
+    const totalPages = this.totalPages;
+    if (totalPages === 0) {
+      return [];
+    }
+
+    const currentPage = Math.min(this.currentPage, totalPages);
+    const indexOfLastItem = currentPage * this.itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - this.itemsPerPage;
+    return this.visibleDestinations.slice(indexOfFirstItem, indexOfLastItem);
   }
 
   getState(place: Destination): string {
@@ -496,7 +272,12 @@ export class Destinations implements OnInit {
 
   getCategory(place: Destination): string {
     const key = `${place.name} ${place.location}`.toLowerCase();
-    if (key.includes('temple') || key.includes('tirupati') || key.includes('guruvayur')) {
+    if (
+      key.includes('temple') ||
+      key.includes('tirupati') ||
+      key.includes('tirupathi') ||
+      key.includes('guruvayur')
+    ) {
       return 'temples';
     }
     if (key.includes('backwaters') || key.includes('alleppey')) {
@@ -507,6 +288,12 @@ export class Destinations implements OnInit {
     }
     if (
       key.includes('ooty') ||
+      key.includes('yercaud') ||
+      key.includes('coonoor') ||
+      key.includes('chikmagalur') ||
+      key.includes('sakleshpur') ||
+      key.includes('horsley hills') ||
+      key.includes('lambasingi') ||
       key.includes('kodaikanal') ||
       key.includes('munnar') ||
       key.includes('coorg')
@@ -516,32 +303,175 @@ export class Destinations implements OnInit {
     return 'heritage';
   }
 
-  get activeSortLabel(): string {
-    const labels: Record<typeof this.sortBy, string> = {
-      recommended: 'Recommended',
-      price: 'Price',
-      distance: 'Distance',
-      rating: 'Ratings',
-      time: 'Time',
-      state: 'State'
-    };
-    return labels[this.sortBy];
-  }
-
   resetFilters(): void {
     this.searchTerm = '';
-    this.sortBy = 'recommended';
-    this.selectedCategory = 'all';
+    this.selectedSorts = [];
+    this.selectedCategories = [];
     this.selectedCity = '';
     this.userCoords = null;
     this.distanceSource = '';
     this.locationStatus = 'Select a city to sort by nearest distance.';
+    this.currentPage = 1;
   }
 
-  private normalizeCategory(value: string): string {
+  onFiltersChanged(): void {
+    this.selectedCategories = this.normalizeCategorySelection(this.selectedCategories);
+    this.selectedSorts = this.normalizeSortSelection(this.selectedSorts);
+    this.currentPage = 1;
+  }
+
+  isSortSelected(sort: SortKey): boolean {
+    return this.selectedSorts.includes(sort);
+  }
+
+  toggleSort(sort: SortKey): void {
+    if (this.selectedSorts.includes(sort)) {
+      this.selectedSorts = this.selectedSorts.filter((value) => value !== sort);
+    } else {
+      this.selectedSorts = [...this.selectedSorts, sort];
+    }
+    this.onFiltersChanged();
+  }
+
+  removeSort(sort: SortKey): void {
+    if (!this.selectedSorts.includes(sort)) {
+      return;
+    }
+    this.selectedSorts = this.selectedSorts.filter((value) => value !== sort);
+    this.onFiltersChanged();
+  }
+
+  clearSorts(): void {
+    if (this.selectedSorts.length === 0) {
+      return;
+    }
+    this.selectedSorts = [];
+    this.onFiltersChanged();
+  }
+
+  sortLabel(sort: SortKey): string {
+    const match = this.sortOptions.find((option) => option.key === sort);
+    return match ? match.label : sort;
+  }
+
+  getSortOrder(sort: SortKey): number {
+    return this.selectedSorts.indexOf(sort) + 1;
+  }
+
+  isCategorySelected(category: string): boolean {
+    return this.selectedCategories.includes(category);
+  }
+
+  toggleCategory(category: string): void {
+    const key = this.normalizeCategoryKey(category);
+    if (!key) {
+      return;
+    }
+    if (this.selectedCategories.includes(key)) {
+      this.selectedCategories = this.selectedCategories.filter((value) => value !== key);
+    } else {
+      this.selectedCategories = [...this.selectedCategories, key];
+    }
+    this.onFiltersChanged();
+  }
+
+  clearCategories(): void {
+    if (this.selectedCategories.length === 0) {
+      return;
+    }
+    this.selectedCategories = [];
+    this.onFiltersChanged();
+  }
+
+  removeCategory(category: string): void {
+    if (!this.selectedCategories.includes(category)) {
+      return;
+    }
+    this.selectedCategories = this.selectedCategories.filter((value) => value !== category);
+    this.onFiltersChanged();
+  }
+
+  clearSearch(): void {
+    if (!this.searchTerm) {
+      return;
+    }
+    this.searchTerm = '';
+    this.onFiltersChanged();
+  }
+
+  clearLocation(): void {
+    if (!this.userCoords) {
+      return;
+    }
+    this.selectedCity = '';
+    this.userCoords = null;
+    this.distanceSource = '';
+    this.locationStatus = 'Select a city to sort by nearest distance.';
+    this.onFiltersChanged();
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+  }
+
+  goToPreviousPage(): void {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage(): void {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  private normalizeCategoryKey(value: string): string | null {
     const key = value.trim().toLowerCase();
-    const allowed = ['all', 'temples', 'backwaters', 'forests', 'hill-stations', 'heritage'];
-    return allowed.includes(key) ? key : 'all';
+    const allowed = this.categoryOptions.some((category) => category.key === key);
+    return allowed ? key : null;
+  }
+
+  private normalizeCategorySelection(values: string[]): string[] {
+    const unique = new Set<string>();
+    for (const value of values) {
+      const key = this.normalizeCategoryKey(value);
+      if (key) {
+        unique.add(key);
+      }
+    }
+    return Array.from(unique);
+  }
+
+  categoryLabel(key: string): string {
+    const match = this.categoryOptions.find((category) => category.key === key);
+    return match ? match.label : key;
+  }
+
+  private normalizeSortSelection(values: SortKey[]): SortKey[] {
+    const allowed = new Set(this.sortOptions.map((option) => option.key));
+    const unique = new Set<SortKey>();
+    for (const value of values) {
+      if (allowed.has(value)) {
+        unique.add(value);
+      }
+    }
+    return Array.from(unique);
+  }
+
+  private normalizeText(value: string): string {
+    return value.trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  private buildFallbackImage(name: string, location?: string): string {
+    const query = `${name} ${location ?? ''} south india`.trim();
+    return `https://source.unsplash.com/1200x800/?${encodeURIComponent(query)}`;
+  }
+
+  toSlug(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
   }
 
   private hashName(value: string): number {
@@ -550,6 +480,66 @@ export class Destinations implements OnInit {
       hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
     }
     return hash;
+  }
+
+  private compareBySorts(a: Destination, b: Destination, sorts: SortKey[]): number {
+    // If no sorts selected, use default sorting
+    if (sorts.length === 0) {
+      // Default: alphabetical by name, then by rating (highest), then by price (lowest)
+      const nameDiff = a.name.localeCompare(b.name);
+      if (nameDiff !== 0) return nameDiff;
+      
+      const ratingDiff = this.getRating(b) - this.getRating(a);
+      if (ratingDiff !== 0) return ratingDiff;
+      
+      return this.getPrice(a) - this.getPrice(b);
+    }
+
+    // Apply multiple sort criteria in order
+    for (const sort of sorts) {
+      let diff = 0;
+      switch (sort) {
+        case 'price-low':
+          diff = this.getPrice(a) - this.getPrice(b);
+          break;
+        case 'price-high':
+          diff = this.getPrice(b) - this.getPrice(a);
+          break;
+        case 'distance-nearest':
+          if (!this.userCoords) {
+            diff = 0;
+            break;
+          }
+          diff = this.getDistanceKm(a) - this.getDistanceKm(b);
+          break;
+        case 'rating-highest':
+          diff = this.getRating(b) - this.getRating(a);
+          break;
+        case 'time-shortest':
+          diff = this.getDays(a) - this.getDays(b);
+          break;
+        case 'alpha-az':
+          diff = a.name.localeCompare(b.name);
+          break;
+        case 'alpha-za':
+          diff = b.name.localeCompare(a.name);
+          break;
+      }
+      // Only return if we have a definitive difference for this sort criteria
+      if (diff !== 0) {
+        return diff;
+      }
+      // If diff is 0, continue to next sort criteria for tie-breaking
+    }
+    
+    // If all sort criteria result in ties, fall back to default sorting
+    const nameDiff = a.name.localeCompare(b.name);
+    if (nameDiff !== 0) return nameDiff;
+    
+    const ratingDiff = this.getRating(b) - this.getRating(a);
+    if (ratingDiff !== 0) return ratingDiff;
+    
+    return this.getPrice(a) - this.getPrice(b);
   }
 
   applyQuickCity(): void {
@@ -561,7 +551,11 @@ export class Destinations implements OnInit {
     this.selectedCity = city.name;
     this.userCoords = { lat: city.lat, lng: city.lng };
     this.distanceSource = city.name;
+    if (this.selectedSorts.length === 0) {
+      this.selectedSorts = ['distance-nearest'];
+    }
     this.locationStatus = `Showing distance from ${city.name} (approx. straight-line).`;
+    this.onFiltersChanged();
   }
 
   useBrowserLocation(): void {
@@ -580,8 +574,12 @@ export class Destinations implements OnInit {
           lng: position.coords.longitude
         };
         this.distanceSource = 'your location';
+        if (this.selectedSorts.length === 0) {
+          this.selectedSorts = ['distance-nearest'];
+        }
         this.locationStatus = 'Showing distance from your location (approx. straight-line).';
         this.resolvingLocation = false;
+        this.onFiltersChanged();
       },
       () => {
         this.locationStatus = 'Location permission denied or unavailable.';
@@ -604,19 +602,38 @@ export class Destinations implements OnInit {
   }
 
   private findCityFromLocal(value: string): CityOption | undefined {
-    const key = value.trim().toLowerCase();
-    return this.cityOptions.find((c) => c.name.toLowerCase() === key);
+    const key = this.normalizeCityKey(value);
+    if (!key) {
+      return undefined;
+    }
+
+    const aliases: Record<string, string> = {
+      bangalore: 'bengaluru',
+      trivandrum: 'thiruvananthapuram'
+    };
+    const resolvedKey = aliases[key] ?? key;
+
+    const exact = this.cityOptions.find((c) => this.normalizeCityKey(c.name) === resolvedKey);
+    if (exact) {
+      return exact;
+    }
+
+    const startsWith = this.cityOptions.find((c) =>
+      this.normalizeCityKey(c.name).startsWith(resolvedKey)
+    );
+    if (startsWith) {
+      return startsWith;
+    }
+
+    return this.cityOptions.find((c) => this.normalizeCityKey(c.name).includes(resolvedKey));
+  }
+
+  private normalizeCityKey(value: string): string {
+    return value.trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
   trackByDestination(index: number, place: Destination): string {
     return place.name;
   }
 }
-
-
-
-
-
-
-
 
