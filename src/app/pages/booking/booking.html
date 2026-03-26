@@ -1,35 +1,181 @@
-<section class="container">
+<section class="booking-page">
+  <div class="booking-hero">
+    <p class="eyebrow">Week 5-6 Feature</p>
+    <h1>Tour Booking System</h1>
+    <p class="subtext">
+      Choose a destination, compare available tours, and submit your booking request.
+    </p>
+  </div>
 
-  <h1>Book Your Tour</h1>
+  <form class="booking-layout" [formGroup]="bookingForm" (ngSubmit)="submitBooking()" novalidate>
+    <aside class="tour-panel">
+      <h2>1. Choose Destination</h2>
 
-  <form (ngSubmit)="submit()">
+      <label for="destinationName">Destination</label>
+      <select
+        id="destinationName"
+        formControlName="destinationName"
+        (change)="onDestinationChange()"
+      >
+        <option value="">Select a destination</option>
+        <option *ngFor="let destination of destinationOptions" [value]="destination.name">
+          {{ destination.name }} ({{ destination.location }})
+        </option>
+      </select>
+      <small class="error" *ngIf="hasError('destinationName', 'required')">
+        Destination is required.
+      </small>
 
-    <input
-      type="text"
-      placeholder="Name"
-      [(ngModel)]="name"
-      name="name"
-    >
+      <div class="tour-heading">
+        <h3>2. Available Tours</h3>
+        <span *ngIf="loadingTours">Loading...</span>
+      </div>
 
-    <input
-      type="email"
-      placeholder="Email"
-      [(ngModel)]="email"
-      name="email"
-    >
+      <div class="tour-list" *ngIf="availableTours.length > 0; else noToursState">
+        <article
+          class="tour-card"
+          *ngFor="let tour of availableTours; trackBy: trackTour"
+          [class.selected]="tour.id === formControls.tourId.value"
+        >
+          <div class="tour-title-row">
+            <h4>{{ tour.title }}</h4>
+            <span class="price">&#8377; {{ tour.pricePerPerson }} / person</span>
+          </div>
 
-    <input
-      type="date"
-      [(ngModel)]="date"
-      name="date"
-    >
+          <p class="tour-meta">
+            {{ tour.duration }} | Departure {{ tour.departureTime }} | Seats left:
+            {{ tour.availableSeats }}
+          </p>
 
-    <button type="submit">
+          <ul>
+            <li *ngFor="let item of tour.highlights">{{ item }}</li>
+          </ul>
 
-      Confirm Booking
+          <button type="button" (click)="selectTour(tour.id)">
+            {{ tour.id === formControls.tourId.value ? 'Selected' : 'Select Tour' }}
+          </button>
+        </article>
+      </div>
 
-    </button>
+      <ng-template #noToursState>
+        <p class="hint" *ngIf="formControls.destinationName.value; else pickDestination">
+          No tours are currently available for this destination.
+        </p>
+      </ng-template>
 
+      <ng-template #pickDestination>
+        <p class="hint">Select a destination to view tours.</p>
+      </ng-template>
+
+      <small class="error" *ngIf="hasError('tourId', 'required')">
+        Please select a tour package.
+      </small>
+
+      <div class="tour-summary" *ngIf="selectedTour as chosenTour">
+        <p><strong>Selected Tour:</strong> {{ chosenTour.title }}</p>
+        <p><strong>Price:</strong> &#8377; {{ chosenTour.pricePerPerson }} per person</p>
+        <p><strong>Departure:</strong> {{ chosenTour.departureTime }}</p>
+      </div>
+    </aside>
+
+    <section class="details-panel">
+      <h2>3. Enter Booking Details</h2>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" formControlName="fullName" placeholder="Your full name">
+          <small class="error" *ngIf="hasError('fullName', 'required')">Name is required.</small>
+          <small class="error" *ngIf="hasError('fullName', 'minlength')">
+            Name must be at least 3 characters.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" placeholder="you@example.com">
+          <small class="error" *ngIf="hasError('email', 'required')">Email is required.</small>
+          <small class="error" *ngIf="hasError('email', 'email')">Enter a valid email address.</small>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="tel" formControlName="phone" placeholder="10-digit mobile number">
+          <small class="error" *ngIf="hasError('phone', 'required')">Phone number is required.</small>
+          <small class="error" *ngIf="hasError('phone', 'pattern')">
+            Enter a valid 10-digit Indian mobile number.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="travelDate">Travel Date</label>
+          <input id="travelDate" type="date" [attr.min]="minTravelDate" formControlName="travelDate">
+          <small class="error" *ngIf="hasError('travelDate', 'required')">Travel date is required.</small>
+          <small class="error" *ngIf="hasError('travelDate', 'pastDate')">
+            Travel date cannot be in the past.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="travelers">Number of People</label>
+          <input
+            id="travelers"
+            type="number"
+            min="1"
+            max="12"
+            formControlName="travelers"
+            placeholder="How many travelers?"
+          >
+          <small class="error" *ngIf="hasError('travelers', 'required')">Traveler count is required.</small>
+          <small class="error" *ngIf="hasError('travelers', 'min')">
+            At least 1 traveler is required.
+          </small>
+          <small class="error" *ngIf="hasError('travelers', 'max')">
+            Maximum 12 travelers per booking.
+          </small>
+        </div>
+
+        <div class="field full-width">
+          <label for="specialRequests">Special Requests (Optional)</label>
+          <textarea
+            id="specialRequests"
+            rows="4"
+            maxlength="250"
+            formControlName="specialRequests"
+            placeholder="Any dietary needs, pickup notes, or preferences"
+          ></textarea>
+          <small class="char-count">
+            {{ formControls.specialRequests.value.length }}/250 characters
+          </small>
+          <small class="error" *ngIf="hasError('specialRequests', 'maxlength')">
+            Special requests can be up to 250 characters.
+          </small>
+        </div>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="agreeToPolicy">
+        <span>I confirm all booking details are correct.</span>
+      </label>
+      <small class="error" *ngIf="hasError('agreeToPolicy', 'required')">
+        Please confirm before submitting.
+      </small>
+
+      <button class="submit-btn" type="submit" [disabled]="submitting">
+        {{ submitting ? 'Submitting...' : 'Submit Booking Request' }}
+      </button>
+
+      <p class="error global" *ngIf="bookingError">{{ bookingError }}</p>
+
+      <div class="success" *ngIf="bookingSuccess as confirmation">
+        <h3>Booking Confirmed</h3>
+        <p><strong>Booking ID:</strong> {{ confirmation.bookingId }}</p>
+        <p><strong>Destination:</strong> {{ confirmation.destinationName }}</p>
+        <p><strong>Tour:</strong> {{ confirmation.tourTitle }}</p>
+        <p><strong>Travel Date:</strong> {{ confirmation.travelDate }}</p>
+        <p><strong>Travelers:</strong> {{ confirmation.travelers }}</p>
+        <p><strong>Total Amount:</strong> &#8377; {{ confirmation.totalAmount }}</p>
+      </div>
+    </section>
   </form>
-
 </section>

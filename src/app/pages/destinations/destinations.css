@@ -11,7 +11,7 @@
   color: var(--text-primary);
   background: linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
 }
-aa
+
 .destinations::before,
 .destinations::after {
   content: "";
@@ -284,6 +284,16 @@ aa
 .filter-text {
   flex: 1;
   cursor: pointer;
+}
+
+.preference-select {
+  width: 100%;
+  border: 1px solid #c2d7df;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  background: #f4fbfd;
+  color: var(--text-primary);
 }
 
 

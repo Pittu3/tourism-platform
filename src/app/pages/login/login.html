@@ -5,41 +5,81 @@
     <p class="subtitle">Access your bookings, saved itineraries, and trip updates.</p>
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
-      <label for="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        name="email"
-        [(ngModel)]="email"
-        #emailField="ngModel"
-        required
-        email
-        placeholder="you@example.com"
-      >
-      <small class="error" *ngIf="submitted && emailField.invalid">Enter a valid email address.</small>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailField="ngModel"
+          required
+          email
+          placeholder="you@example.com"
+          autocomplete="email"
+          [class.invalid]="submitted && emailField.invalid"
+          [class.valid]="submitted && emailField.valid"
+        >
+        <small class="error" *ngIf="submitted && emailField.invalid">
+          <span *ngIf="emailField.errors?.['required']">Email is required</span>
+          <span *ngIf="emailField.errors?.['email']">Enter a valid email address</span>
+        </small>
+      </div>
 
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        #passwordField="ngModel"
-        required
-        minlength="6"
-        placeholder="Minimum 6 characters"
-      >
-      <small class="error" *ngIf="submitted && passwordField.invalid">Password must be at least 6 characters.</small>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            #passwordField="ngModel"
+            required
+            minlength="6"
+            placeholder="Minimum 6 characters"
+            autocomplete="current-password"
+            [class.invalid]="submitted && passwordField.invalid"
+            [class.valid]="submitted && passwordField.valid"
+          >
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [title]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <small class="error" *ngIf="submitted && passwordField.invalid">
+          <span *ngIf="passwordField.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordField.errors?.['minlength']">
+            Password must be at least 6 characters
+          </span>
+        </small>
+      </div>
 
-      <label class="checkbox">
-        <input type="checkbox" name="rememberMe" [(ngModel)]="rememberMe">
-        <span>Remember me</span>
-      </label>
+      <button type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Sign In</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
 
-      <button type="submit">Sign In</button>
+      <button type="button" class="google-btn" (click)="signInWithGoogle()" [disabled]="googleLoading || loading">
+        <span *ngIf="!googleLoading">Sign In with Google</span>
+        <span *ngIf="googleLoading" class="spinner dark-spinner"></span>
+      </button>
+
+      <div class="error-message" *ngIf="errorMessage" aria-live="polite">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage" aria-live="polite">
+        {{ successMessage }}
+      </div>
     </form>
 
-    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="support">Don't have an account? <a routerLink="/signup">Create one</a></p>
+    <p class="support" *ngIf="isAuthenticated">Already signed in? <a routerLink="/dashboard">Go to dashboard</a></p>
     <p class="support">Need help? <a routerLink="/contact">Contact support</a></p>
   </section>
 </main>

@@ -1,15 +1,15 @@
-.login-page {
+.signup-page {
   min-height: calc(100vh - 180px);
   display: grid;
   place-items: center;
   padding: 40px 16px 70px;
   background:
-    radial-gradient(circle at top right, rgba(255, 186, 66, 0.25), transparent 40%),
-    radial-gradient(circle at left 20%, rgba(13, 148, 136, 0.18), transparent 34%),
+    radial-gradient(circle at top right, rgba(255, 186, 66, 0.24), transparent 40%),
+    radial-gradient(circle at left 20%, rgba(13, 148, 136, 0.16), transparent 34%),
     linear-gradient(180deg, #f4fbff 0%, #ffffff 100%);
 }
 
-.login-card {
+.signup-card {
   width: min(460px, 100%);
   padding: 30px 24px;
   border-radius: 18px;
@@ -54,15 +54,14 @@ label {
   color: #203953;
 }
 
-input[type='email'],
-input[type='password'],
-input[type='text'] {
+input {
   width: 100%;
   border-radius: 10px;
   border: 1px solid #cddff0;
   padding: 11px 12px;
   font-size: 0.98rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -79,7 +78,6 @@ input:focus {
 }
 
 .toggle-password {
-  margin: 0;
   border: 1px solid #c7d7ea;
   border-radius: 999px;
   background: #f4f9ff;
@@ -89,19 +87,9 @@ input:focus {
   cursor: pointer;
 }
 
-.toggle-password:hover {
-  filter: none;
-  background: #e6f1ff;
-}
-
 .invalid {
   border-color: #c62828 !important;
   box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
-}
-
-.valid {
-  border-color: #0b6f30 !important;
-  box-shadow: 0 0 0 3px rgba(11, 111, 48, 0.1);
 }
 
 button[type='submit'] {
@@ -116,40 +104,9 @@ button[type='submit'] {
   min-height: 44px;
 }
 
-button[type='submit']:hover {
-  filter: brightness(1.05);
-}
-
 button[type='submit']:disabled {
   opacity: 0.75;
   cursor: not-allowed;
-}
-
-.google-btn {
-  margin-top: 8px;
-  border: 1px solid #c6d8e8;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #1f425f;
-  font-weight: 700;
-  padding: 12px 14px;
-  cursor: pointer;
-  min-height: 44px;
-}
-
-.google-btn:hover {
-  background: #f2f8ff;
-}
-
-.google-btn:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
-}
-
-.error {
-  color: #c62828;
-  font-size: 0.8rem;
-  min-height: 1em;
 }
 
 .error-message,
@@ -181,11 +138,6 @@ button[type='submit']:disabled {
   animation: spin 0.8s linear infinite;
 }
 
-.dark-spinner {
-  border-color: rgba(31, 66, 95, 0.25);
-  border-top-color: #1f425f;
-}
-
 .support {
   margin: 16px 0 0;
   color: #4f647a;
@@ -194,16 +146,6 @@ button[type='submit']:disabled {
 .support a {
   color: #0b4a93;
   text-decoration: none;
-}
-
-@media (max-width: 560px) {
-  .login-card {
-    padding: 24px 16px;
-  }
-
-  .toggle-password {
-    min-width: 78px;
-  }
 }
 
 @keyframes spin {

@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,23 +13,105 @@ import { RouterModule } from '@angular/router';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit, OnDestroy {
   email = '';
   password = '';
-  rememberMe = true;
   submitted = false;
   successMessage = '';
+  errorMessage = '';
+  loading = false;
+  googleLoading = false;
+  showPassword = false;
+  isAuthenticated = false;
 
-  onSubmit(form: NgForm): void {
-    this.submitted = true;
-    this.successMessage = '';
+  private redirectTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private authSubscription: Subscription | null = null;
 
-    if (form.invalid) {
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) {}
+
+  async onSubmit(form: NgForm): Promise<void> {
+    if (this.loading) {
       return;
     }
 
-    this.successMessage = `Logged in as ${this.email}.`;
-    form.resetForm({ rememberMe: this.rememberMe });
-    this.submitted = false;
+    this.submitted = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (form.invalid) {
+      this.errorMessage = 'Please correct the highlighted fields and try again.';
+      return;
+    }
+
+    this.loading = true;
+
+    try {
+      const session = await this.authService.login(this.email, this.password);
+      this.password = '';
+      this.successMessage = `Welcome back, ${session.user.displayName ?? session.user.email}. Redirecting...`;
+      this.redirectTimeoutId = setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 700);
+    } catch (error: unknown) {
+      this.errorMessage =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Unable to login right now. Please try again.';
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async signInWithGoogle(): Promise<void> {
+    if (this.googleLoading) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.googleLoading = true;
+
+    try {
+      const credential = await this.authService.googleLogin();
+      this.successMessage = `Signed in as ${credential.user.displayName ?? credential.user.email}. Redirecting...`;
+      this.redirectTimeoutId = setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 700);
+    } catch (error: unknown) {
+      this.errorMessage =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Unable to sign in with Google right now. Please try again.';
+    } finally {
+      this.googleLoading = false;
+    }
+  }
+
+  ngOnInit(): void {
+    this.authSubscription = this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
+      this.isAuthenticated = isAuthenticated;
+      if (isAuthenticated) {
+        this.successMessage = 'You are already logged in. Redirecting to dashboard...';
+        this.redirectTimeoutId = setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 700);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.redirectTimeoutId) {
+      clearTimeout(this.redirectTimeoutId);
+    }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }

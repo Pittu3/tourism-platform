@@ -21,6 +21,8 @@ type SortKey =
   | 'alpha-az'
   | 'alpha-za';
 
+type PopularityKey = 'all' | 'must-visit' | 'trending' | 'hidden-gems';
+
 @Component({
   selector: 'app-destinations',
   standalone: true,
@@ -33,6 +35,7 @@ export class Destinations implements OnInit {
   searchTerm = '';
   selectedSorts: SortKey[] = [];
   selectedCategories: string[] = [];
+  selectedPopularity: PopularityKey = 'all';
   currentPage = 1;
   readonly itemsPerPage = 9;
   selectedCity = '';
@@ -114,6 +117,13 @@ export class Destinations implements OnInit {
     { key: 'heritage', label: 'Heritage & Cities' }
   ];
 
+  readonly popularityOptions: { key: PopularityKey; label: string }[] = [
+    { key: 'all', label: 'All popularity levels' },
+    { key: 'must-visit', label: 'Must Visit' },
+    { key: 'trending', label: 'Trending Now' },
+    { key: 'hidden-gems', label: 'Hidden Gems' }
+  ];
+
   readonly sortOptions: { key: SortKey; label: string }[] = [
     { key: 'distance-nearest', label: 'Distance: Nearest' },
     { key: 'alpha-az', label: 'Alphabetical: A to Z' },
@@ -171,6 +181,7 @@ export class Destinations implements OnInit {
     const term = this.normalizeText(this.searchTerm);
     const selectedCategories = this.selectedCategories;
     const selectedSorts = this.selectedSorts;
+    const selectedPopularity = this.selectedPopularity;
     let items = [...this.destinations];
 
     const matchesSearch = (place: Destination): boolean => {
@@ -180,13 +191,24 @@ export class Destinations implements OnInit {
       const name = this.normalizeText(place.name);
       const location = this.normalizeText(place.location);
       const state = this.normalizeText(this.getState(place));
-      return name.includes(term) || location.includes(term) || state.includes(term);
+      const category = this.normalizeText(this.categoryLabel(this.getCategory(place)));
+      const description = this.normalizeText(place.description || this.getDescriptionSnippet(place, 200));
+      return (
+        name.includes(term) ||
+        location.includes(term) ||
+        state.includes(term) ||
+        category.includes(term) ||
+        description.includes(term)
+      );
     };
 
     const matchesCategory = (place: Destination): boolean =>
       selectedCategories.length === 0 || selectedCategories.includes(this.getCategory(place));
 
-    items = items.filter((place) => matchesSearch(place) && matchesCategory(place));
+    const matchesPopularity = (place: Destination): boolean =>
+      selectedPopularity === 'all' || this.getPopularityTag(place) === selectedPopularity;
+
+    items = items.filter((place) => matchesSearch(place) && matchesCategory(place) && matchesPopularity(place));
 
     // Apply sorting with proper multi-criteria handling
     if (selectedSorts.length === 0) {
@@ -303,10 +325,28 @@ export class Destinations implements OnInit {
     return 'heritage';
   }
 
+  getPopularityScore(place: Destination): number {
+    const baseFromRating = this.getRating(place) * 18;
+    const variability = this.hashName(`${place.name}-${place.location}-${place.duration}`) % 11;
+    return Math.min(100, Math.round(baseFromRating + variability));
+  }
+
+  getPopularityTag(place: Destination): PopularityKey {
+    const score = this.getPopularityScore(place);
+    if (score >= 90) {
+      return 'must-visit';
+    }
+    if (score >= 82) {
+      return 'trending';
+    }
+    return 'hidden-gems';
+  }
+
   resetFilters(): void {
     this.searchTerm = '';
     this.selectedSorts = [];
     this.selectedCategories = [];
+    this.selectedPopularity = 'all';
     this.selectedCity = '';
     this.userCoords = null;
     this.distanceSource = '';
@@ -317,6 +357,7 @@ export class Destinations implements OnInit {
   onFiltersChanged(): void {
     this.selectedCategories = this.normalizeCategorySelection(this.selectedCategories);
     this.selectedSorts = this.normalizeSortSelection(this.selectedSorts);
+    this.selectedPopularity = this.normalizePopularityKey(this.selectedPopularity);
     this.currentPage = 1;
   }
 
@@ -447,6 +488,24 @@ export class Destinations implements OnInit {
     return match ? match.label : key;
   }
 
+  popularityLabel(key: PopularityKey): string {
+    const match = this.popularityOptions.find((option) => option.key === key);
+    return match ? match.label : 'All popularity levels';
+  }
+
+  setPopularity(value: string): void {
+    this.selectedPopularity = this.normalizePopularityKey(value);
+    this.onFiltersChanged();
+  }
+
+  clearPopularity(): void {
+    if (this.selectedPopularity === 'all') {
+      return;
+    }
+    this.selectedPopularity = 'all';
+    this.onFiltersChanged();
+  }
+
   private normalizeSortSelection(values: SortKey[]): SortKey[] {
     const allowed = new Set(this.sortOptions.map((option) => option.key));
     const unique = new Set<SortKey>();
@@ -458,6 +517,24 @@ export class Destinations implements OnInit {
     return Array.from(unique);
   }
 
+  private normalizePopularityKey(value: string): PopularityKey {
+    const key = value.trim().toLowerCase();
+    const allowed = new Set(this.popularityOptions.map((option) => option.key));
+    return allowed.has(key as PopularityKey) ? (key as PopularityKey) : 'all';
+  }
+
+  getDescriptionSnippet(place: Destination, maxLength = 140): string {
+    const description = place.description?.trim();
+    const fallback =
+      `${place.name} in ${place.location} is a ${this.categoryLabel(this.getCategory(place))} ` +
+      'destination with scenic views and local experiences.';
+    const source = description || fallback;
+    if (source.length <= maxLength) {
+      return source;
+    }
+    return `${source.slice(0, maxLength - 3).trimEnd()}...`;
+  }
+
   private normalizeText(value: string): string {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
   }
@@ -465,13 +542,6 @@ export class Destinations implements OnInit {
   private buildFallbackImage(name: string, location?: string): string {
     const query = `${name} ${location ?? ''} south india`.trim();
     return `https://source.unsplash.com/1200x800/?${encodeURIComponent(query)}`;
-  }
-
-  toSlug(value: string): string {
-    return value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
   }
 
   private hashName(value: string): number {
@@ -633,7 +703,7 @@ export class Destinations implements OnInit {
   }
 
   trackByDestination(index: number, place: Destination): string {
-    return place.name;
+    return place.id;
   }
 }
 

@@ -6,14 +6,20 @@ import { Activities } from './pages/activities/activities';
 import { Booking } from './pages/booking/booking';
 import { Contact } from './pages/contact/contact';
 import { Login } from './pages/login/login';
+import { Signup } from './pages/signup/signup';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  { path: 'home', component: Home },
   { path: 'destinations', component: Destinations },
-  { path: 'destinations/:slug', component: DestinationDetail },
+  { path: 'destinations/:id', component: DestinationDetail },
   { path: 'activities', component: Activities },
-  { path: 'booking', component: Booking },
+  { path: 'booking', component: Booking, canActivate: [authGuard] },
   { path: 'login', component: Login },
+  { path: 'signup', component: Signup },
+  { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
   { path: 'contact', component: Contact },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

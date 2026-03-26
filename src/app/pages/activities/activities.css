@@ -1,3 +1,255 @@
-.container {
-  padding: 50px;
+.activities-page {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 40px 16px 70px;
+}
+
+.activities-hero {
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.78rem;
+  color: #0d6d7a;
+  font-weight: 700;
+}
+
+.activities-hero h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: #14273a;
+}
+
+.subtitle {
+  margin: 0;
+  color: #4a6178;
+  max-width: 760px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filters label {
+  display: grid;
+  gap: 6px;
+  color: #1c364f;
+  font-weight: 600;
+}
+
+.filters input,
+.filters select {
+  border: 1px solid #c5d7ea;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #ffffff;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.state-message {
+  border-radius: 12px;
+  border: 1px dashed #c9dbec;
+  background: #f6fbff;
+  color: #45637f;
+  padding: 14px;
+}
+
+.state-message.error {
+  border-color: #f3cccc;
+  background: #fff5f5;
+  color: #842222;
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.activity-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6e5f3;
+  box-shadow: 0 10px 25px rgba(10, 42, 64, 0.11);
+  display: grid;
+}
+
+.image-wrap {
+  position: relative;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-width: 54px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.card-content {
+  padding: 14px;
+}
+
+.tag-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-tag {
+  display: inline-block;
+  border-radius: 999px;
+  background: #ecf8ff;
+  color: #0d5f8f;
+  border: 1px solid #b7daf5;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.rating {
+  color: #8b5a00;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.activity-card h2 {
+  margin: 10px 0 8px;
+  font-size: 1.1rem;
+  color: #142d45;
+}
+
+.description {
+  margin: 0;
+  color: #4e667e;
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
+.meta {
+  margin: 10px 0 12px;
+  color: #2d455d;
+  font-size: 0.9rem;
+}
+
+.explore-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0d746c, #0ea5a4);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.explore-btn:hover {
+  filter: brightness(1.05);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 20, 34, 0.62);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.modal-card {
+  width: min(760px, 100%);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.modal-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-body {
+  padding: 16px;
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.close-btn {
+  border: 1px solid #c6d7e8;
+  border-radius: 999px;
+  background: #f5f9ff;
+  color: #1f4260;
+  font-weight: 700;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+
+.modal-body h3 {
+  margin: 12px 0 8px;
+  font-size: 1.35rem;
+  color: #102d48;
+}
+
+.modal-body p {
+  margin: 6px 0;
+  color: #35526c;
+}
+
+.stars {
+  margin-top: 10px;
+  color: #d18e03;
+  font-size: 1.12rem;
+}
+
+@media (max-width: 920px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-field {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
 }

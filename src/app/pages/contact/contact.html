@@ -1,9 +1,134 @@
-<section class="container">
+<section class="contact-page">
+  <header class="contact-hero">
+    <p class="eyebrow">Week 7-8 Deliverable</p>
+    <h1>Contact Us</h1>
+    <p>
+      Reach our travel experts for itinerary planning, booking updates, and technical support.
+    </p>
+  </header>
 
-  <h1>Contact Us</h1>
+  <div class="contact-layout">
+    <aside class="contact-info">
+      <h2>Support Channels</h2>
+      <div class="info-card">
+        <h3>Email</h3>
+        <p>support@travelexplorer.com</p>
+      </div>
+      <div class="info-card">
+        <h3>Phone</h3>
+        <p>+91 98765 43210</p>
+      </div>
+      <div class="info-card">
+        <h3>Office Hours</h3>
+        <p>Mon - Sat, 9:00 AM to 8:00 PM IST</p>
+      </div>
+      <div class="info-card">
+        <h3>Response SLA</h3>
+        <p>Typical first response within 4 to 24 hours depending on request type.</p>
+      </div>
+    </aside>
 
-  <p>Email: support@travelexplorer.com</p>
+    <form class="contact-form" [formGroup]="contactForm" (ngSubmit)="submitInquiry()" novalidate>
+      <h2>Send a Message</h2>
 
-  <p>Phone: +91 9876543210</p>
+      <div class="field-grid">
+        <div class="field">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" formControlName="fullName" placeholder="Your name">
+          <small class="error" *ngIf="hasError('fullName', 'required')">Name is required.</small>
+          <small class="error" *ngIf="hasError('fullName', 'minlength')">
+            Name must be at least 3 characters.
+          </small>
+          <small class="error" *ngIf="hasError('fullName', 'htmlNotAllowed')">
+            HTML tags are not allowed.
+          </small>
+        </div>
 
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" placeholder="you@example.com">
+          <small class="error" *ngIf="hasError('email', 'required')">Email is required.</small>
+          <small class="error" *ngIf="hasError('email', 'email')">Enter a valid email address.</small>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="tel" formControlName="phone" placeholder="10-digit mobile number">
+          <small class="error" *ngIf="hasError('phone', 'required')">Phone number is required.</small>
+          <small class="error" *ngIf="hasError('phone', 'pattern')">
+            Enter a valid 10-digit Indian mobile number.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="inquiryType">Inquiry Type</label>
+          <select id="inquiryType" formControlName="inquiryType">
+            <option *ngFor="let item of inquiryTypes" [value]="item.value">
+              {{ item.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="field full-width">
+          <label for="subject">Subject</label>
+          <input
+            id="subject"
+            type="text"
+            formControlName="subject"
+            placeholder="Example: Need help selecting a 5-day Kerala package"
+          >
+          <small class="error" *ngIf="hasError('subject', 'required')">Subject is required.</small>
+          <small class="error" *ngIf="hasError('subject', 'minlength')">
+            Subject must be at least 6 characters.
+          </small>
+          <small class="error" *ngIf="hasError('subject', 'maxlength')">
+            Subject can be up to 80 characters.
+          </small>
+        </div>
+
+        <div class="field full-width">
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            rows="6"
+            formControlName="message"
+            maxlength="600"
+            placeholder="Share your requirements, travel dates, destination preferences, or issue details."
+          ></textarea>
+          <small class="char-count">{{ controls.message.value.length }}/600</small>
+          <small class="error" *ngIf="hasError('message', 'required')">Message is required.</small>
+          <small class="error" *ngIf="hasError('message', 'minlength')">
+            Message must be at least 20 characters.
+          </small>
+          <small class="error" *ngIf="hasError('message', 'maxlength')">
+            Message can be up to 600 characters.
+          </small>
+          <small class="error" *ngIf="hasError('message', 'htmlNotAllowed')">
+            HTML tags are not allowed.
+          </small>
+        </div>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="consent">
+        <span>I agree to share these details so the support team can contact me.</span>
+      </label>
+      <small class="error" *ngIf="hasError('consent', 'required')">
+        Please provide consent before submitting.
+      </small>
+
+      <button type="submit" class="submit-btn" [disabled]="submitting">
+        {{ submitting ? 'Submitting...' : 'Submit Message' }}
+      </button>
+
+      <p class="error global-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <section class="success-box" *ngIf="response as result">
+        <h3>Message Submitted</h3>
+        <p>{{ result.message }}</p>
+        <p><strong>Ticket ID:</strong> {{ result.ticketId }}</p>
+        <p><strong>Expected response:</strong> within {{ result.estimatedReplyHours }} hours</p>
+      </section>
+    </form>
+  </div>
 </section>

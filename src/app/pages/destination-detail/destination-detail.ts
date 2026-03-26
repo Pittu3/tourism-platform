@@ -21,8 +21,8 @@ export class DestinationDetail implements OnInit {
   constructor(private readonly route: ActivatedRoute, private readonly http: HttpClient) {}
 
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get('slug') ?? '';
-    const match = FALLBACK_DESTINATIONS.find((place) => this.toSlug(place.name) === slug);
+    const destinationId = this.route.snapshot.paramMap.get('id') ?? '';
+    const match = FALLBACK_DESTINATIONS.find((place) => place.id === destinationId);
 
     if (!match) {
       this.notFound = true;
@@ -42,13 +42,6 @@ export class DestinationDetail implements OnInit {
         this.destination = { ...match };
       }
     });
-  }
-
-  toSlug(value: string): string {
-    return value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
   }
 
   getState(place: Destination): string {
@@ -151,3 +144,4 @@ export class DestinationDetail implements OnInit {
     return hash;
   }
 }
+

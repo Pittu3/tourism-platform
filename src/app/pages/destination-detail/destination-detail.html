@@ -28,27 +28,27 @@
           <h2>Discover {{ place.name }}</h2>
           <p class="description">{{ place.description }}</p>
         </div>
-        
+
         <div class="highlights-section">
           <h3>Highlights</h3>
           <div class="highlights-grid">
             <div class="highlight-card">
-              <div class="highlight-icon">🏛️</div>
+              <div class="highlight-icon">&#127963;</div>
               <h4>Historical Significance</h4>
               <p>Explore ancient temples and heritage sites that tell stories of centuries past.</p>
             </div>
             <div class="highlight-card">
-              <div class="highlight-icon">🌿</div>
+              <div class="highlight-icon">&#127807;</div>
               <h4>Natural Beauty</h4>
               <p>Experience breathtaking landscapes, from lush hills to serene backwaters.</p>
             </div>
             <div class="highlight-card">
-              <div class="highlight-icon">🍛</div>
+              <div class="highlight-icon">&#127859;</div>
               <h4>Culinary Delights</h4>
               <p>Savor authentic South Indian cuisine with rich flavors and traditional recipes.</p>
             </div>
             <div class="highlight-card">
-              <div class="highlight-icon">🏨</div>
+              <div class="highlight-icon">&#127968;</div>
               <h4>Accommodation</h4>
               <p>Choose from luxury resorts to budget-friendly stays for every traveler's need.</p>
             </div>
@@ -99,7 +99,7 @@
           </div>
           <div class="fact-item">
             <span class="fact-label">Rating</span>
-            <span class="fact-value">{{ getRating(place) }} ⭐</span>
+            <span class="fact-value">{{ getRating(place) }} &#9733;</span>
           </div>
         </div>
 
@@ -108,11 +108,11 @@
           <p>Book your trip today and experience the magic of South India's most beautiful destinations.</p>
           <div class="cta-buttons">
             <button class="primary-cta" routerLink="/booking">
-              <span class="cta-icon">📅</span>
+              <span class="cta-icon">&#128197;</span>
               Book Now
             </button>
             <button class="secondary-cta" routerLink="/destinations">
-              <span class="cta-icon">🔍</span>
+              <span class="cta-icon">&#128269;</span>
               Explore More
             </button>
           </div>
@@ -125,7 +125,7 @@
 <ng-template #notFoundState>
   <section class="destination-detail">
     <div class="detail-card empty">
-      <div class="empty-icon">📍</div>
+      <div class="empty-icon">&#128205;</div>
       <p class="empty-title">Destination not found</p>
       <p class="empty-sub">The destination you're looking for doesn't exist or may have been moved.</p>
       <a class="back-link" routerLink="/destinations">

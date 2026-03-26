@@ -1,0 +1,72 @@
+<main class="signup-page">
+  <section class="signup-card">
+    <p class="eyebrow">Create account</p>
+    <h1>Sign up for Travel Explorer</h1>
+    <p class="subtitle">Save activities, manage bookings, and plan your next trip.</p>
+
+    <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)" novalidate>
+      <div class="form-group">
+        <label for="signupEmail">Email</label>
+        <input
+          id="signupEmail"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailField="ngModel"
+          required
+          email
+          autocomplete="email"
+          placeholder="you@example.com"
+          [class.invalid]="submitted && emailField.invalid"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <div class="password-container">
+          <input
+            id="signupPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            #passwordField="ngModel"
+            required
+            minlength="6"
+            autocomplete="new-password"
+            placeholder="Minimum 6 characters"
+            [class.invalid]="submitted && passwordField.invalid"
+          >
+          <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          [type]="showPassword ? 'text' : 'password'"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          #confirmField="ngModel"
+          required
+          minlength="6"
+          autocomplete="new-password"
+          placeholder="Re-enter password"
+          [class.invalid]="submitted && confirmField.invalid"
+        >
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+    </form>
+
+    <p class="support">Already have an account? <a routerLink="/login">Login</a></p>
+  </section>
+</main>

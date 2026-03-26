@@ -1,59 +1,67 @@
-# TourismPlatform
+# Tourism Platform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Tourism Platform is an Angular standalone-component SPA for discovering destinations, exploring activities, booking tours, sending support inquiries, and using a mock login flow.
 
-## Development server
+## Milestone Coverage
+- Week 3-4: Destinations page with detailed listings, category/popularity filters, search, and sorting.
+- Week 5-6: Booking page with destination-tour workflow, form validation, and booking service mock submission.
+- Week 7-8: Contact Us page, full-system review updates, bug fixes, and documentation pack.
 
-To start a local development server, run:
+## Core Features
+- Destination listing with search, pagination, multi-filter, popularity labels, and fallback image handling.
+- Destination detail pages routed by dedicated destination IDs (`/destinations/:id`).
+- Activities catalog with filters and deep links to destination detail pages.
+- Booking flow with dynamic tours and validation-rich form submission.
+- Contact flow with anti-spam checks and ticket-based mock response.
+- Demo login with remember-me support and session persistence via web storage.
 
+## Tech Stack
+- Angular 21 (standalone components)
+- TypeScript 5.9
+- RxJS Observables for async mock flows
+- Component-scoped CSS
+- Vitest (`ng test`)
+
+## Getting Started
+1. Install dependencies:
 ```bash
-ng serve
+npm install
+```
+2. Start dev server:
+```bash
+npm start
+```
+3. Open:
+```text
+http://localhost:4200
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Scripts
+- `npm start` - start local dev server
+- `npm run build` - production build to `dist/tourism-platform`
+- `npm.cmd run test -- --watch=false` - run unit tests once
 
-## Code scaffolding
+## Demo Login Accounts
+- `user@example.com` / `password`
+- `planner@example.com` / `travel2026`
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Main Routes
+- `/` or `/home` - Home
+- `/destinations` - Destinations list
+- `/destinations/:id` - Destination details
+- `/activities` - Activities list
+- `/booking` - Booking page
+- `/login` - Login page
+- `/contact` - Contact page
 
-```bash
-ng generate component component-name
-```
+## Documentation Pack
+Detailed documents are available in `docs/`:
+- `docs/system-architecture.md`
+- `docs/user-guide.md`
+- `docs/technical-specification.md`
+- `docs/final-testing-and-review.md`
+- `docs/presentation-outline.md`
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Current Note
+- Build passes successfully.
+- A non-blocking Angular budget warning exists for `src/app/pages/destinations/destinations.css`.

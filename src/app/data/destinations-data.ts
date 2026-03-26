@@ -1,4 +1,5 @@
 export interface Destination {
+  id: string;
   name: string;
   location: string;
   duration: string;
@@ -10,7 +11,7 @@ export interface Destination {
   }
 }
 
-export const FALLBACK_DESTINATIONS: Destination[] = [
+const destinationSeeds: Omit<Destination, 'id'>[] = [
   {
     name: 'Tirumala Tirupathi',
     location: 'Andhra Pradesh',
@@ -207,7 +208,7 @@ export const FALLBACK_DESTINATIONS: Destination[] = [
     name: 'Ashtamudi Lake',
     location: 'Kollam, Kerala',
     duration: '2D / 1N',
-    image: 'https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Fmobile%2Fashtamudi-lake-1721309650_e64796a7742652d69201.webp&w=3840&q=75',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Ashtamudi_lake.jpg',
     description: '',
     coords: { lat: 8.9390, lng: 76.5437 }
   },
@@ -387,4 +388,19 @@ export const FALLBACK_DESTINATIONS: Destination[] = [
     description: '',
     coords: { lat: 8.6167, lng: 77.1333 }
   }
+];
+
+const toDestinationId = (name: string, location: string): string => {
+  const source = `${name}|${location}`.toLowerCase();
+  let hash = 0;
+  for (let index = 0; index < source.length; index += 1) {
+    hash = (hash * 31 + source.charCodeAt(index)) >>> 0;
+  }
+  return `dst-${hash.toString(36)}`;
 };
+
+export const FALLBACK_DESTINATIONS: Destination[] = destinationSeeds.map((destination) => ({
+  id: toDestinationId(destination.name, destination.location),
+  ...destination
+}));
+

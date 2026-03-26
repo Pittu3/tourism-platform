@@ -19,7 +19,7 @@
         </span>
         <input
           type="text"
-          placeholder="Search destinations, temples, or states..."
+          placeholder="Search by destination, state, category, or description..."
           [(ngModel)]="searchTerm"
           (ngModelChange)="onFiltersChanged()"
         >
@@ -82,6 +82,18 @@
           </button>
         </span>
       </ng-template>
+      <span class="chip popularity-chip">
+        Popularity: {{ popularityLabel(selectedPopularity) }}
+        <button
+          type="button"
+          class="chip-clear"
+          (click)="clearPopularity()"
+          [disabled]="selectedPopularity === 'all'"
+          aria-label="Clear popularity filter"
+        >
+          &#215;
+        </button>
+      </span>
       <span class="chip location-chip">
         From: {{ distanceSource || 'Not set' }}
         <button
@@ -146,6 +158,27 @@
         </button>
       </div>
 
+      <div class="filter-section">
+        <div class="filter-title">Popularity</div>
+        <select
+          class="preference-select"
+          [ngModel]="selectedPopularity"
+          (ngModelChange)="setPopularity($event)"
+        >
+          <option *ngFor="let popularity of popularityOptions" [value]="popularity.key">
+            {{ popularity.label }}
+          </option>
+        </select>
+        <button
+          type="button"
+          class="filter-clear"
+          (click)="clearPopularity()"
+          [disabled]="selectedPopularity === 'all'"
+        >
+          Clear popularity
+        </button>
+      </div>
+
     </aside>
 
     <div class="results-content">
@@ -154,7 +187,7 @@
           <div class="card-media">
             <a
               class="image-link"
-              [routerLink]="['/destinations', toSlug(place.name)]"
+              [routerLink]="['/destinations', place.id]"
               aria-label="View details for {{ place.name }}"
             >
               <img [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event, place.name, place.location)">
@@ -162,7 +195,7 @@
           </div>
           <div class="card-top">
             <h3>
-              <a class="title-link" [routerLink]="['/destinations', toSlug(place.name)]">
+              <a class="title-link" [routerLink]="['/destinations', place.id]">
                 {{place.name}}
               </a>
             </h3>
@@ -173,7 +206,9 @@
             <span>&#8377; {{ getPrice(place) }}</span>
             <span>&#9733; {{ getRating(place) }}</span>
             <span>{{ categoryLabel(getCategory(place)) }}</span>
+            <span>{{ popularityLabel(getPopularityTag(place)) }}</span>
           </div>
+          <p class="desc-line">{{ getDescriptionSnippet(place) }}</p>
           <button routerLink="/booking">Book Now</button>
         </div>
       </div>
@@ -210,3 +245,4 @@
   </div>
 
 </section>
+
