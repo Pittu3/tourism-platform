@@ -1,11 +1,11 @@
 # Tourism Platform
 
-Tourism Platform is an Angular standalone-component SPA for discovering destinations, exploring activities, booking tours, sending support inquiries, and using a mock login flow.
+Tourism Platform is an Angular standalone-component SPA for discovering destinations, exploring activities, booking tours, sending support inquiries, and using Firebase-backed authentication and bookings.
 
 ## Milestone Coverage
 - Week 3-4: Destinations page with detailed listings, category/popularity filters, search, and sorting.
-- Week 5-6: Booking page with destination-tour workflow, form validation, and booking service mock submission.
-- Week 7-8: Contact Us page, full-system review updates, bug fixes, and documentation pack.
+- Week 5-6: Booking page with destination-tour workflow, form validation, and booking persistence.
+- Week 7-8: Contact Us page, full-system review updates, bug fixes, dashboard, and documentation pack.
 
 ## Core Features
 - Destination listing with search, pagination, multi-filter, popularity labels, and fallback image handling.
@@ -13,12 +13,15 @@ Tourism Platform is an Angular standalone-component SPA for discovering destinat
 - Activities catalog with filters and deep links to destination detail pages.
 - Booking flow with dynamic tours and validation-rich form submission.
 - Contact flow with anti-spam checks and ticket-based mock response.
-- Demo login with remember-me support and session persistence via web storage.
+- Firebase Authentication with email/password and Google sign-in.
+- Firestore-backed booking storage and user dashboard data.
 
 ## Tech Stack
 - Angular 21 (standalone components)
 - TypeScript 5.9
-- RxJS Observables for async mock flows
+- Firebase Authentication
+- Cloud Firestore
+- RxJS Observables
 - Component-scoped CSS
 - Vitest (`ng test`)
 
@@ -45,6 +48,31 @@ http://localhost:4200
 - `user@example.com` / `password`
 - `planner@example.com` / `travel2026`
 
+## Firebase Setup
+
+1. Open `src/environments/environment.ts`.
+2. Add your Firebase project settings.
+3. In Firebase console, enable `Authentication > Sign-in method > Email/Password`.
+4. If you want Google sign-in, enable `Authentication > Sign-in method > Google`.
+5. Add `localhost` and `127.0.0.1` to `Authentication > Settings > Authorized domains`.
+6. Create a Firestore database.
+7. Run `npm start` and test login and booking flows.
+
+## Firestore Rules
+
+This repository includes:
+
+- `firestore.rules`
+- `firebase.json`
+
+To deploy the rules with Firebase CLI:
+
+```bash
+firebase login
+firebase use tourism-platform-5570a
+firebase deploy --only firestore:rules
+```
+
 ## Main Routes
 - `/` or `/home` - Home
 - `/destinations` - Destinations list
@@ -52,6 +80,8 @@ http://localhost:4200
 - `/activities` - Activities list
 - `/booking` - Booking page
 - `/login` - Login page
+- `/signup` - Signup page
+- `/dashboard` - User dashboard
 - `/contact` - Contact page
 
 ## Documentation Pack

@@ -53,8 +53,39 @@
   transition: all 0.24s ease;
 }
 
+.user-chip {
+  display: flex;
+  align-items: center;
+}
+
+.user-chip span,
+.logout-button {
+  padding: 11px 16px;
+  border-radius: 999px;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.user-chip span {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgba(212, 244, 255, 0.12);
+  color: #d4f4ff;
+}
+
+.logout-button {
+  border: 0;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f3fbff;
+  transition: all 0.24s ease;
+}
+
 .nav-links li a.active,
-.nav-links li a:hover {
+.nav-links li a:hover,
+.logout-button:hover {
   background: linear-gradient(90deg, #ffa24b, #ffd18c);
   color: #17283d;
   box-shadow: 0 6px 14px rgba(255, 174, 87, 0.3);
@@ -110,6 +141,12 @@
 
   .nav-links li a {
     display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .user-chip span,
+  .logout-button {
     width: 100%;
     text-align: left;
   }
