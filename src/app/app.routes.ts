@@ -1,17 +1,27 @@
 import { Routes } from '@angular/router';
-import { Home } from './pages/home/home';
-import { Destinations } from './pages/destinations/destinations';
-import { Activities } from './pages/activities/activities';
-import { Booking } from './pages/booking/booking';
-import { Contact } from './pages/contact/contact';
-import { Login } from './pages/login/login';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: Home },
-  { path: 'destinations', component: Destinations },
-  { path: 'activities', component: Activities },
-  { path: 'booking', component: Booking },
-  { path: 'login', component: Login },
-  { path: 'contact', component: Contact },
+  { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.Home) },
+  {
+    path: 'destinations',
+    loadComponent: () => import('./pages/destinations/destinations').then((m) => m.Destinations)
+  },
+  {
+    path: 'activities',
+    loadComponent: () => import('./pages/activities/activities').then((m) => m.Activities)
+  },
+  {
+    path: 'booking',
+    loadComponent: () => import('./pages/booking/booking').then((m) => m.Booking),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'my-bookings',
+    loadComponent: () => import('./pages/my-bookings/my-bookings').then((m) => m.MyBookings),
+    canActivate: [authGuard]
+  },
+  { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
+  { path: 'contact', loadComponent: () => import('./pages/contact/contact').then((m) => m.Contact) },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

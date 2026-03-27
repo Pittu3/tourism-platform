@@ -1,8 +1,12 @@
 <main class="login-page">
   <section class="login-card">
-    <p class="eyebrow">Welcome back</p>
-    <h1>Login to Travel Explorer</h1>
-    <p class="subtitle">Access your bookings, saved itineraries, and trip updates.</p>
+    <p class="eyebrow">{{ isRegisterMode ? 'Create your account' : 'Welcome back' }}</p>
+    <h1>{{ isRegisterMode ? 'Join Travel Explorer' : 'Login to Travel Explorer' }}</h1>
+    <p class="subtitle">
+      {{ isRegisterMode
+        ? 'Create an account to save bookings and continue planning your trip.'
+        : 'Access your bookings, saved itineraries, and trip updates.' }}
+    </p>
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
       <label for="email">Email</label>
@@ -36,10 +40,28 @@
         <span>Remember me</span>
       </label>
 
-      <button type="submit">Sign In</button>
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? (isRegisterMode ? 'Creating Account...' : 'Signing In...') : (isRegisterMode ? 'Create Account' : 'Sign In') }}
+      </button>
+
+      <button
+        type="button"
+        class="google-button"
+        [disabled]="isGoogleSubmitting || isSubmitting"
+        (click)="loginWithGoogle()"
+      >
+        {{ isGoogleSubmitting ? 'Connecting Google...' : 'Continue with Google' }}
+      </button>
     </form>
 
+    <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
     <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="mode-switch">
+      {{ isRegisterMode ? 'Already have an account?' : 'New here?' }}
+      <button type="button" class="link-button" (click)="toggleMode()">
+        {{ isRegisterMode ? 'Sign in instead' : 'Create an account' }}
+      </button>
+    </p>
     <p class="support">Need help? <a routerLink="/contact">Contact support</a></p>
   </section>
 </main>

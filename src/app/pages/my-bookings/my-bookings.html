@@ -1,0 +1,27 @@
+<main class="bookings-page">
+  <section class="bookings-shell">
+    <p class="eyebrow">Your travel history</p>
+    <h1>My Bookings</h1>
+    <p class="subtitle">Every booking saved under your Firebase account appears here.</p>
+
+    <div class="state-card" *ngIf="isLoading">Loading your bookings...</div>
+    <div class="state-card error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</div>
+
+    <section class="bookings-grid" *ngIf="!isLoading && !errorMessage && bookings.length">
+      <article class="booking-card" *ngFor="let booking of bookings; trackBy: trackByBooking">
+        <div class="booking-topline">
+          <span class="status-chip">{{ booking.status }}</span>
+          <span class="created-at">{{ formatCreatedAt(booking.createdAt) }}</span>
+        </div>
+        <h2>{{ booking.name }}</h2>
+        <p class="booking-date">{{ formatDate(booking.date) }}</p>
+        <p class="booking-email">{{ booking.email }}</p>
+      </article>
+    </section>
+
+    <div class="state-card empty" *ngIf="!isLoading && !errorMessage && !bookings.length">
+      <p>No bookings yet.</p>
+      <a routerLink="/booking">Create your first booking</a>
+    </div>
+  </section>
+</main>

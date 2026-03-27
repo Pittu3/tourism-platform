@@ -12,6 +12,52 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Firebase setup
+
+Firebase has been scaffolded for the login flow using the official Firebase Web SDK.
+
+1. Open `src/environments/environment.ts`.
+2. Replace the placeholder `firebase` values with your Firebase project settings.
+3. In the Firebase console, enable `Authentication > Sign-in method > Email/Password`.
+4. If you want Google sign-in, also enable `Authentication > Sign-in method > Google`.
+5. Add your local dev origin to `Authentication > Settings > Authorized domains` when needed.
+6. Create a test user in Firebase Authentication if you are testing email/password.
+7. Run `npm start` and sign in from the `/login` page.
+
+The project is also ready for Firestore through `src/app/core/firebase/firebase.ts` if you want to save bookings next.
+
+## Firestore bookings
+
+The `/booking` page now writes booking submissions to the `bookings` collection in Firestore.
+The `/my-bookings` page reads the signed-in user's bookings back from Firestore.
+
+To use it:
+
+1. Create Firestore Database in the Firebase console.
+2. Publish the Firestore rules from `firestore.rules`.
+3. Submit the booking form from a signed-in account and confirm documents appear in the `bookings` collection.
+
+### Firestore rules deployment
+
+This repository now includes:
+
+- `firestore.rules`
+- `firebase.json`
+
+To deploy the rules with the Firebase CLI:
+
+```bash
+firebase login
+firebase use tourism-platform-5570a
+firebase deploy --only firestore:rules
+```
+
+The provided rules allow:
+
+- authenticated users to create bookings only for their own email and UID
+- authenticated users to read only their own bookings
+- no updates or deletes from the client
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

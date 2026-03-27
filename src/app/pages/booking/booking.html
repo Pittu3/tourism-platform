@@ -1,35 +1,52 @@
 <section class="container">
 
   <h1>Book Your Tour</h1>
+  <p class="subtitle">Reserve your spot and we will follow up with itinerary details.</p>
+  <p class="auth-note" *ngIf="isSignedIn">Your booking will be saved to your signed-in Firebase account.</p>
 
-  <form (ngSubmit)="submit()">
+  <form #bookingForm="ngForm" (ngSubmit)="submit(bookingForm)" novalidate>
 
     <input
       type="text"
       placeholder="Name"
       [(ngModel)]="name"
       name="name"
+      #nameField="ngModel"
+      required
     >
+    <small class="error" *ngIf="submitted && nameField.invalid">Enter your name.</small>
 
     <input
       type="email"
       placeholder="Email"
       [(ngModel)]="email"
       name="email"
+      #emailField="ngModel"
+      required
+      email
+      [readOnly]="isSignedIn"
     >
+    <small class="error" *ngIf="submitted && emailField.invalid">Enter a valid email.</small>
 
     <input
       type="date"
       [(ngModel)]="date"
       name="date"
+      #dateField="ngModel"
+      required
     >
+    <small class="error" *ngIf="submitted && dateField.invalid">Choose a travel date.</small>
 
-    <button type="submit">
+    <button type="submit" [disabled]="isSubmitting">
 
-      Confirm Booking
+      {{ isSubmitting ? 'Saving Booking...' : 'Confirm Booking' }}
 
     </button>
 
   </form>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="debug-banner" *ngIf="debugMessage">{{ debugMessage }}</p>
 
 </section>

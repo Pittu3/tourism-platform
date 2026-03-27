@@ -9,7 +9,10 @@
     <li><a routerLink="/destinations" routerLinkActive="active" (click)="menuOpen=false">Destinations</a></li>
     <li><a routerLink="/activities" routerLinkActive="active" (click)="menuOpen=false">Activities</a></li>
     <li><a routerLink="/booking" routerLinkActive="active" (click)="menuOpen=false">Book a Tour</a></li>
-    <li><a routerLink="/login" routerLinkActive="active" (click)="menuOpen=false">Login</a></li>
+    <li *ngIf="user()"><a routerLink="/my-bookings" routerLinkActive="active" (click)="menuOpen=false">My Bookings</a></li>
+    <li *ngIf="!user()"><a routerLink="/login" routerLinkActive="active" (click)="menuOpen=false">Login</a></li>
+    <li *ngIf="user()" class="user-chip"><span>{{ user()?.email || 'Signed in' }}</span></li>
+    <li *ngIf="user()"><button type="button" class="logout-button" (click)="logout()">Logout</button></li>
   </ul>
 
   <button class="hamburger" type="button" (click)="toggleMenu()" aria-label="Toggle navigation menu">

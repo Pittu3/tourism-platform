@@ -3,6 +3,19 @@
   text-align: center;
 }
 
+.subtitle {
+  margin: 0 auto 18px;
+  max-width: 520px;
+  color: #4a6176;
+}
+
+.auth-note {
+  margin: 0 auto 18px;
+  width: min(420px, 100%);
+  color: #0e5f74;
+  font-weight: 600;
+}
+
 form {
   width: min(420px, 100%);
   margin: auto;
@@ -47,4 +60,40 @@ button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 22px rgba(255, 162, 52, 0.34);
   filter: brightness(1.03);
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.75;
+  transform: none;
+  box-shadow: none;
+}
+
+.error {
+  margin: -2px 0 2px;
+  text-align: left;
+  color: #bf1f1f;
+  font-size: 0.82rem;
+  min-height: 1em;
+}
+
+.success,
+.error-banner,
+.debug-banner {
+  margin: 16px auto 0;
+  width: min(420px, 100%);
+  font-weight: 600;
+}
+
+.success {
+  color: #116d36;
+}
+
+.error-banner {
+  color: #a61b1b;
+}
+
+.debug-banner {
+  color: #36536b;
+  font-size: 0.92rem;
 }

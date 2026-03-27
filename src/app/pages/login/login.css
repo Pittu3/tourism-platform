@@ -92,10 +92,42 @@ button:hover {
   filter: brightness(1.05);
 }
 
+button:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.google-button {
+  background: #ffffff;
+  color: #17324d;
+  border: 1px solid #cddff0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.link-button {
+  margin-top: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: #0b4a93;
+  font-weight: 700;
+}
+
+.link-button:hover {
+  filter: none;
+  text-decoration: underline;
+}
+
 .error {
   color: #c62828;
   font-size: 0.8rem;
   min-height: 1em;
+}
+
+.error-banner {
+  margin: 14px 0 0;
+  color: #a61b1b;
+  font-weight: 600;
 }
 
 .success {
@@ -105,6 +137,11 @@ button:hover {
 }
 
 .support {
+  margin: 16px 0 0;
+  color: #4f647a;
+}
+
+.mode-switch {
   margin: 16px 0 0;
   color: #4f647a;
 }
