@@ -51,7 +51,7 @@ export class Login implements OnInit, OnDestroy {
     try {
       const session = await this.authService.login(this.email, this.password);
       this.password = '';
-      this.successMessage = `Welcome back, ${session.user.displayName ?? session.user.email}. Redirecting...`;
+      this.successMessage = `Welcome back, ${session.displayName || session.email}. Redirecting...`;
       this.redirectTimeoutId = setTimeout(() => {
         this.router.navigate(['/dashboard']);
       }, 700);
@@ -76,7 +76,7 @@ export class Login implements OnInit, OnDestroy {
 
     try {
       const credential = await this.authService.googleLogin();
-      this.successMessage = `Signed in as ${credential.user.displayName ?? credential.user.email}. Redirecting...`;
+      this.successMessage = `Signed in as ${credential.displayName || credential.email}. Redirecting...`;
       this.redirectTimeoutId = setTimeout(() => {
         this.router.navigate(['/dashboard']);
       }, 700);

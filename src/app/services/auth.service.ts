@@ -15,9 +15,6 @@ import {
   signOut
 } from 'firebase/auth';
 
-@Injectable({
-  providedIn: 'root'
-})
 export interface AppUser {
   uid: string;
   email: string;
@@ -33,6 +30,9 @@ export interface BookingData {
   status?: 'pending' | 'confirmed' | 'cancelled';
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
