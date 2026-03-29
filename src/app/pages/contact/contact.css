@@ -1,13 +1,13 @@
 .contact-page {
-  --bg-soft: #f4fbff;
-  --border: #d2e4f0;
-  --text: #12263a;
-  --muted: #567089;
-  --primary: #1f8ba7;
-  --primary-strong: #176f85;
-  --danger: #bf3d2f;
-  --success-bg: #eafef2;
-  --success-border: #90dcb0;
+  --bg-soft: rgba(255, 255, 255, 0.04);
+  --border: rgba(201, 169, 110, 0.18);
+  --text: #f7f1e6;
+  --muted: #c4cfde;
+  --primary: #c9a96e;
+  --primary-strong: #e8624a;
+  --danger: #ff9f91;
+  --success-bg: rgba(69, 158, 111, 0.14);
+  --success-border: rgba(144, 220, 176, 0.34);
 
   max-width: 1120px;
   margin: 0 auto;
@@ -49,9 +49,10 @@
 .contact-form {
   border: 1px solid var(--border);
   border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 10px 26px rgba(15, 43, 70, 0.09);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
   padding: 18px;
+  backdrop-filter: blur(14px);
 }
 
 .contact-info h2,
@@ -61,7 +62,7 @@
 }
 
 .info-card {
-  border: 1px solid #dceaf4;
+  border: 1px solid rgba(201, 169, 110, 0.16);
   border-radius: 12px;
   background: var(--bg-soft);
   padding: 11px 12px;
@@ -108,12 +109,12 @@ select,
 textarea {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #c2d9e9;
+  border: 1px solid rgba(201, 169, 110, 0.18);
   border-radius: 12px;
   padding: 11px 12px;
   font: inherit;
   color: var(--text);
-  background: #fbfdff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 input:focus,
@@ -121,7 +122,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(31, 139, 167, 0.16);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.16);
 }
 
 textarea {
@@ -150,10 +151,10 @@ textarea {
 .submit-btn {
   width: 100%;
   margin-top: 10px;
-  border: 1px solid #f4a73f;
+  border: 1px solid #e8624a;
   border-radius: 12px;
-  background: linear-gradient(95deg, #ffc55b, #ff9f35);
-  color: #1f2f40;
+  background: linear-gradient(95deg, #e8624a, #f57c61);
+  color: #ffffff;
   font-size: 0.98rem;
   font-weight: 700;
   padding: 12px;
@@ -163,7 +164,7 @@ textarea {
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(255, 165, 55, 0.3);
+  box-shadow: 0 10px 22px rgba(232, 98, 74, 0.3);
 }
 
 .submit-btn:disabled {
@@ -193,12 +194,12 @@ textarea {
 
 .success-box h3 {
   margin: 0 0 7px;
-  color: #17653c;
+  color: #d8f2de;
 }
 
 .success-box p {
   margin: 3px 0;
-  color: #20543a;
+  color: #daf0df;
 }
 
 @media (max-width: 960px) {

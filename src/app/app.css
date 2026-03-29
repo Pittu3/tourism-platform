@@ -1,0 +1,7 @@
+.app-shell {
+  display: block;
+}
+
+router-outlet + * {
+  display: block;
+}

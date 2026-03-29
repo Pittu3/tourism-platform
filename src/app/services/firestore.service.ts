@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Injector, inject } from '@angular/core';
 import {
   Firestore,
   Timestamp,
@@ -68,7 +68,7 @@ export interface CreateBookingPayload {
 })
 export class FirestoreService {
   private readonly firestore = inject(Firestore);
-  private readonly firebaseService = inject(FirebaseService);
+  private readonly injector = inject(Injector);
 
   private readonly usersCollection = collection(this.firestore, 'users');
   private readonly activitiesCollection = collection(this.firestore, 'activities');
@@ -78,7 +78,8 @@ export class FirestoreService {
     let imageUrl = payload.imageUrl ?? '';
 
     if (imageFile) {
-      imageUrl = await this.firebaseService.uploadActivityImage(imageFile);
+      const firebaseService = this.injector.get(FirebaseService);
+      imageUrl = await firebaseService.uploadActivityImage(imageFile);
     }
 
     const activityData: Record<string, unknown> = {

@@ -1,17 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;600;700;800&display=swap');
+
+:root {
+  --midnight: #0a0f1e;
+  --midnight-soft: #11182d;
+  --midnight-elevated: #171f35;
+  --sand: #c9a96e;
+  --sand-soft: #e7d8b9;
+  --coral: #e8624a;
+  --coral-deep: #f27d64;
+  --ivory: #f7f1e7;
+  --mist: rgba(255, 255, 255, 0.08);
+  --mist-strong: rgba(255, 255, 255, 0.14);
+  --border-soft: rgba(201, 169, 110, 0.22);
+  --text-primary: #f7f1e7;
+  --text-secondary: rgba(247, 241, 231, 0.78);
+  --text-muted: rgba(247, 241, 231, 0.56);
+  --surface: rgba(18, 25, 43, 0.86);
+  --surface-2: rgba(20, 28, 49, 0.72);
+  --surface-3: rgba(255, 255, 255, 0.06);
+  --shadow-xl: 0 32px 80px rgba(2, 6, 18, 0.42);
+  --shadow-lg: 0 22px 48px rgba(2, 6, 18, 0.28);
+  --shadow-sm: 0 10px 24px rgba(2, 6, 18, 0.18);
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --content-width: min(1280px, calc(100vw - 32px));
+  --content-width-narrow: min(1080px, calc(100vw - 32px));
+  --section-gap: clamp(20px, 3vw, 32px);
+  --page-top-offset: clamp(12px, 2vw, 18px);
+  --page-bottom-offset: clamp(28px, 4vw, 44px);
+  --panel-padding: clamp(18px, 2.4vw, 28px);
+  --panel-padding-compact: clamp(16px, 2vw, 22px);
+  --card-gap: clamp(14px, 1.8vw, 20px);
+  --control-height: 52px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  font-family: Calibri, 'Segoe UI', Arial, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: #13263a;
+  background:
+    radial-gradient(circle at top left, rgba(201, 169, 110, 0.14), transparent 24%),
+    radial-gradient(circle at right 12%, rgba(232, 98, 74, 0.12), transparent 18%),
+    linear-gradient(180deg, #07101b 0%, #0a0f1e 24%, #10182c 100%);
+  color: var(--text-primary);
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
   font-variant-numeric: lining-nums proportional-nums;
   font-feature-settings: 'lnum' 1, 'onum' 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
 }
 
 *,
@@ -21,14 +68,21 @@ body {
   font-family: inherit;
 }
 
+img,
+video {
+  max-width: 100%;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-weight: 600;
-  letter-spacing: 0;
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 p,
@@ -41,4 +95,134 @@ label,
 li,
 span {
   font-weight: 400;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.shell-width {
+  width: var(--content-width);
+  margin: 0 auto;
+}
+
+.shell-width-narrow {
+  width: var(--content-width-narrow);
+  margin: 0 auto;
+}
+
+.page-shell {
+  width: var(--content-width);
+  margin: 0 auto;
+  padding-top: var(--page-top-offset);
+  padding-bottom: 32px;
+}
+
+.glass-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sand));
+}
+
+.cta-primary,
+.cta-secondary {
+  border-radius: 999px;
+  padding: 14px 22px;
+  text-decoration: none;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+}
+
+.cta-primary {
+  border: 1px solid rgba(232, 98, 74, 0.42);
+  background: linear-gradient(120deg, var(--coral), #f57c61);
+  color: #fff7f2;
+  box-shadow: 0 14px 34px rgba(232, 98, 74, 0.28);
+}
+
+.cta-secondary {
+  border: 1px solid rgba(201, 169, 110, 0.34);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ivory);
+}
+
+.cta-primary:hover,
+.cta-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.page-enter {
+  animation: page-enter 0.7s ease both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --content-width: min(1280px, calc(100vw - 24px));
+    --content-width-narrow: min(1080px, calc(100vw - 24px));
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --radius-xl: 24px;
+    --radius-lg: 20px;
+    --radius-md: 16px;
+    --content-width: min(1280px, calc(100vw - 20px));
+    --content-width-narrow: min(1080px, calc(100vw - 20px));
+    --page-top-offset: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

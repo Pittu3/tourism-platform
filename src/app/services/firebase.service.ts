@@ -1,25 +1,18 @@
-import { Injectable, inject } from '@angular/core';
-import { Auth, authState } from '@angular/fire/auth';
-import { Firestore } from '@angular/fire/firestore';
-import { Storage } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
-import { User } from 'firebase/auth';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { Injectable } from '@angular/core';
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
-  readonly auth = inject(Auth);
-  readonly firestore = inject(Firestore);
-  readonly storage = inject(Storage);
-
-  readonly user$: Observable<User | null> = authState(this.auth);
-
   async uploadActivityImage(file: File): Promise<string> {
+    const { getDownloadURL, getStorage, ref, uploadBytes } = await import('firebase/storage');
+    const app = getApps().length ? getApp() : initializeApp(environment.firebase);
+    const storage = getStorage(app);
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-');
     const filePath = `activities/${Date.now()}-${sanitizedName}`;
-    const fileRef = ref(this.storage, filePath);
+    const fileRef = ref(storage, filePath);
 
     await uploadBytes(fileRef, file);
     return getDownloadURL(fileRef);

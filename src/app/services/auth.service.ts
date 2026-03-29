@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
-import { Firestore, addDoc, collection, doc, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
 import {
   AuthError,
@@ -14,6 +14,7 @@ import {
   signInWithPopup,
   signOut
 } from 'firebase/auth';
+import { SessionService } from '../core/services/session.service';
 
 export interface AppUser {
   uid: string;
@@ -22,20 +23,13 @@ export interface AppUser {
   photoURL: string;
 }
 
-export interface BookingData {
-  activityId: string;
-  activityTitle: string;
-  travelDate: string;
-  travelers: number;
-  status?: 'pending' | 'confirmed' | 'cancelled';
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
+  private readonly sessionService = inject(SessionService);
   private readonly loadingSubject = new BehaviorSubject<boolean>(false);
 
   readonly loading$ = this.loadingSubject.asObservable();
@@ -44,6 +38,19 @@ export class AuthService {
     shareReplay({ bufferSize: 1, refCount: true })
   );
   readonly isAuthenticated$: Observable<boolean> = this.user$.pipe(map((user) => user !== null));
+
+  constructor() {
+    this.user$.subscribe((user) => {
+      if (user?.email) {
+        this.sessionService.setUser({
+          uid: user.uid,
+          email: user.email
+        });
+      } else {
+        this.sessionService.clearUser();
+      }
+    });
+  }
 
   get currentUser(): AppUser | null {
     return this.mapFirebaseUser(this.auth.currentUser);
@@ -103,25 +110,6 @@ export class AuthService {
 
   getCurrentUserId(): string | null {
     return this.auth.currentUser?.uid ?? null;
-  }
-
-  async saveBooking(bookingData: BookingData): Promise<string> {
-    return this.runWithLoading(async () => {
-      const userId = this.getCurrentUserId();
-      if (!userId) {
-        throw new Error('Please login to save your booking.');
-      }
-
-      const bookingRef = await addDoc(collection(this.firestore, 'bookings'), {
-        ...bookingData,
-        userId,
-        status: bookingData.status ?? 'pending',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
-
-      return bookingRef.id;
-    }, 'Unable to save booking right now. Please try again.');
   }
 
   private async upsertUserDocument(user: User): Promise<void> {

@@ -1,9 +1,11 @@
+/**
+ * This page owns the filtering pipeline so every destination result comes from one predictable set of rules instead of scattered condition checks.
+ */
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Destination, FALLBACK_DESTINATIONS } from '../../data/destinations-data';
 
 interface CityOption {
@@ -23,6 +25,16 @@ type SortKey =
 
 type PopularityKey = 'all' | 'must-visit' | 'trending' | 'hidden-gems';
 
+interface FilterState {
+  search: string;
+  sortBy: SortKey | null;
+  categories: string[];
+  popularity: Exclude<PopularityKey, 'all'> | null;
+  city: string | null;
+  priceFrom: number | null;
+  priceTo: number | null;
+}
+
 @Component({
   selector: 'app-destinations',
   standalone: true,
@@ -30,19 +42,35 @@ type PopularityKey = 'all' | 'must-visit' | 'trending' | 'hidden-gems';
   templateUrl: './destinations.html',
   styleUrl: './destinations.css'
 })
-export class Destinations implements OnInit {
+export class Destinations implements OnInit, OnDestroy {
   destinations: Destination[] = [...FALLBACK_DESTINATIONS];
+  filteredDestinations: Destination[] = [...FALLBACK_DESTINATIONS];
+
   searchTerm = '';
-  selectedSorts: SortKey[] = [];
-  selectedCategories: string[] = [];
-  selectedPopularity: PopularityKey = 'all';
+  selectedCity = '';
   currentPage = 1;
   readonly itemsPerPage = 9;
-  selectedCity = '';
+
   userCoords: { lat: number; lng: number } | null = null;
-  locationStatus = 'Select a city to sort by nearest distance.';
+  locationStatus = 'Select a city to enable nearest-distance sorting.';
   distanceSource = '';
   resolvingLocation = false;
+
+  filterState: FilterState = {
+    search: '',
+    sortBy: null,
+    categories: [],
+    popularity: null,
+    city: null,
+    priceFrom: null,
+    priceTo: null
+  };
+
+  private lastNonDistanceSort: Exclude<SortKey, 'distance-nearest'> | null = null;
+  // Search updates on every keystroke, so we wait briefly before filtering to avoid
+  // re-running the full pipeline for each character the user types.
+  private searchDebounceId: ReturnType<typeof setTimeout> | null = null;
+
   private readonly pricingConfig = {
     baseFare: 1999,
     perDayFare: 1800,
@@ -54,6 +82,7 @@ export class Destinations implements OnInit {
       { maxKm: Number.POSITIVE_INFINITY, surcharge: 3800 }
     ]
   };
+
   readonly cityOptions: CityOption[] = [
     { name: 'Hyderabad', lat: 17.3850, lng: 78.4867 },
     { name: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
@@ -139,25 +168,72 @@ export class Destinations implements OnInit {
 
   constructor(private readonly route: ActivatedRoute, private readonly http: HttpClient) {}
 
+  get selectedSorts(): SortKey[] {
+    return this.filterState.sortBy ? [this.filterState.sortBy] : [];
+  }
+
+  get selectedCategories(): string[] {
+    return this.filterState.categories;
+  }
+
+  get selectedPopularity(): PopularityKey {
+    return this.filterState.popularity ?? 'all';
+  }
+
+  get visibleDestinations(): Destination[] {
+    return this.filteredDestinations;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredDestinations.length / this.itemsPerPage);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get paginatedDestinations(): Destination[] {
+    const totalPages = this.totalPages;
+    if (totalPages === 0) {
+      return [];
+    }
+
+    const currentPage = Math.min(this.currentPage, totalPages);
+    const indexOfLastItem = currentPage * this.itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - this.itemsPerPage;
+    return this.filteredDestinations.slice(indexOfFirstItem, indexOfLastItem);
+  }
+
   ngOnInit(): void {
     this.destinations = [...FALLBACK_DESTINATIONS];
+
     const raw = this.route.snapshot.queryParamMap.get('category') ?? '';
     const parts = raw.split(',').map((value) => value.trim()).filter(Boolean);
-    this.selectedCategories = this.normalizeCategorySelection(parts);
+    this.updateFilterState('categories', this.normalizeCategorySelection(parts), false);
 
-    this.http
-      .get<Record<string, string>>('/assets/destination-descriptions.json')
-      .subscribe({
-        next: (data) => {
-          this.destinations = this.destinations.map((place) => ({
-            ...place,
-            description: data[place.name] ?? ''
-          }));
-        },
-        error: () => {
-          // Keep fallback descriptions empty if the endpoint fails.
-        }
-      });
+    this.http.get<Record<string, string>>('/assets/destination-descriptions.json').subscribe({
+      next: (data) => {
+        // Descriptions come from a separate asset file, so we merge them in once here
+        // and keep the filtering code focused only on filtering.
+        this.destinations = this.destinations.map((place) => ({
+          ...place,
+          description: data[place.name] ?? place.description ?? ''
+        }));
+        this.applyFilterPipeline();
+      },
+      error: () => {
+        this.applyFilterPipeline();
+      }
+    });
+
+    this.applyFilterPipeline();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchDebounceId !== null) {
+      clearTimeout(this.searchDebounceId);
+      this.searchDebounceId = null;
+    }
   }
 
   onImageError(event: Event, placeName: string, placeLocation?: string): void {
@@ -177,80 +253,192 @@ export class Destinations implements OnInit {
     }
   }
 
-  get visibleDestinations(): Destination[] {
-    const term = this.normalizeText(this.searchTerm);
-    const selectedCategories = this.selectedCategories;
-    const selectedSorts = this.selectedSorts;
-    const selectedPopularity = this.selectedPopularity;
-    let items = [...this.destinations];
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedCity = '';
+    this.userCoords = null;
+    this.distanceSource = '';
+    this.locationStatus = 'Select a city to enable nearest-distance sorting.';
+    this.lastNonDistanceSort = null;
 
-    const matchesSearch = (place: Destination): boolean => {
-      if (!term) {
-        return true;
-      }
-      const name = this.normalizeText(place.name);
-      const location = this.normalizeText(place.location);
-      const state = this.normalizeText(this.getState(place));
-      const category = this.normalizeText(this.categoryLabel(this.getCategory(place)));
-      const description = this.normalizeText(place.description || this.getDescriptionSnippet(place, 200));
-      return (
-        name.includes(term) ||
-        location.includes(term) ||
-        state.includes(term) ||
-        category.includes(term) ||
-        description.includes(term)
-      );
+    this.filterState = {
+      search: '',
+      sortBy: null,
+      categories: [],
+      popularity: null,
+      city: null,
+      priceFrom: null,
+      priceTo: null
     };
 
-    const matchesCategory = (place: Destination): boolean =>
-      selectedCategories.length === 0 || selectedCategories.includes(this.getCategory(place));
+    this.currentPage = 1;
+    this.applyFilterPipeline();
+  }
 
-    const matchesPopularity = (place: Destination): boolean =>
-      selectedPopularity === 'all' || this.getPopularityTag(place) === selectedPopularity;
+  onFiltersChanged(): void {
+    const normalized = this.normalizeText(this.searchTerm);
 
-    items = items.filter((place) => matchesSearch(place) && matchesCategory(place) && matchesPopularity(place));
-
-    // Apply sorting with proper multi-criteria handling
-    if (selectedSorts.length === 0) {
-      // Default sorting when no sorts selected
-      items.sort((a, b) => {
-        // Primary: alphabetical by name
-        const nameDiff = a.name.localeCompare(b.name);
-        if (nameDiff !== 0) return nameDiff;
-        
-        // Secondary: by rating (highest first)
-        const ratingDiff = this.getRating(b) - this.getRating(a);
-        if (ratingDiff !== 0) return ratingDiff;
-        
-        // Tertiary: by price (lowest first)
-        return this.getPrice(a) - this.getPrice(b);
-      });
-    } else {
-      // Apply user-selected sorts with proper tie-breaking
-      items.sort((a, b) => this.compareBySorts(a, b, selectedSorts));
+    if (this.searchDebounceId !== null) {
+      clearTimeout(this.searchDebounceId);
     }
 
-    return items;
+    this.searchDebounceId = setTimeout(() => {
+      this.updateFilterState('search', normalized);
+      this.searchDebounceId = null;
+    }, 300);
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.visibleDestinations.length / this.itemsPerPage);
+  isSortSelected(sort: SortKey): boolean {
+    return this.filterState.sortBy === sort;
   }
 
-  get pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
-
-  get paginatedDestinations(): Destination[] {
-    const totalPages = this.totalPages;
-    if (totalPages === 0) {
-      return [];
+  toggleSort(sort: SortKey): void {
+    if (this.filterState.sortBy === sort) {
+      this.updateSortState(null);
+      return;
     }
 
-    const currentPage = Math.min(this.currentPage, totalPages);
-    const indexOfLastItem = currentPage * this.itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - this.itemsPerPage;
-    return this.visibleDestinations.slice(indexOfFirstItem, indexOfLastItem);
+    if (sort === 'distance-nearest' && !this.filterState.city) {
+      // Distance sorting is meaningless without a starting point, so we stop here
+      // instead of pretending the sort is active.
+      this.locationStatus = 'Choose a city first to sort by nearest distance.';
+      return;
+    }
+
+    this.updateSortState(sort);
+  }
+
+  removeSort(sort: SortKey): void {
+    if (this.filterState.sortBy !== sort) {
+      return;
+    }
+
+    this.updateSortState(null);
+  }
+
+  clearSorts(): void {
+    if (!this.filterState.sortBy) {
+      return;
+    }
+
+    this.updateSortState(null);
+  }
+
+  sortLabel(sort: SortKey): string {
+    const match = this.sortOptions.find((option) => option.key === sort);
+    return match ? match.label : 'Recommended';
+  }
+
+  getSortOrder(sort: SortKey): number {
+    return this.filterState.sortBy === sort ? 1 : 0;
+  }
+
+  isCategorySelected(category: string): boolean {
+    return this.filterState.categories.includes(category);
+  }
+
+  toggleCategory(category: string): void {
+    const key = this.normalizeCategoryKey(category);
+    if (!key) {
+      return;
+    }
+
+    const categories = this.filterState.categories.includes(key)
+      ? this.filterState.categories.filter((value) => value !== key)
+      : [...this.filterState.categories, key];
+
+    this.updateFilterState('categories', categories);
+  }
+
+  clearCategories(): void {
+    if (this.filterState.categories.length === 0) {
+      return;
+    }
+
+    this.updateFilterState('categories', []);
+  }
+
+  removeCategory(category: string): void {
+    if (!this.filterState.categories.includes(category)) {
+      return;
+    }
+
+    this.updateFilterState(
+      'categories',
+      this.filterState.categories.filter((value) => value !== category)
+    );
+  }
+
+  clearSearch(): void {
+    if (!this.filterState.search && !this.searchTerm) {
+      return;
+    }
+
+    this.searchTerm = '';
+    if (this.searchDebounceId !== null) {
+      clearTimeout(this.searchDebounceId);
+      this.searchDebounceId = null;
+    }
+    this.updateFilterState('search', '');
+  }
+
+  clearLocation(): void {
+    if (!this.filterState.city && !this.userCoords) {
+      return;
+    }
+
+    this.selectedCity = '';
+    this.userCoords = null;
+    this.distanceSource = '';
+    this.locationStatus = 'Select a city to enable nearest-distance sorting.';
+    this.updateFilterState('city', null, false);
+
+    if (this.filterState.sortBy === 'distance-nearest') {
+      // When city is cleared, distance sort can no longer be trusted, so we move back
+      // to the last non-distance sort the user had chosen.
+      this.updateSortState(this.lastNonDistanceSort, false);
+    }
+
+    this.applyFilterPipeline();
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+  }
+
+  goToPreviousPage(): void {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage(): void {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  categoryLabel(key: string): string {
+    const match = this.categoryOptions.find((category) => category.key === key);
+    return match ? match.label : key;
+  }
+
+  popularityLabel(key: PopularityKey): string {
+    const match = this.popularityOptions.find((option) => option.key === key);
+    return match ? match.label : 'All popularity levels';
+  }
+
+  setPopularity(value: string): void {
+    const normalized = this.normalizePopularityKey(value);
+    this.updateFilterState('popularity', normalized === 'all' ? null : normalized);
+  }
+
+  clearPopularity(): void {
+    if (this.filterState.popularity === null) {
+      return;
+    }
+
+    this.updateFilterState('popularity', null);
   }
 
   getState(place: Destination): string {
@@ -269,7 +457,7 @@ export class Destinations implements OnInit {
       ? this.getDistanceKm(place)
       : 120 + (this.hashName(place.location) % 1500);
 
-    const slab = this.pricingConfig.distanceSlabs.find((s) => distanceKm <= s.maxKm);
+    const slab = this.pricingConfig.distanceSlabs.find((item) => distanceKm <= item.maxKm);
     const distanceSurcharge = slab ? slab.surcharge : 0;
 
     return this.pricingConfig.baseFare + days * this.pricingConfig.perDayFare + distanceSurcharge;
@@ -279,6 +467,7 @@ export class Destinations implements OnInit {
     if (!this.userCoords) {
       return Number.POSITIVE_INFINITY;
     }
+
     return this.haversineKm(
       this.userCoords.lat,
       this.userCoords.lng,
@@ -342,128 +531,261 @@ export class Destinations implements OnInit {
     return 'hidden-gems';
   }
 
-  resetFilters(): void {
-    this.searchTerm = '';
-    this.selectedSorts = [];
-    this.selectedCategories = [];
-    this.selectedPopularity = 'all';
-    this.selectedCity = '';
-    this.userCoords = null;
-    this.distanceSource = '';
-    this.locationStatus = 'Select a city to sort by nearest distance.';
-    this.currentPage = 1;
+  getDescriptionSnippet(place: Destination, maxLength = 140): string {
+    const description = place.description?.trim();
+    const fallback =
+      `${place.name} in ${place.location} is a ${this.categoryLabel(this.getCategory(place))} ` +
+      'destination with scenic views and local experiences.';
+    const source = description || fallback;
+    if (source.length <= maxLength) {
+      return source;
+    }
+    return `${source.slice(0, maxLength - 3).trimEnd()}...`;
   }
 
-  onFiltersChanged(): void {
-    this.selectedCategories = this.normalizeCategorySelection(this.selectedCategories);
-    this.selectedSorts = this.normalizeSortSelection(this.selectedSorts);
-    this.selectedPopularity = this.normalizePopularityKey(this.selectedPopularity);
-    this.currentPage = 1;
+  applyQuickCity(): void {
+    const city = this.findCityFromLocal(this.selectedCity);
+    if (!city) {
+      this.locationStatus = 'Please choose a city from the list.';
+      return;
+    }
+
+    this.selectedCity = city.name;
+    this.userCoords = { lat: city.lat, lng: city.lng };
+    this.distanceSource = city.name;
+    this.locationStatus =
+      this.filterState.sortBy === 'distance-nearest'
+        ? `Showing nearest destinations from ${city.name}.`
+        // Picking a city should not silently force a distance sort unless the user
+        // has actually chosen that sort.
+        : `City set to ${city.name}. Select "Distance: Nearest" to sort by proximity.`;
+
+    this.updateFilterState('city', city.name);
   }
 
-  isSortSelected(sort: SortKey): boolean {
-    return this.selectedSorts.includes(sort);
+  useBrowserLocation(): void {
+    if (!navigator.geolocation) {
+      this.locationStatus = 'Geolocation is not supported in this browser.';
+      return;
+    }
+
+    this.resolvingLocation = true;
+    this.locationStatus = 'Fetching your current location...';
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.userCoords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        this.selectedCity = 'Your location';
+        this.distanceSource = 'your location';
+        this.locationStatus =
+          this.filterState.sortBy === 'distance-nearest'
+            ? 'Showing nearest destinations from your location.'
+            // Browser location behaves the same as quick city selection so the user
+            // never gets two different filter rules depending on how location was chosen.
+            : 'Location set. Select "Distance: Nearest" to sort by proximity.';
+        this.resolvingLocation = false;
+        this.updateFilterState('city', 'Your location');
+      },
+      () => {
+        this.locationStatus = 'Location permission denied or unavailable.';
+        this.resolvingLocation = false;
+      },
+      { enableHighAccuracy: false, timeout: 8000 }
+    );
   }
 
-  toggleSort(sort: SortKey): void {
-    if (this.selectedSorts.includes(sort)) {
-      this.selectedSorts = this.selectedSorts.filter((value) => value !== sort);
+  trackByDestination(index: number, place: Destination): string {
+    return place.id;
+  }
+
+  private updateFilterState<K extends keyof FilterState>(
+    key: K,
+    value: FilterState[K],
+    applyImmediately = true
+  ): void {
+    // We only replace the field that changed so one filter never wipes out
+    // the rest of the user's choices.
+    this.filterState = {
+      ...this.filterState,
+      [key]: value
+    };
+
+    if (applyImmediately) {
+      this.currentPage = 1;
+      this.applyFilterPipeline();
+    }
+  }
+
+  private updateSortState(sortBy: SortKey | null, applyImmediately = true): void {
+    if (sortBy && sortBy !== 'distance-nearest') {
+      // We keep track of the last "normal" sort so clearing a city can safely
+      // fall back to something the user actually chose before.
+      this.lastNonDistanceSort = sortBy;
+    }
+
+    this.filterState = {
+      ...this.filterState,
+      sortBy
+    };
+
+    if (applyImmediately) {
+      this.currentPage = 1;
+      this.applyFilterPipeline();
+    }
+  }
+
+  private applyFilterPipeline(): void {
+    // Every filter step works from the output of the previous one. That keeps
+    // combined filters predictable and avoids special-case behavior.
+    let items = [...this.destinations];
+
+    items = this.applySearchFilter(items);
+    items = this.applyCategoryFilter(items);
+    items = this.applyPopularityFilter(items);
+    items = this.applyPriceRangeFilter(items);
+    items = this.applyCityFilter(items);
+    items = this.applySort(items);
+
+    this.filteredDestinations = items;
+
+    if (this.totalPages > 0) {
+      this.currentPage = Math.min(this.currentPage, this.totalPages);
     } else {
-      this.selectedSorts = [...this.selectedSorts, sort];
+      this.currentPage = 1;
     }
-    this.onFiltersChanged();
   }
 
-  removeSort(sort: SortKey): void {
-    if (!this.selectedSorts.includes(sort)) {
-      return;
+  private applySearchFilter(items: Destination[]): Destination[] {
+    const term = this.filterState.search;
+    if (!term) {
+      return items;
     }
-    this.selectedSorts = this.selectedSorts.filter((value) => value !== sort);
-    this.onFiltersChanged();
+
+    return items.filter((place) => {
+      // Search is intentionally broad so people can type whatever they remember
+      // about a destination and still find it.
+      const haystack = [
+        place.name,
+        place.location,
+        this.getState(place),
+        this.categoryLabel(this.getCategory(place)),
+        place.description || this.getDescriptionSnippet(place, 240)
+      ]
+        .map((value) => this.normalizeText(value))
+        .join(' ');
+
+      return haystack.includes(term);
+    });
   }
 
-  clearSorts(): void {
-    if (this.selectedSorts.length === 0) {
-      return;
+  private applyCategoryFilter(items: Destination[]): Destination[] {
+    if (this.filterState.categories.length === 0) {
+      return items;
     }
-    this.selectedSorts = [];
-    this.onFiltersChanged();
+
+    // Multi-select categories use OR logic because people expect "Temples + Forests"
+    // to widen results, not narrow them to impossible overlaps.
+    return items.filter((place) => this.filterState.categories.includes(this.getCategory(place)));
   }
 
-  sortLabel(sort: SortKey): string {
-    const match = this.sortOptions.find((option) => option.key === sort);
-    return match ? match.label : sort;
-  }
-
-  getSortOrder(sort: SortKey): number {
-    return this.selectedSorts.indexOf(sort) + 1;
-  }
-
-  isCategorySelected(category: string): boolean {
-    return this.selectedCategories.includes(category);
-  }
-
-  toggleCategory(category: string): void {
-    const key = this.normalizeCategoryKey(category);
-    if (!key) {
-      return;
+  private applyPopularityFilter(items: Destination[]): Destination[] {
+    if (this.filterState.popularity === null) {
+      return items;
     }
-    if (this.selectedCategories.includes(key)) {
-      this.selectedCategories = this.selectedCategories.filter((value) => value !== key);
-    } else {
-      this.selectedCategories = [...this.selectedCategories, key];
+
+    return items.filter((place) => this.getPopularityTag(place) === this.filterState.popularity);
+  }
+
+  private applyPriceRangeFilter(items: Destination[]): Destination[] {
+    const { priceFrom, priceTo } = this.filterState;
+    if (priceFrom === null && priceTo === null) {
+      return items;
     }
-    this.onFiltersChanged();
+
+    return items.filter((place) => {
+      const price = this.getPrice(place);
+      if (priceFrom !== null && price < priceFrom) {
+        return false;
+      }
+      if (priceTo !== null && price > priceTo) {
+        return false;
+      }
+      return true;
+    });
   }
 
-  clearCategories(): void {
-    if (this.selectedCategories.length === 0) {
-      return;
+  private applyCityFilter(items: Destination[]): Destination[] {
+    // City selection does not remove destinations by itself. It exists to support
+    // distance-based pricing and sorting without hiding destinations unexpectedly.
+    if (!this.filterState.city || !this.userCoords) {
+      return items;
     }
-    this.selectedCategories = [];
-    this.onFiltersChanged();
+
+    return items;
   }
 
-  removeCategory(category: string): void {
-    if (!this.selectedCategories.includes(category)) {
-      return;
+  private applySort(items: Destination[]): Destination[] {
+    const sorted = [...items];
+    const sortBy = this.filterState.sortBy;
+
+    if (!sortBy) {
+      // "Recommended" is our safe default when no explicit sort is active.
+      return sorted.sort((a, b) => this.compareRecommended(a, b));
     }
-    this.selectedCategories = this.selectedCategories.filter((value) => value !== category);
-    this.onFiltersChanged();
-  }
 
-  clearSearch(): void {
-    if (!this.searchTerm) {
-      return;
+    if (sortBy === 'distance-nearest' && !this.filterState.city) {
+      // If distance sort somehow survives without a city, we intentionally fall back
+      // instead of returning a misleading order.
+      return sorted.sort((a, b) => this.compareRecommended(a, b));
     }
-    this.searchTerm = '';
-    this.onFiltersChanged();
+
+    return sorted.sort((a, b) => {
+      const primaryDiff = this.compareBySort(a, b, sortBy);
+      if (primaryDiff !== 0) {
+        return primaryDiff;
+      }
+      return this.compareRecommended(a, b);
+    });
   }
 
-  clearLocation(): void {
-    if (!this.userCoords) {
-      return;
+  private compareBySort(a: Destination, b: Destination, sortBy: SortKey): number {
+    switch (sortBy) {
+      case 'price-low':
+        return this.getPrice(a) - this.getPrice(b);
+      case 'price-high':
+        return this.getPrice(b) - this.getPrice(a);
+      case 'distance-nearest':
+        return this.getDistanceKm(a) - this.getDistanceKm(b);
+      case 'rating-highest':
+        return this.getRating(b) - this.getRating(a);
+      case 'time-shortest':
+        return this.getDays(a) - this.getDays(b);
+      case 'alpha-az':
+        return a.name.localeCompare(b.name);
+      case 'alpha-za':
+        return b.name.localeCompare(a.name);
+      default:
+        return 0;
     }
-    this.selectedCity = '';
-    this.userCoords = null;
-    this.distanceSource = '';
-    this.locationStatus = 'Select a city to sort by nearest distance.';
-    this.onFiltersChanged();
   }
 
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages) {
-      return;
+  private compareRecommended(a: Destination, b: Destination): number {
+    // Default ordering should feel useful to a traveler, so we favor destinations
+    // that look more popular before falling back to name order.
+    const popularityDiff = this.getPopularityScore(b) - this.getPopularityScore(a);
+    if (popularityDiff !== 0) {
+      return popularityDiff;
     }
-    this.currentPage = page;
-  }
 
-  goToPreviousPage(): void {
-    this.goToPage(this.currentPage - 1);
-  }
+    const ratingDiff = this.getRating(b) - this.getRating(a);
+    if (ratingDiff !== 0) {
+      return ratingDiff;
+    }
 
-  goToNextPage(): void {
-    this.goToPage(this.currentPage + 1);
+    return a.name.localeCompare(b.name);
   }
 
   private normalizeCategoryKey(value: string): string | null {
@@ -483,56 +805,10 @@ export class Destinations implements OnInit {
     return Array.from(unique);
   }
 
-  categoryLabel(key: string): string {
-    const match = this.categoryOptions.find((category) => category.key === key);
-    return match ? match.label : key;
-  }
-
-  popularityLabel(key: PopularityKey): string {
-    const match = this.popularityOptions.find((option) => option.key === key);
-    return match ? match.label : 'All popularity levels';
-  }
-
-  setPopularity(value: string): void {
-    this.selectedPopularity = this.normalizePopularityKey(value);
-    this.onFiltersChanged();
-  }
-
-  clearPopularity(): void {
-    if (this.selectedPopularity === 'all') {
-      return;
-    }
-    this.selectedPopularity = 'all';
-    this.onFiltersChanged();
-  }
-
-  private normalizeSortSelection(values: SortKey[]): SortKey[] {
-    const allowed = new Set(this.sortOptions.map((option) => option.key));
-    const unique = new Set<SortKey>();
-    for (const value of values) {
-      if (allowed.has(value)) {
-        unique.add(value);
-      }
-    }
-    return Array.from(unique);
-  }
-
   private normalizePopularityKey(value: string): PopularityKey {
     const key = value.trim().toLowerCase();
     const allowed = new Set(this.popularityOptions.map((option) => option.key));
     return allowed.has(key as PopularityKey) ? (key as PopularityKey) : 'all';
-  }
-
-  getDescriptionSnippet(place: Destination, maxLength = 140): string {
-    const description = place.description?.trim();
-    const fallback =
-      `${place.name} in ${place.location} is a ${this.categoryLabel(this.getCategory(place))} ` +
-      'destination with scenic views and local experiences.';
-    const source = description || fallback;
-    if (source.length <= maxLength) {
-      return source;
-    }
-    return `${source.slice(0, maxLength - 3).trimEnd()}...`;
   }
 
   private normalizeText(value: string): string {
@@ -550,113 +826,6 @@ export class Destinations implements OnInit {
       hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
     }
     return hash;
-  }
-
-  private compareBySorts(a: Destination, b: Destination, sorts: SortKey[]): number {
-    // If no sorts selected, use default sorting
-    if (sorts.length === 0) {
-      // Default: alphabetical by name, then by rating (highest), then by price (lowest)
-      const nameDiff = a.name.localeCompare(b.name);
-      if (nameDiff !== 0) return nameDiff;
-      
-      const ratingDiff = this.getRating(b) - this.getRating(a);
-      if (ratingDiff !== 0) return ratingDiff;
-      
-      return this.getPrice(a) - this.getPrice(b);
-    }
-
-    // Apply multiple sort criteria in order
-    for (const sort of sorts) {
-      let diff = 0;
-      switch (sort) {
-        case 'price-low':
-          diff = this.getPrice(a) - this.getPrice(b);
-          break;
-        case 'price-high':
-          diff = this.getPrice(b) - this.getPrice(a);
-          break;
-        case 'distance-nearest':
-          if (!this.userCoords) {
-            diff = 0;
-            break;
-          }
-          diff = this.getDistanceKm(a) - this.getDistanceKm(b);
-          break;
-        case 'rating-highest':
-          diff = this.getRating(b) - this.getRating(a);
-          break;
-        case 'time-shortest':
-          diff = this.getDays(a) - this.getDays(b);
-          break;
-        case 'alpha-az':
-          diff = a.name.localeCompare(b.name);
-          break;
-        case 'alpha-za':
-          diff = b.name.localeCompare(a.name);
-          break;
-      }
-      // Only return if we have a definitive difference for this sort criteria
-      if (diff !== 0) {
-        return diff;
-      }
-      // If diff is 0, continue to next sort criteria for tie-breaking
-    }
-    
-    // If all sort criteria result in ties, fall back to default sorting
-    const nameDiff = a.name.localeCompare(b.name);
-    if (nameDiff !== 0) return nameDiff;
-    
-    const ratingDiff = this.getRating(b) - this.getRating(a);
-    if (ratingDiff !== 0) return ratingDiff;
-    
-    return this.getPrice(a) - this.getPrice(b);
-  }
-
-  applyQuickCity(): void {
-    const city = this.findCityFromLocal(this.selectedCity);
-    if (!city) {
-      this.locationStatus = 'Please choose a city from the list.';
-      return;
-    }
-    this.selectedCity = city.name;
-    this.userCoords = { lat: city.lat, lng: city.lng };
-    this.distanceSource = city.name;
-    if (this.selectedSorts.length === 0) {
-      this.selectedSorts = ['distance-nearest'];
-    }
-    this.locationStatus = `Showing distance from ${city.name} (approx. straight-line).`;
-    this.onFiltersChanged();
-  }
-
-  useBrowserLocation(): void {
-    if (!navigator.geolocation) {
-      this.locationStatus = 'Geolocation is not supported in this browser.';
-      return;
-    }
-
-    this.resolvingLocation = true;
-    this.locationStatus = 'Fetching your current location...';
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.userCoords = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        this.distanceSource = 'your location';
-        if (this.selectedSorts.length === 0) {
-          this.selectedSorts = ['distance-nearest'];
-        }
-        this.locationStatus = 'Showing distance from your location (approx. straight-line).';
-        this.resolvingLocation = false;
-        this.onFiltersChanged();
-      },
-      () => {
-        this.locationStatus = 'Location permission denied or unavailable.';
-        this.resolvingLocation = false;
-      },
-      { enableHighAccuracy: false, timeout: 8000 }
-    );
   }
 
   private haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -683,27 +852,23 @@ export class Destinations implements OnInit {
     };
     const resolvedKey = aliases[key] ?? key;
 
-    const exact = this.cityOptions.find((c) => this.normalizeCityKey(c.name) === resolvedKey);
+    const exact = this.cityOptions.find((city) => this.normalizeCityKey(city.name) === resolvedKey);
     if (exact) {
       return exact;
     }
 
-    const startsWith = this.cityOptions.find((c) =>
-      this.normalizeCityKey(c.name).startsWith(resolvedKey)
+    const startsWith = this.cityOptions.find((city) =>
+      this.normalizeCityKey(city.name).startsWith(resolvedKey)
     );
     if (startsWith) {
       return startsWith;
     }
 
-    return this.cityOptions.find((c) => this.normalizeCityKey(c.name).includes(resolvedKey));
+    return this.cityOptions.find((city) => this.normalizeCityKey(city.name).includes(resolvedKey));
   }
 
   private normalizeCityKey(value: string): string {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
-  }
-
-  trackByDestination(index: number, place: Destination): string {
-    return place.id;
   }
 }
 

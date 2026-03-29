@@ -1,7 +1,7 @@
 .testimonials {
   margin: 28px auto 0;
   padding: 76px 20px;
-  background: linear-gradient(180deg, #eef5ff 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #0a0f1e 0%, #10182b 100%);
 }
 
 .section-head {
@@ -10,7 +10,7 @@
 
 .label {
   margin: 0;
-  color: #0a62c9;
+  color: #c9a96e;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -19,7 +19,7 @@
 
 .section-head h2 {
   margin: 10px 0 0;
-  color: #10253f;
+  color: #f7f1e6;
   font-size: clamp(1.7rem, 3.5vw, 2.4rem);
 }
 
@@ -32,30 +32,32 @@
 }
 
 .review-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 169, 110, 0.18);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 10px 24px rgba(16, 37, 63, 0.11);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(14px);
 }
 
 .stars {
-  color: #ffae00;
+  color: #c9a96e;
   letter-spacing: 0.1em;
 }
 
 .feedback {
   margin: 12px 0;
-  color: #4f5f73;
+  color: #d6deea;
 }
 
 .review-card h3 {
   margin: 0;
-  color: #0f2b4c;
+  color: #fff8ec;
 }
 
 .trip {
   margin: 4px 0 0;
-  color: #64758c;
+  color: #c4cfde;
   font-size: 0.92rem;
 }
 
@@ -64,8 +66,9 @@
   margin: 28px auto 0;
   padding: 16px;
   border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(16, 37, 63, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 169, 110, 0.18);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
@@ -74,12 +77,12 @@
 
 .trust-row strong {
   display: block;
-  color: #0e4c98;
+  color: #f7f1e6;
   font-size: 1.35rem;
 }
 
 .trust-row span {
-  color: #667892;
+  color: #c4cfde;
   font-size: 0.88rem;
 }
 

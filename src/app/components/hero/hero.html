@@ -1,7 +1,11 @@
 <section class="hero">
-  <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="3000" data-bs-wrap="true" data-bs-pause="false">
+  <div class="hero-carousel" aria-label="Featured South India destinations">
     <div class="carousel-inner">
-      <div class="carousel-item" *ngFor="let slide of heroSlides; let i = index" [class.active]="i === 0">
+      <div
+        class="carousel-item"
+        *ngFor="let slide of heroSlides; let i = index"
+        [class.active]="i === currentSlideIndex"
+      >
         <img [src]="slide.image" [alt]="slide.title" loading="lazy">
       </div>
     </div>
@@ -20,6 +24,7 @@
       <span>Tamil Nadu Temples</span>
       <span>Karnataka Hills</span>
       <span>Coastal Getaway</span>
+      <span>Heritage Cities</span>
     </div>
   </div>
 </section>

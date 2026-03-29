@@ -1,216 +1,166 @@
 .login-page {
-  min-height: calc(100vh - 180px);
+  position: relative;
+  width: var(--content-width);
+  min-height: calc(100vh - 170px);
+  margin: var(--page-top-offset) auto 0;
   display: grid;
-  place-items: center;
-  padding: 40px 16px 70px;
+  justify-items: end;
+  align-items: center;
+  padding: var(--panel-padding);
+  border-radius: 36px;
+  overflow: hidden;
   background:
-    radial-gradient(circle at top right, rgba(255, 186, 66, 0.25), transparent 40%),
-    radial-gradient(circle at left 20%, rgba(13, 148, 136, 0.18), transparent 34%),
-    linear-gradient(180deg, #f4fbff 0%, #ffffff 100%);
+    linear-gradient(90deg, rgba(10, 15, 30, 0.1) 0%, rgba(10, 15, 30, 0.1) 50%, rgba(10, 15, 30, 0.74) 50%, rgba(10, 15, 30, 0.86) 100%),
+    url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  box-shadow: var(--shadow-xl);
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(10, 15, 30, 0.22), rgba(10, 15, 30, 0.84));
 }
 
 .login-card {
+  position: relative;
+  z-index: 1;
   width: min(460px, 100%);
-  padding: 30px 24px;
-  border-radius: 18px;
-  background: #ffffff;
-  border: 1px solid #d9ebf7;
-  box-shadow: 0 18px 40px rgba(16, 48, 81, 0.13);
+  padding: var(--panel-padding);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(201, 169, 110, 0.16);
+  backdrop-filter: blur(18px);
 }
 
 .eyebrow {
   margin: 0;
+  color: var(--sand);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.18em;
   font-size: 0.78rem;
-  color: #0b4a93;
-  font-weight: 700;
 }
 
-h1 {
-  margin: 6px 0 8px;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  color: #122b45;
+.login-card h1 {
+  margin-top: 14px;
+  color: var(--ivory);
+  font-size: clamp(2rem, 4vw, 3rem);
 }
 
-.subtitle {
-  margin: 0 0 18px;
-  color: #42607d;
+.subtitle,
+.support,
+.error-message,
+.success-message {
+  color: var(--text-secondary);
 }
 
 form {
   display: grid;
-  gap: 10px;
+  gap: 14px;
+  margin-top: 20px;
 }
 
 .form-group {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 label {
-  margin-top: 6px;
-  font-weight: 600;
-  color: #203953;
+  color: var(--text-muted);
 }
 
 input[type='email'],
 input[type='password'],
 input[type='text'] {
   width: 100%;
-  border-radius: 10px;
-  border: 1px solid #cddff0;
-  padding: 11px 12px;
-  font-size: 0.98rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus {
-  outline: none;
-  border-color: #0f766e;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ivory);
+  min-height: var(--control-height);
+  padding: 14px 16px;
 }
 
 .password-container {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
-  align-items: center;
+  gap: 10px;
 }
 
 .toggle-password {
-  margin: 0;
-  border: 1px solid #c7d7ea;
+  border-radius: 16px;
+  border: 1px solid rgba(201, 169, 110, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ivory);
+  padding: 0 16px;
+}
+
+button[type='submit'],
+.google-btn {
+  min-height: var(--control-height);
   border-radius: 999px;
-  background: #f4f9ff;
-  color: #1e4770;
-  font-weight: 600;
-  padding: 10px 12px;
-  cursor: pointer;
-}
-
-.toggle-password:hover {
-  filter: none;
-  background: #e6f1ff;
-}
-
-.invalid {
-  border-color: #c62828 !important;
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
-}
-
-.valid {
-  border-color: #0b6f30 !important;
-  box-shadow: 0 0 0 3px rgba(11, 111, 48, 0.1);
+  font-weight: 700;
 }
 
 button[type='submit'] {
-  margin-top: 8px;
   border: 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #0f766e, #0ea5a4);
-  color: #ffffff;
-  font-weight: 700;
-  padding: 12px 14px;
-  cursor: pointer;
-  min-height: 44px;
-}
-
-button[type='submit']:hover {
-  filter: brightness(1.05);
-}
-
-button[type='submit']:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
+  background: linear-gradient(120deg, var(--coral), #f57c61);
+  color: #fff7f2;
 }
 
 .google-btn {
-  margin-top: 8px;
-  border: 1px solid #c6d8e8;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #1f425f;
-  font-weight: 700;
-  padding: 12px 14px;
-  cursor: pointer;
-  min-height: 44px;
-}
-
-.google-btn:hover {
-  background: #f2f8ff;
-}
-
-.google-btn:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
+  border: 1px solid rgba(201, 169, 110, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ivory);
 }
 
 .error {
-  color: #c62828;
-  font-size: 0.8rem;
-  min-height: 1em;
+  color: #ff9e90;
 }
 
-.error-message,
-.success-message {
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 0.9rem;
+.invalid {
+  border-color: rgba(232, 98, 74, 0.54) !important;
 }
 
-.error-message {
-  color: #8b1d1d;
-  background: #fff3f3;
-  border: 1px solid #f5cccc;
-}
-
-.success-message {
-  color: #0b6f30;
-  background: #f0fff5;
-  border: 1px solid #cdeed8;
+.valid {
+  border-color: rgba(201, 169, 110, 0.34) !important;
 }
 
 .spinner {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.25);
   border-top-color: #ffffff;
   display: inline-block;
   animation: spin 0.8s linear infinite;
 }
 
 .dark-spinner {
-  border-color: rgba(31, 66, 95, 0.25);
-  border-top-color: #1f425f;
-}
-
-.support {
-  margin: 16px 0 0;
-  color: #4f647a;
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: var(--sand);
 }
 
 .support a {
-  color: #0b4a93;
-  text-decoration: none;
-}
-
-@media (max-width: 560px) {
-  .login-card {
-    padding: 24px 16px;
-  }
-
-  .toggle-password {
-    min-width: 78px;
-  }
+  color: var(--sand);
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    width: var(--content-width);
+    justify-items: center;
+    padding: var(--panel-padding-compact);
+    background:
+      linear-gradient(180deg, rgba(10, 15, 30, 0.28), rgba(10, 15, 30, 0.88)),
+      url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
   }
-  to {
-    transform: rotate(360deg);
+
+  .login-card {
+    width: min(520px, 100%);
   }
 }

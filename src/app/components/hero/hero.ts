@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 interface Particle {
@@ -20,6 +20,7 @@ interface Particle {
 })
 export class Hero implements AfterViewInit, OnDestroy {
   @ViewChild('heroCanvas') heroCanvas?: ElementRef<HTMLCanvasElement>;
+  private readonly cdr = inject(ChangeDetectorRef);
 
   heroSlides = [
     {
@@ -45,19 +46,24 @@ export class Hero implements AfterViewInit, OnDestroy {
   ];
 
   private animationId: number | null = null;
+  currentSlideIndex = 0;
   private particles: Particle[] = [];
   private readonly particleCount = 42;
+  private readonly slideIntervalMs = 3000;
+  private slideIntervalId: ReturnType<typeof setInterval> | null = null;
   private readonly onResize = () => this.resizeCanvas();
 
   ngAfterViewInit(): void {
     this.resizeCanvas();
     this.bootstrapParticles();
     this.startAnimation();
+    this.startSlideLoop();
     window.addEventListener('resize', this.onResize);
   }
 
   ngOnDestroy(): void {
     this.stopAnimation();
+    this.stopSlideLoop();
     window.removeEventListener('resize', this.onResize);
   }
 
@@ -134,6 +140,26 @@ export class Hero implements AfterViewInit, OnDestroy {
     }
     cancelAnimationFrame(this.animationId);
     this.animationId = null;
+  }
+
+  private startSlideLoop(): void {
+    if (this.slideIntervalId !== null || this.heroSlides.length <= 1) {
+      return;
+    }
+
+    this.slideIntervalId = setInterval(() => {
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.heroSlides.length;
+      this.cdr.detectChanges();
+    }, this.slideIntervalMs);
+  }
+
+  private stopSlideLoop(): void {
+    if (this.slideIntervalId === null) {
+      return;
+    }
+
+    clearInterval(this.slideIntervalId);
+    this.slideIntervalId = null;
   }
 }
 

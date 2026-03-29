@@ -1,14 +1,32 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map, take } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { SessionService } from '../core/services/session.service';
 
-export const authGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+export const authGuard: CanActivateFn = async (_, state) => {
+  const sessionService = inject(SessionService);
   const router = inject(Router);
 
-  return authService.user$.pipe(
-    take(1),
-    map((user) => (user ? true : router.createUrlTree(['/login'])))
-  );
+  if (!sessionService.currentUser) {
+    return router.createUrlTree(['/login'], {
+      queryParams: { redirectTo: state.url }
+    });
+  }
+
+  const { auth } = await import('../core/firebase/firebase');
+
+  await auth.authStateReady();
+
+  if (auth.currentUser?.email) {
+    sessionService.setUser({
+      uid: auth.currentUser.uid,
+      email: auth.currentUser.email
+    });
+    return true;
+  }
+
+  sessionService.clearUser();
+
+  return router.createUrlTree(['/login'], {
+    queryParams: { redirectTo: state.url }
+  });
 };

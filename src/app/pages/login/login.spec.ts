@@ -1,35 +1,48 @@
-import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { vi } from 'vitest';
 import { Login } from './login';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
-  let mockAuthService: jasmine.SpyObj<AuthService> & { isAuthenticated$: BehaviorSubject<boolean> };
-  let routerSpy: jasmine.SpyObj<Router>;
+  let mockAuthService: {
+    login: ReturnType<typeof vi.fn>;
+    googleLogin: ReturnType<typeof vi.fn>;
+    isAuthenticated$: BehaviorSubject<boolean>;
+  };
+  let router: Router;
+  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
+    vi.useFakeTimers();
     isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-    mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', ['login', 'googleLogin'], {
+    mockAuthService = {
+      login: vi.fn(),
+      googleLogin: vi.fn(),
       isAuthenticated$: isAuthenticatedSubject
-    }) as jasmine.SpyObj<AuthService> & { isAuthenticated$: BehaviorSubject<boolean> };
-    routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    routerSpy.navigate.and.resolveTo(true);
+    };
 
     await TestBed.configureTestingModule({
       imports: [Login],
       providers: [
-        { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: routerSpy }
+        provideRouter([]),
+        { provide: AuthService, useValue: mockAuthService as unknown as AuthService }
       ]
     }).compileComponents();
 
+    router = TestBed.inject(Router);
+    navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create', () => {
@@ -46,7 +59,7 @@ describe('Login', () => {
   });
 
   it('shows the auth error when login fails', async () => {
-    mockAuthService.login.and.rejectWith(new Error('Incorrect email or password.'));
+    mockAuthService.login.mockRejectedValue(new Error('Incorrect email or password.'));
     const validForm = { invalid: false } as never;
     component.email = 'demo@example.com';
     component.password = 'secret123';
@@ -54,11 +67,11 @@ describe('Login', () => {
     await component.onSubmit(validForm);
 
     expect(component.errorMessage).toBe('Incorrect email or password.');
-    expect(component.loading).toBeFalse();
+    expect(component.loading).toBe(false);
   });
 
-  it('redirects to dashboard after a successful login', fakeAsync(() => {
-    mockAuthService.login.and.resolveTo({
+  it('redirects to dashboard after a successful login', async () => {
+    mockAuthService.login.mockResolvedValue({
       uid: 'u1',
       email: 'demo@example.com',
       displayName: 'Demo User',
@@ -68,20 +81,20 @@ describe('Login', () => {
     component.email = 'demo@example.com';
     component.password = 'secret123';
 
-    void component.onSubmit(validForm);
-    flushMicrotasks();
+    await component.onSubmit(validForm);
 
     expect(component.successMessage).toContain('Welcome back, Demo User');
     expect(component.password).toBe('');
-    expect(routerSpy.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
 
-    tick(700);
+    await vi.advanceTimersByTimeAsync(700);
 
-    expect(routerSpy.navigate).toHaveBeenCalledOnceWith(['/dashboard']);
-  }));
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+  });
 
-  it('does not schedule duplicate redirects when auth state updates after login', fakeAsync(() => {
-    mockAuthService.login.and.resolveTo({
+  it('does not schedule duplicate redirects when auth state updates after login', async () => {
+    mockAuthService.login.mockResolvedValue({
       uid: 'u1',
       email: 'demo@example.com',
       displayName: 'Demo User',
@@ -89,12 +102,11 @@ describe('Login', () => {
     });
     const validForm = { invalid: false } as never;
 
-    void component.onSubmit(validForm);
-    flushMicrotasks();
+    await component.onSubmit(validForm);
     isAuthenticatedSubject.next(true);
-    tick(700);
+    await vi.advanceTimersByTimeAsync(700);
 
-    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
-  }));
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+  });
 });
