@@ -1,18 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FirebaseError } from 'firebase/app';
-import { Timestamp, collection, getDocs, query, where } from 'firebase/firestore';
-import { AuthService } from '../../core/services/auth.service';
-import { firestore } from '../../core/firebase/firebase';
+import { of, Subscription, switchMap } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { Booking, FirestoreService } from '../../services/firestore.service';
 
 interface BookingRecord {
   id: string;
-  name: string;
-  email: string;
-  date: string;
-  status: string;
-  createdAt: Timestamp | null;
+  activityTitle: string;
+  travelDate: string;
+  travelers: number;
+  status: Booking['status'];
+  createdAt?: Booking['createdAt'];
 }
 
 @Component({
@@ -22,58 +21,54 @@ interface BookingRecord {
   templateUrl: './my-bookings.html',
   styleUrl: './my-bookings.css'
 })
-export class MyBookings implements OnInit {
+export class MyBookings implements OnInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly firestoreService = inject(FirestoreService);
+  private readonly subscriptions = new Subscription();
+
   bookings: BookingRecord[] = [];
   isLoading = true;
   errorMessage = '';
 
-  constructor(private readonly authService: AuthService) {}
-
-  async ngOnInit(): Promise<void> {
-    await this.loadBookings();
+  ngOnInit(): void {
+    this.loadBookings();
   }
 
-  async loadBookings(): Promise<void> {
-    const user = this.authService.currentUser;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
-    if (!user) {
-      this.errorMessage = 'Please sign in to view your bookings.';
-      this.isLoading = false;
-      return;
-    }
-
+  loadBookings(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    try {
-      const bookingsQuery = query(
-        collection(firestore, 'bookings'),
-        where('userId', '==', user.uid)
-      );
-      const snapshot = await getDocs(bookingsQuery);
+    const bookingsSubscription = this.authService.user$
+      .pipe(switchMap((user) => (user ? this.firestoreService.getUserBookings(user.uid) : of([] as Booking[]))))
+      .subscribe({
+        next: (bookings) => {
+          this.bookings = [...bookings]
+            .sort((a, b) => {
+              const left = a.createdAt?.toMillis() ?? 0;
+              const right = b.createdAt?.toMillis() ?? 0;
+              return right - left;
+            })
+            .map((booking) => ({
+              id: booking.id,
+              activityTitle: booking.activityTitle || 'Tour Booking',
+              travelDate: booking.travelDate,
+              travelers: booking.travelers,
+              status: booking.status,
+              createdAt: booking.createdAt
+            }));
+          this.isLoading = false;
+        },
+        error: () => {
+          this.errorMessage = 'We could not load your bookings right now.';
+          this.isLoading = false;
+        }
+      });
 
-      this.bookings = snapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: typeof data['name'] === 'string' ? data['name'] : 'Traveler',
-            email: typeof data['email'] === 'string' ? data['email'] : user.email ?? '',
-            date: typeof data['date'] === 'string' ? data['date'] : '',
-            status: typeof data['status'] === 'string' ? data['status'] : 'pending',
-            createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'] : null
-          };
-        })
-        .sort((a, b) => {
-          const left = a.createdAt?.toMillis() ?? 0;
-          const right = b.createdAt?.toMillis() ?? 0;
-          return right - left;
-        });
-    } catch (error) {
-      this.errorMessage = this.getErrorMessage(error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.subscriptions.add(bookingsSubscription);
   }
 
   formatDate(value: string): string {
@@ -88,7 +83,7 @@ export class MyBookings implements OnInit {
     }).format(new Date(`${value}T00:00:00`));
   }
 
-  formatCreatedAt(value: Timestamp | null): string {
+  formatCreatedAt(value: Booking['createdAt'] | null): string {
     if (!value) {
       return 'Just now';
     }
@@ -104,13 +99,5 @@ export class MyBookings implements OnInit {
 
   trackByBooking(index: number, booking: BookingRecord): string {
     return booking.id;
-  }
-
-  private getErrorMessage(error: unknown): string {
-    if (error instanceof FirebaseError && error.code === 'permission-denied') {
-      return 'Firestore rules blocked this read. Deploy the latest rules and try again.';
-    }
-
-    return 'We could not load your bookings right now.';
   }
 }

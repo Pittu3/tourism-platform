@@ -13,9 +13,9 @@
           <span class="status-chip">{{ booking.status }}</span>
           <span class="created-at">{{ formatCreatedAt(booking.createdAt) }}</span>
         </div>
-        <h2>{{ booking.name }}</h2>
-        <p class="booking-date">{{ formatDate(booking.date) }}</p>
-        <p class="booking-email">{{ booking.email }}</p>
+        <h2>{{ booking.activityTitle }}</h2>
+        <p class="booking-date">{{ formatDate(booking.travelDate) }}</p>
+        <p class="booking-meta">{{ booking.travelers }} traveler{{ booking.travelers === 1 ? '' : 's' }}</p>
       </article>
     </section>
 

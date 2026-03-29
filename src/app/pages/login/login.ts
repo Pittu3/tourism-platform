@@ -52,9 +52,7 @@ export class Login implements OnInit, OnDestroy {
       const session = await this.authService.login(this.email, this.password);
       this.password = '';
       this.successMessage = `Welcome back, ${session.displayName || session.email}. Redirecting...`;
-      this.redirectTimeoutId = setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 700);
+      this.scheduleRedirect();
     } catch (error: unknown) {
       this.errorMessage =
         error instanceof Error && error.message
@@ -77,9 +75,7 @@ export class Login implements OnInit, OnDestroy {
     try {
       const credential = await this.authService.googleLogin();
       this.successMessage = `Signed in as ${credential.displayName || credential.email}. Redirecting...`;
-      this.redirectTimeoutId = setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 700);
+      this.scheduleRedirect();
     } catch (error: unknown) {
       this.errorMessage =
         error instanceof Error && error.message
@@ -95,9 +91,7 @@ export class Login implements OnInit, OnDestroy {
       this.isAuthenticated = isAuthenticated;
       if (isAuthenticated) {
         this.successMessage = 'You are already logged in. Redirecting to dashboard...';
-        this.redirectTimeoutId = setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 700);
+        this.scheduleRedirect();
       }
     });
   }
@@ -113,5 +107,16 @@ export class Login implements OnInit, OnDestroy {
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  private scheduleRedirect(): void {
+    if (this.redirectTimeoutId) {
+      return;
+    }
+
+    this.redirectTimeoutId = setTimeout(() => {
+      this.redirectTimeoutId = null;
+      void this.router.navigate(['/dashboard']);
+    }, 700);
   }
 }

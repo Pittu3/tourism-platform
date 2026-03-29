@@ -8,6 +8,7 @@ import { Contact } from './pages/contact/contact';
 import { Login } from './pages/login/login';
 import { Signup } from './pages/signup/signup';
 import { Dashboard } from './pages/dashboard/dashboard';
+import { MyBookings } from './pages/my-bookings/my-bookings';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'signup', component: Signup },
   { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
+  { path: 'my-bookings', component: MyBookings, canActivate: [authGuard] },
   { path: 'contact', component: Contact },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
