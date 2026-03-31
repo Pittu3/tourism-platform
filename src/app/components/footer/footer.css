@@ -1,8 +1,9 @@
 .site-footer {
-  width: var(--content-width);
-  margin: 40px auto 24px;
+  width: 100%;
+  max-width: 100%;
+  margin: 40px 0 24px;
   padding: var(--panel-padding) var(--panel-padding) 18px;
-  border-radius: 32px;
+  border-radius: 0;
   border: 1px solid rgba(201, 169, 110, 0.12);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03)),
@@ -60,7 +61,8 @@
 
 @media (max-width: 900px) {
   .site-footer {
-    width: var(--content-width);
+    width: 100%;
+    max-width: 100%;
     padding: var(--panel-padding-compact);
   }
 

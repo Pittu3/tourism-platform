@@ -45,7 +45,7 @@
   </p>
 
   <section class="activities-grid" *ngIf="!loading && !errorMessage && filteredActivities.length > 0">
-    <article class="activity-card" *ngFor="let activity of filteredActivities; trackBy: trackById">
+    <article class="activity-card" *ngFor="let activity of paginatedActivities; trackBy: trackById">
       <div class="image-wrap">
         <img [src]="activity.imageUrl" [alt]="activity.title" loading="lazy">
         <button type="button" class="favorite-btn" (click)="toggleFavorite(activity.id)">
@@ -70,6 +70,31 @@
       </div>
     </article>
   </section>
+
+  <div class="pagination" *ngIf="!loading && !errorMessage && filteredActivities.length > 0">
+    <button type="button" class="page-btn nav-btn" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+      Previous
+    </button>
+
+    <button
+      type="button"
+      class="page-btn"
+      *ngFor="let page of pageNumbers"
+      [class.active]="page === currentPage"
+      (click)="goToPage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      type="button"
+      class="page-btn nav-btn"
+      (click)="goToNextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+  </div>
 
   <section class="modal-backdrop" *ngIf="selectedActivity as activity" (click)="closeDetail()">
     <article class="modal-card" (click)="$event.stopPropagation()">

@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+
+type AuthMode = 'login' | 'register';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +14,18 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.css'
 })
 export class Login implements OnInit, OnDestroy {
-  email = '';
-  password = '';
-  submitted = false;
+  authMode: AuthMode = 'login';
+
+  loginEmail = '';
+  loginPassword = '';
+  registerName = '';
+  registerEmail = '';
+  registerPassword = '';
+  confirmPassword = '';
+
+  loginSubmitted = false;
+  registerSubmitted = false;
+
   successMessage = '';
   errorMessage = '';
   loading = false;
@@ -24,84 +33,147 @@ export class Login implements OnInit, OnDestroy {
   showPassword = false;
   isAuthenticated = false;
 
-  private redirectTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  private authSubscription: Subscription | null = null;
+  private redirectTo = '/home';
+  private toastTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
+    private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly authService: AuthService
   ) {}
 
-  async onSubmit(form: NgForm): Promise<void> {
+  ngOnInit(): void {
+    this.redirectTo = this.route.snapshot.queryParamMap.get('redirectTo') || '/home';
+
+    const routePath = this.route.snapshot.routeConfig?.path;
+    this.authMode = routePath === 'register' ? 'register' : 'login';
+
+    const queryMode = this.route.snapshot.queryParamMap.get('mode');
+    if (queryMode === 'login' || queryMode === 'register') {
+      this.authMode = queryMode;
+    }
+
+    const loggedOut = this.route.snapshot.queryParamMap.get('loggedOut');
+    if (loggedOut === '1') {
+      this.showSuccess('Logged out successfully.');
+    }
+
+    void this.redirectIfAuthenticated();
+  }
+
+  ngOnDestroy(): void {
+    this.clearToastTimeout();
+  }
+
+  setMode(mode: AuthMode): void {
+    if (this.authMode === mode) {
+      return;
+    }
+
+    this.authMode = mode;
+    this.loginSubmitted = false;
+    this.registerSubmitted = false;
+    this.resetFeedback();
+  }
+
+  async onLoginSubmit(form: NgForm): Promise<void> {
     if (this.loading) {
       return;
     }
 
-    this.submitted = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.loginSubmitted = true;
+    this.registerSubmitted = false;
+    this.resetFeedback();
 
     if (form.invalid) {
-      this.errorMessage = 'Please correct the highlighted fields and try again.';
+      this.showError('Please correct the highlighted fields and try again.');
       return;
     }
 
     this.loading = true;
 
     try {
-      const session = await this.authService.login(this.email, this.password);
-      this.password = '';
-      this.successMessage = `Welcome back, ${session.displayName || session.email}. Redirecting...`;
-      this.scheduleRedirect();
+      const session = await this.authService.login(this.loginEmail, this.loginPassword);
+      this.loginPassword = '';
+      this.isAuthenticated = true;
+      await this.showSuccessThenRedirect(`Welcome back, ${session.displayName || session.email}.`);
     } catch (error: unknown) {
-      this.errorMessage =
+      this.showError(
         error instanceof Error && error.message
           ? error.message
-          : 'Unable to login right now. Please try again.';
+          : 'Unable to login right now. Please try again.'
+      );
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async onRegisterSubmit(form: NgForm): Promise<void> {
+    if (this.loading) {
+      return;
+    }
+
+    this.registerSubmitted = true;
+    this.loginSubmitted = false;
+    this.resetFeedback();
+
+    if (form.invalid) {
+      this.showError('Please fill all required fields correctly.');
+      return;
+    }
+
+    if (!this.passwordsMatch()) {
+      this.showError('Passwords do not match.');
+      return;
+    }
+
+    this.loading = true;
+
+    try {
+      const createdUser = await this.authService.signup(
+        this.registerName,
+        this.registerEmail,
+        this.registerPassword
+      );
+      this.registerPassword = '';
+      this.confirmPassword = '';
+      this.isAuthenticated = true;
+      await this.showSuccessThenRedirect(
+        `Account created successfully. Welcome, ${createdUser.displayName || createdUser.email}.`
+      );
+    } catch (error: unknown) {
+      this.showError(
+        error instanceof Error && error.message
+          ? error.message
+          : 'Unable to create account right now. Please try again.'
+      );
     } finally {
       this.loading = false;
     }
   }
 
   async signInWithGoogle(): Promise<void> {
-    if (this.googleLoading) {
+    if (this.googleLoading || this.loading) {
       return;
     }
 
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.resetFeedback();
     this.googleLoading = true;
 
     try {
       const credential = await this.authService.googleLogin();
-      this.successMessage = `Signed in as ${credential.displayName || credential.email}. Redirecting...`;
-      this.scheduleRedirect();
+      this.isAuthenticated = true;
+      await this.showSuccessThenRedirect(
+        `Signed in as ${credential.displayName || credential.email}.`
+      );
     } catch (error: unknown) {
-      this.errorMessage =
+      this.showError(
         error instanceof Error && error.message
           ? error.message
-          : 'Unable to sign in with Google right now. Please try again.';
+          : 'Unable to sign in with Google right now. Please try again.'
+      );
     } finally {
       this.googleLoading = false;
-    }
-  }
-
-  ngOnInit(): void {
-    this.authSubscription = this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
-      this.isAuthenticated = isAuthenticated;
-      if (isAuthenticated) {
-        this.successMessage = 'You are already logged in. Redirecting to dashboard...';
-        this.scheduleRedirect();
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.redirectTimeoutId) {
-      clearTimeout(this.redirectTimeoutId);
-    }
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
     }
   }
 
@@ -109,14 +181,65 @@ export class Login implements OnInit, OnDestroy {
     this.showPassword = !this.showPassword;
   }
 
-  private scheduleRedirect(): void {
-    if (this.redirectTimeoutId) {
+  passwordsMatch(): boolean {
+    return this.registerPassword === this.confirmPassword;
+  }
+
+  private async redirectIfAuthenticated(): Promise<void> {
+    await this.authService.whenReady();
+
+    if (!this.authService.currentUser) {
+      this.isAuthenticated = false;
       return;
     }
 
-    this.redirectTimeoutId = setTimeout(() => {
-      this.redirectTimeoutId = null;
-      void this.router.navigate(['/dashboard']);
-    }, 700);
+    this.isAuthenticated = true;
+    await this.navigateAfterAuth();
+  }
+
+  private async showSuccessThenRedirect(message: string): Promise<void> {
+    this.showSuccess(message);
+    await this.delay(750);
+    await this.navigateAfterAuth();
+  }
+
+  private showSuccess(message: string): void {
+    this.errorMessage = '';
+    this.successMessage = message;
+    this.scheduleToastClear();
+  }
+
+  private showError(message: string): void {
+    this.successMessage = '';
+    this.errorMessage = message;
+    this.scheduleToastClear();
+  }
+
+  private scheduleToastClear(): void {
+    this.clearToastTimeout();
+    this.toastTimeoutId = setTimeout(() => {
+      this.toastTimeoutId = null;
+      this.resetFeedback();
+    }, 3200);
+  }
+
+  private clearToastTimeout(): void {
+    if (this.toastTimeoutId !== null) {
+      clearTimeout(this.toastTimeoutId);
+      this.toastTimeoutId = null;
+    }
+  }
+
+  private async navigateAfterAuth(): Promise<void> {
+    await this.router.navigateByUrl(this.redirectTo);
+  }
+
+  private resetFeedback(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  private async delay(milliseconds: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
 }

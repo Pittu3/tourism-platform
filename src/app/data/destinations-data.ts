@@ -1,5 +1,5 @@
 export interface Destination {
-  id: string;
+  id: number;
   name: string;
   location: string;
   duration: string;
@@ -390,17 +390,8 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
   }
 ];
 
-const toDestinationId = (name: string, location: string): string => {
-  const source = `${name}|${location}`.toLowerCase();
-  let hash = 0;
-  for (let index = 0; index < source.length; index += 1) {
-    hash = (hash * 31 + source.charCodeAt(index)) >>> 0;
-  }
-  return `dst-${hash.toString(36)}`;
-};
-
-export const FALLBACK_DESTINATIONS: Destination[] = destinationSeeds.map((destination) => ({
-  id: toDestinationId(destination.name, destination.location),
+export const FALLBACK_DESTINATIONS: Destination[] = destinationSeeds.map((destination, index) => ({
+  id: index + 1,
   ...destination
 }));
 

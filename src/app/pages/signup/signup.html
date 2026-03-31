@@ -6,6 +6,22 @@
 
     <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)" novalidate>
       <div class="form-group">
+        <label for="displayName">Full Name</label>
+        <input
+          id="displayName"
+          type="text"
+          name="displayName"
+          [(ngModel)]="displayName"
+          #displayNameField="ngModel"
+          required
+          minlength="2"
+          autocomplete="name"
+          placeholder="Your full name"
+          [class.invalid]="submitted && displayNameField.invalid"
+        >
+      </div>
+
+      <div class="form-group">
         <label for="signupEmail">Email</label>
         <input
           id="signupEmail"

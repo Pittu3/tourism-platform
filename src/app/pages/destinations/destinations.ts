@@ -23,7 +23,7 @@ type SortKey =
   | 'alpha-az'
   | 'alpha-za';
 
-type PopularityKey = 'all' | 'must-visit' | 'trending' | 'hidden-gems';
+type PopularityKey = 'all' | 'trending' | 'hidden-gems';
 
 interface FilterState {
   search: string;
@@ -148,7 +148,6 @@ export class Destinations implements OnInit, OnDestroy {
 
   readonly popularityOptions: { key: PopularityKey; label: string }[] = [
     { key: 'all', label: 'All popularity levels' },
-    { key: 'must-visit', label: 'Must Visit' },
     { key: 'trending', label: 'Trending Now' },
     { key: 'hidden-gems', label: 'Hidden Gems' }
   ];
@@ -205,7 +204,7 @@ export class Destinations implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.destinations = [...FALLBACK_DESTINATIONS];
+    this.destinations = this.normalizeDestinations(FALLBACK_DESTINATIONS);
 
     const raw = this.route.snapshot.queryParamMap.get('category') ?? '';
     const parts = raw.split(',').map((value) => value.trim()).filter(Boolean);
@@ -523,7 +522,7 @@ export class Destinations implements OnInit, OnDestroy {
   getPopularityTag(place: Destination): PopularityKey {
     const score = this.getPopularityScore(place);
     if (score >= 90) {
-      return 'must-visit';
+      return 'trending';
     }
     if (score >= 82) {
       return 'trending';
@@ -597,7 +596,7 @@ export class Destinations implements OnInit, OnDestroy {
     );
   }
 
-  trackByDestination(index: number, place: Destination): string {
+  trackByDestination(index: number, place: Destination): number {
     return place.id;
   }
 
@@ -818,6 +817,47 @@ export class Destinations implements OnInit, OnDestroy {
   private buildFallbackImage(name: string, location?: string): string {
     const query = `${name} ${location ?? ''} south india`.trim();
     return `https://source.unsplash.com/1200x800/?${encodeURIComponent(query)}`;
+  }
+
+  private normalizeDestinations(destinations: Destination[]): Destination[] {
+    return destinations.map((place) => ({
+      ...place,
+      image: this.resolveImage(place)
+    }));
+  }
+
+  private resolveImage(place: Destination): string {
+    const raw = place.image?.trim();
+    if (!raw) {
+      return this.buildFallbackImage(place.name, place.location);
+    }
+
+    if (this.isLikelyBrokenImage(raw)) {
+      return this.buildFallbackImage(place.name, place.location);
+    }
+
+    return raw;
+  }
+
+  private isLikelyBrokenImage(url: string): boolean {
+    if (url.endsWith('/')) {
+      return true;
+    }
+
+    const lower = url.toLowerCase();
+    if (lower.includes('_next/image')) {
+      return true;
+    }
+
+    if (lower.includes('mm.bing.net')) {
+      return true;
+    }
+
+    if (lower.includes('blogger.googleusercontent.com/img/b/') && lower.endsWith('/')) {
+      return true;
+    }
+
+    return false;
   }
 
   private hashName(value: string): number {

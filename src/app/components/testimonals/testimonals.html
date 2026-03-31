@@ -7,7 +7,7 @@
   <div class="review-grid">
     <article class="review-card" *ngFor="let review of reviews">
       <div class="stars" [attr.aria-label]="'Rating: ' + review.rating + ' out of 5'">
-        <span *ngFor="let star of [1,2,3,4,5]">{{ star <= review.rating ? '&#9733;' : '&#9734;' }}</span>
+        <span *ngFor="let star of [1, 2, 3, 4, 5]">{{ star <= review.rating ? '★' : '☆' }}</span>
       </div>
       <p class="feedback">"{{ review.feedback }}"</p>
       <h3>{{ review.name }}</h3>

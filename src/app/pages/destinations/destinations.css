@@ -1,6 +1,9 @@
 .destinations {
-  width: var(--content-width);
-  margin: var(--page-top-offset) auto 0;
+  width: 100%;
+  max-width: 100%;
+  margin: var(--page-top-offset) 0 0;
+  padding-left: 0;
+  padding-right: 0;
   padding-bottom: var(--page-bottom-offset);
   display: grid;
   gap: var(--section-gap);
@@ -284,15 +287,20 @@ button.chip.reset {
 }
 
 .destination-grid {
-  columns: 3 300px;
-  column-gap: var(--card-gap);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--card-gap);
   margin-top: 4px;
+  --columns: 3;
 }
 
 .card {
-  break-inside: avoid;
-  margin-bottom: var(--card-gap);
-  padding: var(--panel-padding-compact);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 calc((100% - (var(--columns) - 1) * var(--card-gap)) / var(--columns));
+  max-width: calc((100% - (var(--columns) - 1) * var(--card-gap)) / var(--columns));
+  padding: clamp(22px, 2.4vw, 32px);
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(201, 169, 110, 0.14);
@@ -302,21 +310,14 @@ button.chip.reset {
 .card-media {
   overflow: hidden;
   border-radius: 22px;
+  height: 260px;
 }
 
 .card-media img {
   width: 100%;
-  height: 260px;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
-}
-
-.card:nth-child(3n + 2) .card-media img {
-  height: 360px;
-}
-
-.card:nth-child(3n + 3) .card-media img {
-  height: 220px;
 }
 
 .card:hover .card-media img {
@@ -327,7 +328,7 @@ button.chip.reset {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 16px;
 }
 
@@ -335,6 +336,21 @@ button.chip.reset {
 .title-link {
   color: var(--ivory);
   text-decoration: none;
+}
+
+.card h3 {
+  min-height: 3.4rem;
+  line-height: 1.7rem;
+  font-size: clamp(1.35rem, 1.9vw, 1.85rem);
+  margin: 0;
+}
+
+.title-link {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
 }
 
 .duration,
@@ -347,19 +363,45 @@ button.chip.reset {
   color: var(--text-secondary);
 }
 
+.duration {
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
 .location,
 .card p {
   color: var(--text-secondary);
 }
 
+.desc-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5rem;
+  min-height: 4.5rem;
+  margin-bottom: 12px;
+}
+
 .meta-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  flex-wrap: wrap;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.meta-row span {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card button {
-  margin-top: 16px;
+  margin-top: auto;
   width: 100%;
   background: linear-gradient(120deg, var(--coral), #f57c61);
   color: #fff7f2;
@@ -400,6 +442,10 @@ button.chip.reset {
     padding-right: 0;
     border-right: 0;
   }
+
+  .destination-grid {
+    --columns: 2;
+  }
 }
 
 @media (max-width: 700px) {
@@ -430,6 +476,7 @@ button.chip.reset {
   }
 
   .destination-grid {
-    columns: 1;
+    --columns: 1;
   }
 }
+

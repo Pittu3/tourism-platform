@@ -1,11 +1,19 @@
 .home-page {
+  width: 100%;
+  max-width: 100%;
+  margin: var(--page-top-offset) 0 0;
+  padding-left: 0;
+  padding-right: 0;
   padding-bottom: var(--page-bottom-offset);
 }
 
 .theme-categories,
 .plan-strip {
-  width: var(--content-width);
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .theme-categories {
@@ -182,11 +190,6 @@
 }
 
 @media (max-width: 640px) {
-  .theme-categories,
-  .plan-strip {
-    width: var(--content-width);
-  }
-
   .theme-grid {
     grid-template-columns: 1fr;
   }

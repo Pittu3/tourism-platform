@@ -190,7 +190,14 @@
               [routerLink]="['/destinations', place.id]"
               aria-label="View details for {{ place.name }}"
             >
-              <img [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event, place.name, place.location)">
+              <img
+                [src]="place.image"
+                [alt]="place.name"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+                (error)="onImageError($event, place.name, place.location)"
+              >
             </a>
           </div>
           <div class="card-top">

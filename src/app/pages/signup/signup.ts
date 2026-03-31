@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './signup.css'
 })
 export class Signup {
+  displayName = '';
   email = '';
   password = '';
   confirmPassword = '';
@@ -46,14 +47,15 @@ export class Signup {
     }
 
     this.loading = true;
+
     try {
-      await this.authService.signup(this.email, this.password);
-      this.successMessage = 'Account created successfully. Redirecting to dashboard...';
+      const createdUser = await this.authService.signup(this.displayName, this.email, this.password);
+      this.successMessage = `Account created successfully. Welcome, ${
+        createdUser.displayName || createdUser.email
+      }.`;
       this.password = '';
       this.confirmPassword = '';
-      setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 700);
+      await this.router.navigate(['/home']);
     } catch (error: unknown) {
       this.errorMessage =
         error instanceof Error && error.message

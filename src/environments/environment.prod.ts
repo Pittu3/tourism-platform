@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyD1Th6D90H-Zi_fzZwoLic0GszsLnxn-w",
-    authDomain: "tourism-platform-5570a.firebaseapp.com",
-    projectId: "tourism-platform-5570a",
-    storageBucket: "tourism-platform-5570a.firebasestorage.app",
-    messagingSenderId: "650555403757",
-    appId: "1:650555403757:web:3f09bbac17a84d829c4be4"
+    apiKey: 'AIzaSyCigSMyv_IWl6fLHpXhBvtgdMakwFlnTxU',
+    authDomain: 'tourism-platform-53f91.firebaseapp.com',
+    projectId: 'tourism-platform-53f91',
+    storageBucket: 'tourism-platform-53f91.firebasestorage.app',
+    messagingSenderId: '952981042719',
+    appId: '1:952981042719:web:305d67f21beb038730c72a'
   }
 };

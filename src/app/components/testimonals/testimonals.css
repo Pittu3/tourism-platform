@@ -1,6 +1,8 @@
 .testimonials {
-  margin: 28px auto 0;
-  padding: 76px 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 28px 0 0;
+  padding: 76px 0;
   background: linear-gradient(180deg, #0a0f1e 0%, #10182b 100%);
 }
 
@@ -24,14 +26,19 @@
 }
 
 .review-grid {
-  max-width: 1150px;
-  margin: 34px auto 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 34px 0 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+  align-items: stretch;
 }
 
 .review-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(201, 169, 110, 0.18);
   border-radius: 16px;
@@ -43,27 +50,34 @@
 .stars {
   color: #c9a96e;
   letter-spacing: 0.1em;
+  font-size: 1.02rem;
+  line-height: 1;
 }
 
 .feedback {
-  margin: 12px 0;
+  margin: 12px 0 16px;
   color: #d6deea;
+  line-height: 1.7;
+  min-height: 5.1rem;
 }
 
 .review-card h3 {
-  margin: 0;
+  margin: auto 0 0;
   color: #fff8ec;
+  font-size: 1.1rem;
 }
 
 .trip {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: #c4cfde;
   font-size: 0.92rem;
+  font-weight: 600;
 }
 
 .trust-row {
-  max-width: 960px;
-  margin: 28px auto 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 28px 0 0;
   padding: 16px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.06);

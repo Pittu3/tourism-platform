@@ -65,17 +65,23 @@
 }
 
 .activities-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: var(--card-gap);
+  --columns: 3;
 }
 
 .activity-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 calc((100% - (var(--columns) - 1) * var(--card-gap)) / var(--columns));
+  max-width: calc((100% - (var(--columns) - 1) * var(--card-gap)) / var(--columns));
   border-radius: 28px;
-  overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(201, 169, 110, 0.14);
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
 .image-wrap {
@@ -84,7 +90,7 @@
 
 .image-wrap img {
   width: 100%;
-  height: 230px;
+  height: 180px;
   object-fit: cover;
 }
 
@@ -100,6 +106,9 @@
 }
 
 .card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
   padding: var(--panel-padding-compact);
 }
 
@@ -127,6 +136,23 @@
   color: var(--ivory);
 }
 
+.activity-card h2 {
+  min-height: 3rem;
+  margin-bottom: 0;
+  line-height: 1.5rem;
+  font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+}
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5rem;
+  min-height: 4.5rem;
+  margin: 12px 0;
+}
+
 .explore-btn,
 .close-btn {
   border-radius: 999px;
@@ -136,7 +162,7 @@
 
 .explore-btn {
   width: 100%;
-  margin-top: 16px;
+  margin-top: auto;
   background: linear-gradient(120deg, var(--coral), #f57c61);
   color: #fff7f2;
 }
@@ -181,6 +207,27 @@
   color: var(--sand);
 }
 
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.page-btn {
+  min-width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 169, 110, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ivory);
+}
+
+.page-btn.active {
+  background: linear-gradient(120deg, rgba(201, 169, 110, 0.24), rgba(201, 169, 110, 0.14));
+}
+
 @media (max-width: 900px) {
   .activities-page {
     width: var(--content-width);
@@ -189,5 +236,15 @@
   .filters,
   .modal-card {
     grid-template-columns: 1fr;
+  }
+
+  .activities-grid {
+    --columns: 2;
+  }
+}
+
+@media (max-width: 700px) {
+  .activities-grid {
+    --columns: 1;
   }
 }

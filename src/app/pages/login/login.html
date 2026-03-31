@@ -1,46 +1,84 @@
 <main class="login-page">
   <section class="login-card">
-    <p class="eyebrow">Welcome back</p>
-    <h1>Login to Travel Explorer</h1>
-    <p class="subtitle">Access your bookings, saved itineraries, and trip updates.</p>
+    <p class="eyebrow">Access Account</p>
+    <div class="auth-head">
+      <span class="material-symbols-outlined auth-head-icon" aria-hidden="true">login</span>
+      <h1>{{ authMode === 'login' ? 'Login to Travel Explorer' : 'Register on Travel Explorer' }}</h1>
+    </div>
+    <p class="subtitle" *ngIf="authMode === 'login'">
+      Access your bookings, saved itineraries, and trip updates.
+    </p>
+    <p class="subtitle" *ngIf="authMode === 'register'">
+      Create your account to book tours and track your plans.
+    </p>
 
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
+    <div class="toast-stack" *ngIf="errorMessage || successMessage" aria-live="polite">
+      <div class="toast toast-error" *ngIf="errorMessage">
+        <span class="material-symbols-outlined" aria-hidden="true">error</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="toast toast-success" *ngIf="successMessage">
+        <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+        <span>{{ successMessage }}</span>
+      </div>
+    </div>
+
+    <div class="mode-switch" role="tablist" aria-label="Authentication mode">
+      <button
+        type="button"
+        class="mode-btn"
+        [class.active]="authMode === 'login'"
+        (click)="setMode('login')"
+      >
+        Login
+      </button>
+      <button
+        type="button"
+        class="mode-btn"
+        [class.active]="authMode === 'register'"
+        (click)="setMode('register')"
+      >
+        Register
+      </button>
+    </div>
+
+    <form class="auth-form" *ngIf="authMode === 'login'" #loginForm="ngForm" (ngSubmit)="onLoginSubmit(loginForm)" novalidate>
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="loginEmail">Email</label>
         <input
-          id="email"
+          id="loginEmail"
           type="email"
-          name="email"
-          [(ngModel)]="email"
-          #emailField="ngModel"
+          name="loginEmail"
+          [(ngModel)]="loginEmail"
+          #loginEmailField="ngModel"
           required
           email
           placeholder="you@example.com"
           autocomplete="email"
-          [class.invalid]="submitted && emailField.invalid"
-          [class.valid]="submitted && emailField.valid"
+          [class.invalid]="loginSubmitted && loginEmailField.invalid"
+          [class.valid]="loginSubmitted && loginEmailField.valid"
         >
-        <small class="error" *ngIf="submitted && emailField.invalid">
-          <span *ngIf="emailField.errors?.['required']">Email is required</span>
-          <span *ngIf="emailField.errors?.['email']">Enter a valid email address</span>
+        <small class="error" *ngIf="loginSubmitted && loginEmailField.invalid">
+          <span *ngIf="loginEmailField.errors?.['required']">Email is required</span>
+          <span *ngIf="loginEmailField.errors?.['email']">Enter a valid email address</span>
         </small>
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="loginPassword">Password</label>
         <div class="password-container">
           <input
-            id="password"
+            id="loginPassword"
             [type]="showPassword ? 'text' : 'password'"
-            name="password"
-            [(ngModel)]="password"
-            #passwordField="ngModel"
+            name="loginPassword"
+            [(ngModel)]="loginPassword"
+            #loginPasswordField="ngModel"
             required
             minlength="6"
             placeholder="Minimum 6 characters"
             autocomplete="current-password"
-            [class.invalid]="submitted && passwordField.invalid"
-            [class.valid]="submitted && passwordField.valid"
+            [class.invalid]="loginSubmitted && loginPasswordField.invalid"
+            [class.valid]="loginSubmitted && loginPasswordField.valid"
           >
           <button
             type="button"
@@ -51,9 +89,9 @@
             {{ showPassword ? 'Hide' : 'Show' }}
           </button>
         </div>
-        <small class="error" *ngIf="submitted && passwordField.invalid">
-          <span *ngIf="passwordField.errors?.['required']">Password is required</span>
-          <span *ngIf="passwordField.errors?.['minlength']">
+        <small class="error" *ngIf="loginSubmitted && loginPasswordField.invalid">
+          <span *ngIf="loginPasswordField.errors?.['required']">Password is required</span>
+          <span *ngIf="loginPasswordField.errors?.['minlength']">
             Password must be at least 6 characters
           </span>
         </small>
@@ -68,18 +106,121 @@
         <span *ngIf="!googleLoading">Sign In with Google</span>
         <span *ngIf="googleLoading" class="spinner dark-spinner"></span>
       </button>
-
-      <div class="error-message" *ngIf="errorMessage" aria-live="polite">
-        {{ errorMessage }}
-      </div>
-
-      <div class="success-message" *ngIf="successMessage" aria-live="polite">
-        {{ successMessage }}
-      </div>
     </form>
 
-    <p class="support">Don't have an account? <a routerLink="/signup">Create one</a></p>
-    <p class="support" *ngIf="isAuthenticated">Already signed in? <a routerLink="/dashboard">Go to dashboard</a></p>
+    <form class="auth-form" *ngIf="authMode === 'register'" #registerForm="ngForm" (ngSubmit)="onRegisterSubmit(registerForm)" novalidate>
+      <div class="form-group">
+        <label for="registerName">Full Name</label>
+        <input
+          id="registerName"
+          type="text"
+          name="registerName"
+          [(ngModel)]="registerName"
+          #registerNameField="ngModel"
+          required
+          minlength="2"
+          autocomplete="name"
+          placeholder="Your full name"
+          [class.invalid]="registerSubmitted && registerNameField.invalid"
+          [class.valid]="registerSubmitted && registerNameField.valid"
+        >
+        <small class="error" *ngIf="registerSubmitted && registerNameField.invalid">
+          <span *ngIf="registerNameField.errors?.['required']">Full name is required</span>
+          <span *ngIf="registerNameField.errors?.['minlength']">Enter at least 2 characters</span>
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="registerEmail">Email</label>
+        <input
+          id="registerEmail"
+          type="email"
+          name="registerEmail"
+          [(ngModel)]="registerEmail"
+          #registerEmailField="ngModel"
+          required
+          email
+          placeholder="you@example.com"
+          autocomplete="email"
+          [class.invalid]="registerSubmitted && registerEmailField.invalid"
+          [class.valid]="registerSubmitted && registerEmailField.valid"
+        >
+        <small class="error" *ngIf="registerSubmitted && registerEmailField.invalid">
+          <span *ngIf="registerEmailField.errors?.['required']">Email is required</span>
+          <span *ngIf="registerEmailField.errors?.['email']">Enter a valid email address</span>
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="registerPassword">Password</label>
+        <div class="password-container">
+          <input
+            id="registerPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            name="registerPassword"
+            [(ngModel)]="registerPassword"
+            #registerPasswordField="ngModel"
+            required
+            minlength="6"
+            placeholder="Minimum 6 characters"
+            autocomplete="new-password"
+            [class.invalid]="registerSubmitted && registerPasswordField.invalid"
+            [class.valid]="registerSubmitted && registerPasswordField.valid"
+          >
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [title]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <small class="error" *ngIf="registerSubmitted && registerPasswordField.invalid">
+          <span *ngIf="registerPasswordField.errors?.['required']">Password is required</span>
+          <span *ngIf="registerPasswordField.errors?.['minlength']">
+            Password must be at least 6 characters
+          </span>
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          [type]="showPassword ? 'text' : 'password'"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          #confirmPasswordField="ngModel"
+          required
+          minlength="6"
+          placeholder="Re-enter password"
+          autocomplete="new-password"
+          [class.invalid]="registerSubmitted && (confirmPasswordField.invalid || !passwordsMatch())"
+          [class.valid]="registerSubmitted && confirmPasswordField.valid && passwordsMatch()"
+        >
+        <small class="error" *ngIf="registerSubmitted && (confirmPasswordField.invalid || !passwordsMatch())">
+          <span *ngIf="confirmPasswordField.errors?.['required']">Confirm password is required</span>
+          <span *ngIf="confirmPasswordField.errors?.['minlength']">Password must be at least 6 characters</span>
+          <span *ngIf="!confirmPasswordField.errors && !passwordsMatch()">Passwords do not match</span>
+        </small>
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+    </form>
+
+    <p class="support" *ngIf="authMode === 'login'">
+      Don't have an account?
+      <button type="button" class="support-link" (click)="setMode('register')">Create one</button>
+    </p>
+    <p class="support" *ngIf="authMode === 'register'">
+      Already have an account?
+      <button type="button" class="support-link" (click)="setMode('login')">Sign in</button>
+    </p>
+    <p class="support" *ngIf="isAuthenticated">Already signed in? <a routerLink="/home">Go to home</a></p>
     <p class="support">Need help? <a routerLink="/contact">Contact support</a></p>
   </section>
 </main>

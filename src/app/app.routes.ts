@@ -23,7 +23,8 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
-  { path: 'signup', loadComponent: () => import('./pages/signup/signup').then((m) => m.Signup) },
+  { path: 'register', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
+  { path: 'signup', redirectTo: 'register', pathMatch: 'full' },
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),

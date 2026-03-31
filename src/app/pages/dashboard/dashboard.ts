@@ -38,7 +38,7 @@ export class Dashboard {
 
     try {
       await this.authService.logout();
-      await this.router.navigate(['/login']);
+      await this.router.navigate(['/login'], { queryParams: { loggedOut: '1' } });
     } catch (error: unknown) {
       this.errorMessage =
         error instanceof Error && error.message

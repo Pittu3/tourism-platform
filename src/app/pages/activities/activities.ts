@@ -143,6 +143,8 @@ export class Activities implements OnInit, OnDestroy {
   filteredActivities: Activity[] = [];
   categories: string[] = [];
   favoriteIds = new Set<string>();
+  currentPage = 1;
+  readonly itemsPerPage = 9;
 
   searchTerm = '';
   selectedCategory = 'all';
@@ -151,6 +153,25 @@ export class Activities implements OnInit, OnDestroy {
 
   loading = true;
   errorMessage = '';
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredActivities.length / this.itemsPerPage);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }
+
+  get paginatedActivities(): Activity[] {
+    const totalPages = this.totalPages;
+    if (totalPages === 0) {
+      return [];
+    }
+
+    const currentPage = Math.min(this.currentPage, totalPages);
+    const startIndex = (currentPage - 1) * this.itemsPerPage;
+    return this.filteredActivities.slice(startIndex, startIndex + this.itemsPerPage);
+  }
 
   ngOnInit(): void {
     // Always show local fallback activities immediately.
@@ -187,7 +208,24 @@ export class Activities implements OnInit, OnDestroy {
   }
 
   onSearchOrFilterChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+  }
+
+  goToPreviousPage(): void {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage(): void {
+    this.goToPage(this.currentPage + 1);
   }
 
   toggleFavorite(activityId: string): void {
@@ -271,6 +309,12 @@ export class Activities implements OnInit, OnDestroy {
     });
 
     this.filteredActivities = filtered;
+
+    if (this.totalPages > 0) {
+      this.currentPage = Math.min(this.currentPage, this.totalPages);
+    } else {
+      this.currentPage = 1;
+    }
   }
 
   private buildCategories(activities: Activity[]): string[] {

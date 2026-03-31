@@ -5,13 +5,38 @@
   </div>
 
   <ul class="nav-links" [class.active]="menuOpen">
-    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuOpen=false">Home</a></li>
+    <li>
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="menuOpen=false"
+      >
+        Home
+      </a>
+    </li>
     <li><a routerLink="/destinations" routerLinkActive="active" (click)="menuOpen=false">Destinations</a></li>
     <li><a routerLink="/activities" routerLinkActive="active" (click)="menuOpen=false">Activities</a></li>
-    <li><a routerLink="/booking" routerLinkActive="active" (click)="menuOpen=false">Book a Tour</a></li>
+    <li>
+      <a class="nav-cta" routerLink="/booking" routerLinkActive="active" (click)="menuOpen=false">
+        Book a Tour
+      </a>
+    </li>
+
     <li *ngIf="user()"><a routerLink="/my-bookings" routerLinkActive="active" (click)="menuOpen=false">My Bookings</a></li>
-    <li *ngIf="!user()"><a routerLink="/login" routerLinkActive="active" (click)="menuOpen=false">Login</a></li>
-    <li *ngIf="user()" class="user-chip"><span>{{ user()?.email || 'Signed in' }}</span></li>
+
+    <li *ngIf="!user()">
+      <a routerLink="/login" routerLinkActive="active" (click)="menuOpen=false">
+        <span class="material-symbols-outlined nav-link-icon" aria-hidden="true">login</span>
+        Login
+      </a>
+    </li>
+
+    <li *ngIf="user()" class="user-chip" aria-label="Signed in user">
+      <span class="user-avatar">{{ getUserInitial() }}</span>
+      <span class="user-label">{{ userLabel() }}</span>
+    </li>
+
     <li *ngIf="user()"><button type="button" class="logout-button" (click)="logout()">Logout</button></li>
   </ul>
 

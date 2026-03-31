@@ -21,7 +21,13 @@ export class DestinationDetail implements OnInit {
   constructor(private readonly route: ActivatedRoute, private readonly http: HttpClient) {}
 
   ngOnInit(): void {
-    const destinationId = this.route.snapshot.paramMap.get('id') ?? '';
+    const routeId = this.route.snapshot.paramMap.get('id') ?? '';
+    if (!/^\d+$/.test(routeId)) {
+      this.notFound = true;
+      return;
+    }
+
+    const destinationId = Number(routeId);
     const match = FALLBACK_DESTINATIONS.find((place) => place.id === destinationId);
 
     if (!match) {
