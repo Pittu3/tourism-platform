@@ -846,6 +846,9 @@ export class Destinations implements OnInit, OnDestroy {
 
     const lower = url.toLowerCase();
     if (lower.includes('_next/image')) {
+      if (lower.includes('karnatakatourism.org/_next/image')) {
+        return false;
+      }
       return true;
     }
 

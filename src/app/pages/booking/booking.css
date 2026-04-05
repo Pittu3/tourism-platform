@@ -59,6 +59,23 @@ textarea {
   padding: 14px 16px;
 }
 
+.destination-select {
+  border-color: rgba(201, 157, 101, 0.78);
+  background: linear-gradient(130deg, #f6ead7, #e8d1ac);
+  color: #3d2916;
+  font-weight: 600;
+}
+
+.destination-select:focus {
+  outline: 2px solid rgba(201, 157, 101, 0.86);
+  outline-offset: 2px;
+}
+
+.destination-select option {
+  background: #f8eedf;
+  color: #3d2916;
+}
+
 .tour-heading {
   display: flex;
   align-items: center;

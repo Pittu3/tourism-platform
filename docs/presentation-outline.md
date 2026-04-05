@@ -13,7 +13,8 @@
 ## Slide 3 - Architecture Snapshot
 - Angular standalone SPA
 - Page modules + shared UI components
-- Service layer (`BookingService`, `ContactService`, `AuthService`)
+- Service layer (`BookingService`, `ContactService`, `AuthService`, `FirestoreService`)
+- Firebase Authentication + Firestore-backed booking/activity data
 - Static destination seed data + JSON description hydration
 
 ## Slide 4 - Route Map
@@ -21,8 +22,11 @@
 - `/destinations`
 - `/destinations/:id`
 - `/activities`
-- `/booking`
+- `/booking` (protected)
 - `/login`
+- `/register` (`/signup` redirect)
+- `/dashboard` (protected)
+- `/my-bookings` (protected)
 - `/contact`
 
 ## Slide 5 - Destinations (Week 3-4)
@@ -32,14 +36,16 @@
 - ID-based detail navigation
 
 ## Slide 6 - Activities
-- Curated activity catalog
-- Filters: category, difficulty, traveler type
-- Destination deep-links mapped via destination IDs
+- Firestore activity feed with local fallback catalog
+- Filters: category + text search
+- Sorting by popularity/title/category
+- Favorites toggle + detail modal
 
 ## Slide 7 - Booking (Week 5-6)
 - Destination -> Tour -> Booking request flow
 - Reactive form validations
 - Mock confirmation with booking ID and total amount
+- Booking summary persistence to Firestore for logged-in users
 
 ## Slide 8 - Contact Us (Week 7-8)
 - Support form workflow
@@ -47,16 +53,16 @@
 - HTML-tag and spam-keyword guardrails
 
 ## Slide 9 - Login Configuration
-- Demo authentication via `AuthService`
-- Remember-me and session persistence behavior
-- Demo account quick-fill support
-- Redirect and feedback states
+- Firebase authentication via `AuthService`
+- Email/password login + registration + Google sign-in
+- Session persistence and route-redirect support
+- Success/error feedback states with logout acknowledgment
 
 ## Slide 10 - Testing Evidence
 - Build command: PASS
 - Unit test command: PASS
-- Test totals: 14 files, 15 tests passed
-- Known non-blocking warning: destinations CSS budget
+- Test totals: 13 files, 24 tests passed
+- Known non-blocking warning: initial bundle budget threshold exceeded
 
 ## Slide 11 - Documentation Deliverables
 - System architecture
@@ -67,7 +73,8 @@
 
 ## Slide 12 - Risks and Next Steps
 - Move from mock services to backend APIs
-- Add real authentication and route guards
+- Tighten guard policy for email-verification and role checks
+- Reduce initial bundle size to meet budget
 - Shift key validation to server-side
 - Add E2E journeys and CI quality gates
 

@@ -8,8 +8,18 @@ export const authGuard: CanActivateFn = async (_, state) => {
 
   await authService.whenReady();
 
-  if (authService.currentUser) {
+  if (authService.canAccessProtectedRoutes()) {
     return true;
+  }
+
+  if (authService.currentUser && authService.requiresEmailVerification()) {
+    return router.createUrlTree(['/login'], {
+      queryParams: {
+        redirectTo: state.url,
+        mode: 'login',
+        verifyEmail: '1'
+      }
+    });
   }
 
   return router.createUrlTree(['/login'], {

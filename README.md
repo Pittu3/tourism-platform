@@ -69,7 +69,7 @@ To deploy the rules with Firebase CLI:
 
 ```bash
 firebase login
-firebase use tourism-platform-5570a
+firebase use tourism-platform-53f91
 firebase deploy --only firestore:rules
 ```
 

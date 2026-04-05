@@ -43,13 +43,17 @@ export class MyBookings implements OnInit, OnDestroy {
     this.errorMessage = '';
 
     const bookingsSubscription = this.authService.user$
-      .pipe(switchMap((user) => (user ? this.firestoreService.getUserBookings(user.uid) : of([] as Booking[]))))
+      .pipe(
+        switchMap((user) =>
+          user ? this.firestoreService.getUserBookings(user.uid, user.email) : of([] as Booking[])
+        )
+      )
       .subscribe({
         next: (bookings) => {
           this.bookings = [...bookings]
             .sort((a, b) => {
-              const left = a.createdAt?.toMillis() ?? 0;
-              const right = b.createdAt?.toMillis() ?? 0;
+              const left = this.resolveSortTimestamp(a);
+              const right = this.resolveSortTimestamp(b);
               return right - left;
             })
             .map((booking) => ({
@@ -72,7 +76,12 @@ export class MyBookings implements OnInit, OnDestroy {
   }
 
   formatDate(value: string): string {
-    if (!value) {
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return 'Date not provided';
+    }
+
+    const parsed = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) {
       return 'Date not provided';
     }
 
@@ -80,7 +89,7 @@ export class MyBookings implements OnInit, OnDestroy {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
-    }).format(new Date(`${value}T00:00:00`));
+    }).format(parsed);
   }
 
   formatCreatedAt(value: Booking['createdAt'] | null): string {
@@ -99,5 +108,60 @@ export class MyBookings implements OnInit, OnDestroy {
 
   trackByBooking(index: number, booking: BookingRecord): string {
     return booking.id;
+  }
+
+  getStatusMeta(booking: BookingRecord): { label: string; className: string } {
+    if (booking.status === 'cancelled') {
+      return {
+        label: 'Cancelled',
+        className: 'status-cancelled'
+      };
+    }
+
+    const travelDate = new Date(`${booking.travelDate}T00:00:00`);
+    if (Number.isNaN(travelDate.getTime())) {
+      return {
+        label: booking.status,
+        className: 'status-generic'
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (travelDate < today) {
+      return {
+        label: 'Completed',
+        className: 'status-completed'
+      };
+    }
+
+    const daysUntilTrip = Math.ceil((travelDate.getTime() - today.getTime()) / 86400000);
+    if (daysUntilTrip <= 7) {
+      return {
+        label: `In ${daysUntilTrip}d`,
+        className: 'status-soon'
+      };
+    }
+
+    return {
+      label: 'Upcoming',
+      className: 'status-upcoming'
+    };
+  }
+
+  private resolveSortTimestamp(booking: Booking): number {
+    if (booking.createdAt) {
+      return booking.createdAt.toMillis();
+    }
+
+    if (booking.travelDate && /^\d{4}-\d{2}-\d{2}$/.test(booking.travelDate)) {
+      const parsed = new Date(`${booking.travelDate}T00:00:00`);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.getTime();
+      }
+    }
+
+    return 0;
   }
 }

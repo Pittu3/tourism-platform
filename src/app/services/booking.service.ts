@@ -46,6 +46,10 @@ export interface BookingConfirmation {
   providedIn: 'root'
 })
 export class BookingService {
+  private readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  private readonly indianPhonePattern = /^[6-9][0-9]{9}$/;
+  private readonly isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+
   private readonly destinationOptions: DestinationOption[] = [...FALLBACK_DESTINATIONS]
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((destination) => ({
@@ -68,33 +72,42 @@ export class BookingService {
   }
 
   submitBooking(request: BookingRequest): Observable<BookingConfirmation> {
-    const destination = this.destinationOptions.find((option) => option.name === request.destinationName);
+    const normalizedRequest = this.normalizeRequest(request);
+    const validationError = this.validateBookingRequest(normalizedRequest);
+
+    if (validationError) {
+      return throwError(() => new Error(validationError));
+    }
+
+    const destination = this.destinationOptions.find(
+      (option) => option.name === normalizedRequest.destinationName
+    );
     if (!destination) {
       return throwError(() => new Error('Please select a valid destination.'));
     }
 
-    const selectedTour = this.buildTours(destination).find((tour) => tour.id === request.tourId);
+    const selectedTour = this.buildTours(destination).find((tour) => tour.id === normalizedRequest.tourId);
     if (!selectedTour) {
       return throwError(() => new Error('Selected tour is unavailable. Please choose another tour.'));
     }
 
-    if (request.travelers > selectedTour.availableSeats) {
+    if (normalizedRequest.travelers > selectedTour.availableSeats) {
       return throwError(
         () => new Error(`Only ${selectedTour.availableSeats} seats are available for this tour.`)
       );
     }
 
-    const totalAmount = selectedTour.pricePerPerson * request.travelers;
+    const totalAmount = selectedTour.pricePerPerson * normalizedRequest.travelers;
     const confirmation: BookingConfirmation = {
       bookingId: `BK-${Date.now().toString().slice(-8)}`,
       status: 'confirmed',
       submittedAt: new Date().toISOString(),
-      destinationName: request.destinationName,
+      destinationName: normalizedRequest.destinationName,
       tourTitle: selectedTour.title,
-      travelDate: request.travelDate,
-      travelers: request.travelers,
+      travelDate: normalizedRequest.travelDate,
+      travelers: normalizedRequest.travelers,
       totalAmount,
-      message: `Booking confirmed for ${request.fullName}.`
+      message: `Booking confirmed for ${normalizedRequest.fullName}.`
     };
 
     return of(confirmation).pipe(delay(600));
@@ -157,5 +170,65 @@ export class BookingService {
       hash = (hash * 33 + value.charCodeAt(i)) >>> 0;
     }
     return hash;
+  }
+
+  private normalizeRequest(request: BookingRequest): BookingRequest {
+    return {
+      destinationName: request.destinationName.trim(),
+      tourId: request.tourId.trim(),
+      travelDate: request.travelDate.trim(),
+      travelers: Math.trunc(Number(request.travelers)),
+      fullName: request.fullName.trim(),
+      email: request.email.trim().toLowerCase(),
+      phone: request.phone.replace(/\s+/g, '').trim(),
+      specialRequests: request.specialRequests.trim()
+    };
+  }
+
+  private validateBookingRequest(request: BookingRequest): string | null {
+    if (!request.destinationName) {
+      return 'Please select a destination before submitting.';
+    }
+
+    if (!request.tourId) {
+      return 'Please select an available tour before submitting.';
+    }
+
+    if (!this.isoDatePattern.test(request.travelDate)) {
+      return 'Please select a valid travel date.';
+    }
+
+    const selectedDate = new Date(`${request.travelDate}T00:00:00`);
+    if (Number.isNaN(selectedDate.getTime())) {
+      return 'Please select a valid travel date.';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+      return 'Travel date cannot be in the past.';
+    }
+
+    if (!Number.isInteger(request.travelers) || request.travelers < 1 || request.travelers > 12) {
+      return 'Traveler count should be between 1 and 12.';
+    }
+
+    if (request.fullName.length < 3) {
+      return 'Please enter your full name (at least 3 characters).';
+    }
+
+    if (!this.emailPattern.test(request.email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (!this.indianPhonePattern.test(request.phone)) {
+      return 'Please enter a valid 10-digit Indian mobile number.';
+    }
+
+    if (request.specialRequests.length > 250) {
+      return 'Special requests can be up to 250 characters.';
+    }
+
+    return null;
   }
 }

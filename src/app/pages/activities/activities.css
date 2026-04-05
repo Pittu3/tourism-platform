@@ -53,6 +53,11 @@
   padding: 14px 16px;
 }
 
+.filters select {
+  color: var(--sand-soft);
+  font-weight: 600;
+}
+
 .state-message {
   padding: 14px 16px;
   border-radius: 18px;

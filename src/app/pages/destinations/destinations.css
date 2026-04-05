@@ -234,7 +234,8 @@ button.chip.reset {
   border-radius: 14px;
   border: 1px solid rgba(201, 169, 110, 0.18);
   background: rgba(255, 255, 255, 0.05);
-  color: var(--ivory);
+  color: var(--sand-soft);
+  font-weight: 600;
 }
 
 .location-tools button,
@@ -340,9 +341,13 @@ button.chip.reset {
 
 .card h3 {
   min-height: 3.4rem;
-  line-height: 1.7rem;
+  line-height: 1.35;
   font-size: clamp(1.35rem, 1.9vw, 1.85rem);
   margin: 0;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
 }
 
 .title-link {
@@ -351,6 +356,7 @@ button.chip.reset {
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: normal;
+  font-variant-ligatures: none;
 }
 
 .duration,

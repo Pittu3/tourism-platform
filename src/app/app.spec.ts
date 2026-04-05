@@ -1,11 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { RouterModule } from '@angular/router';
+import { of } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 describe('App', () => {
+  const mockAuthService = {
+    user$: of(null),
+    currentUser: null,
+    logout: async () => undefined
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App, RouterModule.forRoot([])],
+      providers: [{ provide: AuthService, useValue: mockAuthService as unknown as AuthService }]
     }).compileComponents();
   });
 

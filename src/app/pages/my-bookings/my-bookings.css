@@ -83,6 +83,31 @@ h1 {
   text-transform: capitalize;
 }
 
+.status-chip.status-upcoming {
+  background: rgba(70, 149, 255, 0.18);
+  color: #b8dcff;
+}
+
+.status-chip.status-soon {
+  background: rgba(247, 186, 78, 0.22);
+  color: #ffe1a4;
+}
+
+.status-chip.status-completed {
+  background: rgba(80, 186, 138, 0.22);
+  color: #c5f2db;
+}
+
+.status-chip.status-cancelled {
+  background: rgba(232, 98, 74, 0.22);
+  color: #ffd1ca;
+}
+
+.status-chip.status-generic {
+  background: rgba(201, 169, 110, 0.18);
+  color: var(--sand-soft);
+}
+
 .created-at {
   color: var(--text-muted);
   font-size: 0.84rem;

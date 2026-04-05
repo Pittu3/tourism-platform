@@ -10,7 +10,7 @@ import {
   TourOption
 } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
-import { FirestoreService } from '../../services/firestore.service';
+import { CreateBookingPayload, FirestoreService } from '../../services/firestore.service';
 
 function notPastDateValidator(control: AbstractControl<string | null>): ValidationErrors | null {
   if (!control.value) {
@@ -37,6 +37,7 @@ export class Booking implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly firestoreService = inject(FirestoreService);
   private readonly subscriptions = new Subscription();
+  private toursRequestId = 0;
 
   destinationOptions: DestinationOption[] = [];
   availableTours: TourOption[] = [];
@@ -93,6 +94,7 @@ export class Booking implements OnInit, OnDestroy {
 
   onDestinationChange(): void {
     const destinationName = this.formControls.destinationName.value;
+    const currentRequestId = ++this.toursRequestId;
     this.formControls.tourId.setValue('');
     this.selectedTour = null;
     this.availableTours = [];
@@ -107,10 +109,18 @@ export class Booking implements OnInit, OnDestroy {
 
     this.bookingService.getToursForDestination(destinationName).subscribe({
       next: (tours) => {
+        if (currentRequestId !== this.toursRequestId) {
+          return;
+        }
+
         this.availableTours = tours;
         this.loadingTours = false;
       },
       error: () => {
+        if (currentRequestId !== this.toursRequestId) {
+          return;
+        }
+
         this.bookingError = 'Unable to load tours right now. Please try again.';
         this.loadingTours = false;
       }
@@ -126,6 +136,10 @@ export class Booking implements OnInit, OnDestroy {
   }
 
   submitBooking(): void {
+    if (this.submitting) {
+      return;
+    }
+
     this.submitted = true;
     this.bookingError = '';
     this.bookingSuccess = null;
@@ -160,14 +174,21 @@ export class Booking implements OnInit, OnDestroy {
         }
 
         try {
-          await this.firestoreService.createBooking({
+          const accountEmail = authenticatedUser.email || value.email.trim();
+          const bookingPayload: CreateBookingPayload = {
             userId: authenticatedUser.uid,
             activityId: value.tourId,
             activityTitle: confirmation.tourTitle,
             travelDate: value.travelDate,
             travelers: Number(value.travelers),
-            status: 'confirmed'
-          });
+            status: 'confirmed',
+            userEmail: accountEmail,
+            name: value.fullName.trim(),
+            email: accountEmail,
+            date: value.travelDate
+          };
+
+          await this.firestoreService.createBooking(bookingPayload);
         } catch (error: unknown) {
           this.bookingError =
             error instanceof Error && error.message

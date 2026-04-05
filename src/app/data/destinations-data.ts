@@ -32,7 +32,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Ramanathaswamy Temple',
     location: 'Rameswaram, Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://tse1.mm.bing.net/th/id/OIP.dhWy2r5QUmisr1derQSL8AHaEK?pid=Api&P=0&h=220',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Ramanathaswamy_temple7.JPG/960px-Ramanathaswamy_temple7.JPG',
     description: 'Located on the sacred island of Rameswaram, the Ramanathaswamy Temple is one of the twelve Jyotirlinga shrines dedicated to Lord Shiva. The temple is renowned for its breathtaking architecture, featuring the longest corridor among all Hindu temples in India, stretching over 1,200 meters with 1,212 exquisitely carved pillars. The temple\'s golden towers rise majestically against the backdrop of the azure Bay of Bengal. According to legend, Lord Rama himself worshipped Shiva here, making it one of the holiest pilgrimage sites in India.',
     coords: { lat: 9.2881, lng: 79.3174 }
   },
@@ -72,7 +72,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Yadadri Temple',
     location: 'Telangana',
     duration: '2D / 1N',
-    image: 'https://tse2.mm.bing.net/th/id/OIP.2whmNXvGTGhi5rUFcgeWNQHaEK?pid=Api&P=0&h=220',
+    image: 'https://s7ap1.scene7.com/is/image/incredibleindia/sri-lakshmi-narasimha-swamy-temple-or-yadadri-temple-or-yadagirigutta-temple-bhongir-telangana-1-attr-hero?qlt=82&ts=1751458838484',
     description: 'The majestic Sri Lakshmi Narasimha Swamy Temple at Yadadri is a stunning example of ancient Agama Shilpa architecture. Perched atop a hillock, this temple complex features five shrines dedicated to different forms of Lord Narasimha. The temple\'s towering gopurams and intricate carvings showcase the grandeur of South Indian temple architecture. The serene atmosphere, combined with the surrounding natural beauty of the Nalgonda district, makes it a perfect destination for spiritual seekers and architecture enthusiasts alike.',
     coords: { lat: 17.5866, lng: 78.9433 }
   },
@@ -80,7 +80,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Guruvayur Temple',
     location: 'Kerala',
     duration: '2D / 1N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP.3BqTD9ZWWyxjPXPsM0Xz8QHaEH?pid=Api&P=0&h=220',
+    image: 'https://www.trawell.in/admin/images/upload/195856262Guruvayur_Temple.jpg',
     description: 'Known as the "Dwarka of the South," the Guruvayur Temple is one of Kerala\'s most sacred pilgrimage sites. Dedicated to Lord Krishna as Guruvayurappan, this ancient temple is believed to have been established by Lord Brahma himself. The temple\'s golden spires rise gracefully against the sky, while the inner sanctum houses the divine idol of Guruvayurappan. The temple is famous for its daily rituals, especially the "Udayasthamaya" pooja, and the majestic elephants that grace the temple grounds add to its spiritual charm.',
     coords: { lat: 10.5943, lng: 76.0413 }
   },
@@ -136,7 +136,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Yercaud',
     location: 'Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://mangocalltaxi.com/wp-content/uploads/2023/12/yercaud-930x620.webp',
+    image: 'https://www.trawell.in/admin/images/upload/118127385Yercaud_Lake_Main.jpg',
     description: 'Perched at 1,515 meters in the Servarayan Hills of the Eastern Ghats, Yercaud is a tranquil hill station known as the "Lake of Forests." The centerpiece is the beautiful Emerald Lake, surrounded by lush orange groves and spice plantations. The hill station is famous for its coffee plantations, orange orchards, and the unique "Kottagiri" (hill of hills) landscape. The Shevaroyan Temple, Pagoda Point, and the aromatic spice gardens offer visitors a perfect blend of natural beauty and cultural heritage.',
     coords: { lat: 11.7753, lng: 78.2097 }
   },
@@ -160,7 +160,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Horsley Hills',
     location: 'Andhra Pradesh',
     duration: '2D / 1N',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIuL0mhkibUM45BkO2wYHpoHGB1wvsBP0lEXN85s2xVjttLnXGnJzKWrp-odnllVfQW1bVVA0Sk0x93hyphenhyphenO4a3GT_3O3Ekv8dzsmgACQimG1eZorp85fxOZA58a5TBdh1lIa3X07Ix5r0Xc/',
+    image: 'https://images.openai.com/static-rsc-4/p3MvsUejNR940EwSJ0CgqFSas90_0Fn5t5K3JXTMq1sUOO7E7F6X4NOKuNDjLaFtZa9dLZaG2wd9qm1zPZEOEIeP10tb08PYEKm1fBWQRn39x0WXnO8z17xX8XzzZd935a-E29wixekSSGPAj_MxC0ttpjLluLpb0-VndpM461K-HUz7Dc4vAyyWbXtW8GsR?purpose=fullsize',
     description: '',
     coords: { lat: 13.6594, lng: 78.4070 }
   },
@@ -184,7 +184,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Munnar',
     location: 'Kerala',
     duration: '3D / 2N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP._7CACN4ODs7EPPBdb0DA_wHaEK?pid=Api&P=0&h=220',
+    image: 'https://images.openai.com/static-rsc-4/EDELU3tTpIzFxVA0SMAP-40vpZzS--FoxWdwcNeJPzyk0_YTfT7M1v70v66r77JorrKu0pQQL3bGPfuHGtYGdzVZFIMZL4ANEdJkcJEmpQlcP5_quqs2rNTTRwAuxFy5qX_aBfaODGMy4JJbKC3KSdLr0M1NT00bpQTjzhesUxEK3OZ-UUwLU4GmjI0jWmqL?purpose=fullsize',
     description: '',
     coords: { lat: 10.0889, lng: 77.0595 }
   },
@@ -216,7 +216,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Poovar Backwaters',
     location: 'Thiruvananthapuram, Kerala',
     duration: '2D / 1N',
-    image: 'https://www.poovarbackwatercruise.com/assets/slider/images/banner_1.jpg',
+    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/30/5d/b9/24/caption.jpg?h=-1&s=1&w=900',
     description: '',
     coords: { lat: 8.3226, lng: 77.0504 }
   },
@@ -232,7 +232,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Coorg',
     location: 'Karnataka',
     duration: '3D / 2N',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.ChLtVZWDJzaz9GUXHtQhmQHaEK?pid=Api&P=0&h=220',
+    image: 'https://images.openai.com/static-rsc-4/VED_lY0DF8asBeVlNhVHdL9Z47agjhMBGW6Lei6NY6r67SjlWoT7Xn6M8OnmiDVLRPDEP8E99BmYACL4kQeREmLFj8M-lJJ51bRCb9M7JzFfq_DufX2qApP2VBAhFronGLlJ8J4i7mN-1gWMmfcjIv_AHhxXWDg03leEfR4_GC58wtHHFA8A-mDXn-Us4LP9?purpose=fullsize',
     description: '',
     coords: { lat: 12.4244, lng: 75.7382 }
   },
@@ -240,7 +240,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Kanyakumari',
     location: 'Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.bybdbFLeV3aFNuyt7pkcOAHaEK?pid=Api&P=0&h=220',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/RockMemorial.jpg',
     description: '',
     coords: { lat: 8.0883, lng: 77.5385 }
   },
@@ -272,7 +272,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Warangal',
     location: 'Telangana',
     duration: '2D / 1N',
-    image: 'https://tourism.telangana.gov.in/storage/app/media/WARANGAL-IMAGE.jpg',
+    image: 'https://images.openai.com/static-rsc-4/RPzmvsYwPhhJzt5YTtQeaeNGw9BUT7uA4quWRVNZN3P9uH67VxGqvU2bZvfoQHl4Ab0yBN84fNPkkGY_PUyUYU0WC0p9T0p-TRhBrmLDgKInLppU4Tz7ysZqSRKJHefwyr0PciH37MlpUuf96JGLC4oNGkCTDR34r5oownr047v9UQ9yAbJDdFRDWcKJCQgu?purpose=fullsize',
     description: '',
     coords: { lat: 17.9689, lng: 79.5941 }
   },
@@ -280,7 +280,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Araku Valley',
     location: 'Andhra Pradesh',
     duration: '3D / 2N',
-    image: 'https://luxoticholidays.com/blog/wp-content/uploads/2025/02/visakhapatnam-araku-valley.jpg',
+    image: 'https://images.openai.com/static-rsc-4/MUQSWb2imud9bqfk8o5yqEJYXr1cO88GejOfGVx79HVNfz_ADMvW4nYEU1HsL620njG6TZgj4w-0n-fU57YLv5juYhqUj_h8ocxx6eN9WXJ_uE4lGG92t1q2GNFmRyILYwydC0xaEVat0LKYoi-uAHa3ofE3KnYEku8Mifi2FePezw52tYH9U4NEQJroHUDR?purpose=fullsize',
     description: '',
     coords: { lat: 18.3270, lng: 82.8795 }
   },
@@ -296,7 +296,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Udupi',
     location: 'Karnataka',
     duration: '2D / 1N',
-    image: 'https://karnatakatourism.org/_next/image/?url=https%3A%2F%2Fweb-cms.karnatakatourism.org%2Fwp-content%2Fuploads%2F2025%2F06%2Fdji_0053.webp&w=3840&q=75',
+    image: 'https://karnatakatourism.org/_next/image/?q=75&url=https%3A%2F%2Fweb-cms.karnatakatourism.org%2Fwp-content%2Fuploads%2F2025%2F06%2FMalpe-Beach-e1750231954775.jpg&w=3840',
     description: '',
     coords: { lat: 13.3409, lng: 74.7421 }
   },
@@ -320,7 +320,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Pollachi',
     location: 'Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://tse4.mm.bing.net/th/id/OIP.5PR8IhLcvjZck_b848k3jwHaE8?pid=Api&h=220&P=0',
+    image: 'https://hblimg.mmtcdn.com/content/hubble/img/ttd_images/mmt/activities/m_Pollachi_Topslip_tiger_reserve_1_l_420_640.jpg',
     description: '',
     coords: { lat: 10.6583, lng: 77.0087 }
   },
@@ -328,7 +328,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Dhanushkodi',
     location: 'Tamil Nadu',
     duration: '2D / 1N',
-    image: 'https://tse1.mm.bing.net/th/id/OIP.cw1pl0ZEwPpfIFxjDSZk4AHaFj?pid=Api&h=220&P=0',
+    image: 'https://images.openai.com/static-rsc-1/cPw9TI7jvs0grTsaZIvAma7h94cEBT4k1QurBthlh9GI9eNzOxHQ6gVqWPxOkci_zdFCAeStKAHGWdj_kVlOqavFGfGKbSYby86Qi1hsxw7axgRKEvxdsIjkdVpORzd0M8YoIcI2GEBQg3fPlMHr7Q',
     description: '',
     coords: { lat: 9.1748, lng: 79.4322 }
   },
@@ -384,7 +384,7 @@ const destinationSeeds: Omit<Destination, 'id'>[] = [
     name: 'Ponmudi',
     location: 'Kerala',
     duration: '2D / 1N',
-    image: 'https://www.theindiatourism.com/images/Ponmudi.jpg',
+    image: 'https://www.trawell.in/admin/images/upload/007584213Ponmudi_Golden_Valley_Main.jpg',
     description: '',
     coords: { lat: 8.6167, lng: 77.1333 }
   }

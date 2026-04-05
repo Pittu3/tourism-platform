@@ -108,6 +108,13 @@ textarea {
   font: inherit;
 }
 
+/* Keep native dropdown option text readable on light option menus. */
+select option,
+select optgroup {
+  color: #1f2b3d;
+  background-color: #ffffff;
+}
+
 button {
   cursor: pointer;
 }

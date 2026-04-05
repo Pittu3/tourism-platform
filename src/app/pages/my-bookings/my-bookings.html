@@ -10,7 +10,9 @@
     <section class="bookings-grid" *ngIf="!isLoading && !errorMessage && bookings.length">
       <article class="booking-card" *ngFor="let booking of bookings; trackBy: trackByBooking">
         <div class="booking-topline">
-          <span class="status-chip">{{ booking.status }}</span>
+          <span class="status-chip" [ngClass]="getStatusMeta(booking).className">
+            {{ getStatusMeta(booking).label }}
+          </span>
           <span class="created-at">{{ formatCreatedAt(booking.createdAt) }}</span>
         </div>
         <h2>{{ booking.activityTitle }}</h2>

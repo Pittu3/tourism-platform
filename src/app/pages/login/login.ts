@@ -43,19 +43,17 @@ export class Login implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.redirectTo = this.route.snapshot.queryParamMap.get('redirectTo') || '/home';
-
-    const routePath = this.route.snapshot.routeConfig?.path;
-    this.authMode = routePath === 'register' ? 'register' : 'login';
-
-    const queryMode = this.route.snapshot.queryParamMap.get('mode');
-    if (queryMode === 'login' || queryMode === 'register') {
-      this.authMode = queryMode;
-    }
+    this.redirectTo = this.resolveRedirectTarget();
+    this.authMode = this.resolveAuthMode();
 
     const loggedOut = this.route.snapshot.queryParamMap.get('loggedOut');
     if (loggedOut === '1') {
       this.showSuccess('Logged out successfully.');
+    }
+
+    const verifyEmail = this.route.snapshot.queryParamMap.get('verifyEmail');
+    if (verifyEmail === '1') {
+      this.showError('Please verify your email address before accessing this page.');
     }
 
     void this.redirectIfAuthenticated();
@@ -137,6 +135,19 @@ export class Login implements OnInit, OnDestroy {
       );
       this.registerPassword = '';
       this.confirmPassword = '';
+
+      if (this.authService.requiresEmailVerification(createdUser)) {
+        this.isAuthenticated = false;
+        this.authMode = 'login';
+        this.loginSubmitted = false;
+        this.registerSubmitted = false;
+        this.loginEmail = createdUser.email || this.registerEmail.trim();
+        this.showSuccess(
+          `Account created for ${createdUser.displayName || createdUser.email}. Please verify your email before logging in.`
+        );
+        return;
+      }
+
       this.isAuthenticated = true;
       await this.showSuccessThenRedirect(
         `Account created successfully. Welcome, ${createdUser.displayName || createdUser.email}.`
@@ -193,6 +204,19 @@ export class Login implements OnInit, OnDestroy {
       return;
     }
 
+    // Allow users to stay on register mode even with an existing session
+    // instead of forcing an immediate redirect loop to home.
+    if (this.authMode === 'register') {
+      this.isAuthenticated = true;
+      return;
+    }
+
+    if (!this.authService.canAccessProtectedRoutes()) {
+      this.isAuthenticated = false;
+      this.showError('Please verify your email address before logging in.');
+      return;
+    }
+
     this.isAuthenticated = true;
     await this.navigateAfterAuth();
   }
@@ -220,7 +244,7 @@ export class Login implements OnInit, OnDestroy {
     this.toastTimeoutId = setTimeout(() => {
       this.toastTimeoutId = null;
       this.resetFeedback();
-    }, 3200);
+    }, 7000);
   }
 
   private clearToastTimeout(): void {
@@ -242,4 +266,34 @@ export class Login implements OnInit, OnDestroy {
   private async delay(milliseconds: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
+
+  private resolveRedirectTarget(): string {
+    const rawTarget =
+      this.route.snapshot.queryParamMap.get('redirectTo') ||
+      this.route.snapshot.queryParamMap.get('returnUrl') ||
+      '/home';
+
+    const target = rawTarget.trim();
+    if (!target.startsWith('/') || target.startsWith('//')) {
+      return '/home';
+    }
+
+    const blockedPaths = new Set(['/login', '/register', '/signup']);
+    if (blockedPaths.has(target)) {
+      return '/home';
+    }
+
+    return target;
+  }
+
+  private resolveAuthMode(): AuthMode {
+    const queryMode = this.route.snapshot.queryParamMap.get('mode');
+    if (queryMode === 'login' || queryMode === 'register') {
+      return queryMode;
+    }
+
+    const routePath = this.route.snapshot.routeConfig?.path ?? this.route.snapshot.url[0]?.path ?? '';
+    return routePath === 'register' ? 'register' : 'login';
+  }
+
 }

@@ -119,4 +119,83 @@ describe('Booking', () => {
     expect(firestoreServiceMock.createBooking).not.toHaveBeenCalled();
     expect(component.submitting).toBe(false);
   });
+
+  it('shows an error when Firestore sync fails after confirmation', async () => {
+    const confirmation = {
+      bookingId: 'BK-12345678',
+      status: 'confirmed' as const,
+      submittedAt: new Date().toISOString(),
+      destinationName: 'Munnar',
+      tourTitle: 'Sunrise Explorer',
+      travelDate: '2099-06-15',
+      travelers: 2,
+      totalAmount: 10000,
+      message: 'Booking confirmed for Demo User.'
+    };
+
+    bookingServiceMock.submitBooking.mockReturnValue(of(confirmation));
+    firestoreServiceMock.createBooking.mockRejectedValue(new Error('Missing or insufficient permissions.'));
+
+    component.formControls.destinationName.setValue('Munnar');
+    component.formControls.tourId.setValue('munnar-sunrise');
+    component.formControls.travelDate.setValue('2099-06-15');
+    component.formControls.travelers.setValue(2);
+    component.formControls.fullName.setValue('Demo User');
+    component.formControls.email.setValue('traveler@example.com');
+    component.formControls.phone.setValue('9876543210');
+    component.formControls.specialRequests.setValue('');
+    component.formControls.agreeToPolicy.setValue(true);
+
+    component.submitBooking();
+    await fixture.whenStable();
+
+    expect(component.bookingSuccess).toBeNull();
+    expect(component.bookingError).toBe('Missing or insufficient permissions.');
+    expect(component.submitting).toBe(false);
+  });
+
+  it('saves booking to account with legacy-compatible payload', async () => {
+    const confirmation = {
+      bookingId: 'BK-77770000',
+      status: 'confirmed' as const,
+      submittedAt: new Date().toISOString(),
+      destinationName: 'Munnar',
+      tourTitle: 'Sunrise Explorer',
+      travelDate: '2099-06-15',
+      travelers: 2,
+      totalAmount: 10000,
+      message: 'Booking confirmed for Demo User.'
+    };
+
+    bookingServiceMock.submitBooking.mockReturnValue(of(confirmation));
+    firestoreServiceMock.createBooking.mockResolvedValue('booking-1');
+
+    component.formControls.destinationName.setValue('Munnar');
+    component.formControls.tourId.setValue('munnar-sunrise');
+    component.formControls.travelDate.setValue('2099-06-15');
+    component.formControls.travelers.setValue(2);
+    component.formControls.fullName.setValue('Demo User');
+    component.formControls.email.setValue('traveler@example.com');
+    component.formControls.phone.setValue('9876543210');
+    component.formControls.specialRequests.setValue('');
+    component.formControls.agreeToPolicy.setValue(true);
+
+    component.submitBooking();
+    await fixture.whenStable();
+
+    expect(firestoreServiceMock.createBooking).toHaveBeenCalledWith({
+      userId: 'user-1',
+      activityId: 'munnar-sunrise',
+      activityTitle: 'Sunrise Explorer',
+      travelDate: '2099-06-15',
+      travelers: 2,
+      status: 'confirmed',
+      userEmail: 'traveler@example.com',
+      name: 'Demo User',
+      email: 'traveler@example.com',
+      date: '2099-06-15'
+    });
+    expect(component.bookingError).toBe('');
+    expect(component.bookingSuccess).toEqual(confirmation);
+  });
 });
