@@ -54,7 +54,7 @@ export class Activities implements OnInit, OnDestroy {
         'Tandem paragliding over Yelagiri hills with certified instructors and panoramic valley views.',
       location: 'Tamil Nadu',
       category: 'Adventure',
-      imageUrl: 'https://images.unsplash.com/photo-1504198266285-165a94a0a9f9',
+      imageUrl: 'https://d26dp53kz39178.cloudfront.net/media/uploads/products/image12_result-2-1675320531314.webp',
       price: 2500,
       priceRange: 'Starting from Rs. 2500',
       popularity: 94,
